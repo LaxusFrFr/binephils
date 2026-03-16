@@ -685,13 +685,28 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
   background-color: #f0fdf4;
   border: 1px solid var(--green-main);
   color: var(--green-main);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
+  margin-right: 0.75rem;
+}
+
+.product-icon-circle i {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* Plain variant for Aluminum Insulation Panel icons (no green box) */
+.product-icon-circle-plain {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent;
+  border: none;
   margin-right: 0.75rem;
 }
 
@@ -769,6 +784,12 @@ a {
   background-color: #ffffff;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.thickness-table-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.22);
 }
 
 .thickness-table {
