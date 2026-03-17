@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 2) Toggle active state for top navigation links (excluding Get started)
   const navLinks = document.querySelectorAll(".main-nav ul a");
+  const mainNav = document.querySelector(".main-nav");
+  const navToggle = document.querySelector(".nav-toggle");
 
   navLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
@@ -55,8 +57,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Set active on the clicked one
       link.classList.add("active");
+
+      // Close mobile menu after selecting a link
+      if (window.innerWidth <= 960 && mainNav && navToggle) {
+        mainNav.classList.remove("is-open");
+        navToggle.classList.remove("is-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
     });
   });
+
+  // Mobile navigation toggle
+  if (mainNav && navToggle) {
+    const closeMenu = () => {
+      mainNav.classList.remove("is-open");
+      navToggle.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    };
+
+    navToggle.addEventListener("click", () => {
+      const willOpen = !mainNav.classList.contains("is-open");
+      mainNav.classList.toggle("is-open", willOpen);
+      navToggle.classList.toggle("is-open", willOpen);
+      navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    });
+
+    window.addEventListener(
+      "resize",
+      () => {
+        if (window.innerWidth > 960) {
+          closeMenu();
+        }
+      },
+      { passive: true }
+    );
+  }
 
   // Defer reveal/stagger so the page paints first (faster perceived load, especially on Services/Projects)
   requestAnimationFrame(() => {
