@@ -1399,7 +1399,7 @@ a {
 }
 
 .projects-tabs {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 0;
@@ -1408,8 +1408,6 @@ a {
   padding: 0.18rem;
   margin-bottom: 2.1rem;
   position: relative;
-  max-width: 100%;
-  overflow: hidden;
 }
 
 .projects-tabs-indicator {
