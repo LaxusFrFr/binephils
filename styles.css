@@ -3024,6 +3024,10 @@ a {
   font-size: 0.8rem;
 }
 
+.footer-icon-mobile-emoji {
+  display: none;
+}
+
 .footer-social {
   display: flex;
   align-items: center;
@@ -3566,6 +3570,15 @@ a {
   .home-footer .footer-social-center {
     margin-top: 1.4rem;
     margin-bottom: 1.6rem;
+  }
+
+  /* On mobile, show 📱 emoji for the mobile contact row and hide the Font Awesome icon */
+  .footer-icon-mobile-emoji {
+    display: inline;
+  }
+
+  .footer-icon i.fa-mobile-screen-button {
+    display: none;
   }
 }
 
