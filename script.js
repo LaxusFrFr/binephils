@@ -51,6 +51,51 @@ document.addEventListener("DOMContentLoaded", () => {
   updateNavOffset();
   window.addEventListener("resize", updateNavOffset);
 
+  // Mobile navigation toggle: half-height dropdown, overlay, click-outside to close
+  let closeMenu = () => {};
+  if (mainNav && navToggle) {
+    const restoreBodyScroll = () => {
+      document.body.style.overflow = "";
+    };
+
+    let navOverlay = document.querySelector(".nav-overlay");
+    if (!navOverlay) {
+      navOverlay = document.createElement("div");
+      navOverlay.className = "nav-overlay";
+      navOverlay.setAttribute("aria-hidden", "true");
+      document.body.appendChild(navOverlay);
+    }
+
+    closeMenu = () => {
+      mainNav.classList.remove("is-open");
+      navToggle.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+      if (navOverlay) navOverlay.classList.remove("is-visible");
+      restoreBodyScroll();
+    };
+
+    navToggle.addEventListener("click", () => {
+      const willOpen = !mainNav.classList.contains("is-open");
+      mainNav.classList.toggle("is-open", willOpen);
+      navToggle.classList.toggle("is-open", willOpen);
+      navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      if (navOverlay) navOverlay.classList.toggle("is-visible", willOpen);
+      document.body.style.overflow = willOpen ? "hidden" : "";
+    });
+
+    navOverlay.addEventListener("click", closeMenu);
+
+    window.addEventListener(
+      "resize",
+      () => {
+        if (window.innerWidth > 960) {
+          closeMenu();
+        }
+      },
+      { passive: true }
+    );
+  }
+
   navLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
       const href = link.getAttribute("href") || "";
@@ -71,46 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Set active on the clicked one
       link.classList.add("active");
 
-      // Close mobile menu after selecting a link
-      if (window.innerWidth <= 960 && mainNav && navToggle) {
-        mainNav.classList.remove("is-open");
-        navToggle.classList.remove("is-open");
-        navToggle.setAttribute("aria-expanded", "false");
+      // Close mobile menu after selecting a link (overlay + body scroll cleared)
+      if (window.innerWidth <= 960) {
+        closeMenu();
       }
     });
   });
-
-  // Mobile navigation toggle
-  if (mainNav && navToggle) {
-    const restoreBodyScroll = () => {
-      document.body.style.overflow = "";
-    };
-
-    const closeMenu = () => {
-      mainNav.classList.remove("is-open");
-      navToggle.classList.remove("is-open");
-      navToggle.setAttribute("aria-expanded", "false");
-      restoreBodyScroll();
-    };
-
-    navToggle.addEventListener("click", () => {
-      const willOpen = !mainNav.classList.contains("is-open");
-      mainNav.classList.toggle("is-open", willOpen);
-      navToggle.classList.toggle("is-open", willOpen);
-      navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
-      document.body.style.overflow = willOpen ? "hidden" : "";
-    });
-
-    window.addEventListener(
-      "resize",
-      () => {
-        if (window.innerWidth > 960) {
-          closeMenu();
-        }
-      },
-      { passive: true }
-    );
-  }
 
   // Defer reveal/stagger so the page paints first (faster perceived load, especially on Services/Projects)
   requestAnimationFrame(() => {
