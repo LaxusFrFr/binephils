@@ -746,11 +746,15 @@ a {
 
 .services-page-label,
 .products-page-label {
-  display: block;
-  margin-bottom: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  background-color: #fff7cf;
   color: var(--construction-green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .services-page-title,
