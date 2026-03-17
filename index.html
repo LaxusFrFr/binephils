@@ -532,7 +532,8 @@
     </main>
 
     <footer class="site-footer home-footer">
-      <div class="container footer-inner scroll-reveal">
+      <!-- Homepage footer: use a simple vertical layout on mobile by avoiding the grid-based .footer-inner class -->
+      <div class="container scroll-reveal">
         <!-- Left: Brand + description -->
         <div class="footer-column footer-brand">
           <h3>Bine Philippines Inc.</h3>
@@ -571,34 +572,32 @@
           </div>
         </div>
 
-        <!-- Right: Links (Company + Divisions) -->
+        <!-- Right: Links (Company + Divisions) – stacked vertically on homepage -->
         <div class="footer-column footer-links-col">
-          <div class="footer-links-grid">
-            <div class="footer-links-group">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-              </ul>
-            </div>
-            <div class="footer-links-group">
-              <h4>Divisions</h4>
-              <ul>
-                <li><strong>Industrial</strong></li>
-                <li><a href="#manufacturing">Casting</a></li>
-                <li><a href="#manufacturing">Electroplating</a></li>
-                <li><a href="#manufacturing">Non-toxic Plating</a></li>
-              </ul>
-              <ul>
-                <li><strong>Construction</strong></li>
-                <li><a href="#construction">Construction Services</a></li>
-                <li><a href="#construction">Aluminum Panel</a></li>
-                <li><a href="#construction">Traffic Safety</a></li>
-              </ul>
-            </div>
+          <div class="footer-links-group">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#about">About Us</a></li>
+              <li><a href="services.html">Services</a></li>
+              <li><a href="products.html">Products</a></li>
+              <li><a href="projects.html">Projects</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-links-group">
+            <h4>Divisions</h4>
+            <ul>
+              <li><strong>Industrial</strong></li>
+              <li><a href="#manufacturing">Casting</a></li>
+              <li><a href="#manufacturing">Electroplating</a></li>
+              <li><a href="#manufacturing">Non-toxic Plating</a></li>
+            </ul>
+            <ul>
+              <li><strong>Construction</strong></li>
+              <li><a href="#construction">Construction Services</a></li>
+              <li><a href="#construction">Aluminum Panel</a></li>
+              <li><a href="#construction">Traffic Safety</a></li>
+            </ul>
           </div>
         </div>
       </div>
