@@ -61,7 +61,29 @@ a {
 
 .blank-page {
   min-height: 70vh;
-  background-color: #000000;
+  background-color: var(--green-main);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.blank-page-inner {
+  max-width: 640px;
+}
+
+.blank-page-inner h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.blank-page-inner p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
 }
 
 /* Header */
