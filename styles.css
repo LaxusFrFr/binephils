@@ -3095,7 +3095,8 @@ a {
 
   .nav-overlay.is-visible {
     opacity: 1;
-    pointer-events: auto;
+    /* Keep overlay non-interactive so it never blocks clicks on the menu */
+    pointer-events: none;
   }
 
   .main-nav {
