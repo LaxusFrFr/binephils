@@ -3306,6 +3306,19 @@ a {
     margin-top: 1.4rem;
     margin-bottom: 1.6rem;
   }
+
+  /* Homepage only (body#top): use phone emoji for Tel icon on mobile */
+  body#top .home-footer .footer-contact-row:nth-child(2) .footer-icon {
+    font-size: 0;
+    position: relative;
+  }
+
+  body#top .home-footer .footer-contact-row:nth-child(2) .footer-icon::before {
+    content: "📞";
+    font-size: 0.9rem;
+    line-height: 1;
+    display: inline-block;
+  }
 }
 
 
