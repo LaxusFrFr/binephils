@@ -3098,9 +3098,8 @@ a {
     padding: 1.25rem 1.5rem 2rem;
     border-radius: 0 0 14px 14px;
     background-color: #ffffff;
-    box-shadow:
-      0 18px 45px rgba(15, 23, 42, 0.12),
-      0 12px 30px rgba(0, 0, 0, 0.15);
+    /* Remove heavy drop shadow so the top area does not look gray */
+    box-shadow: none;
     flex-direction: column;
     align-items: flex-start;
     gap: 1.25rem;
