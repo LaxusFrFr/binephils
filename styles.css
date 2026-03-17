@@ -2470,6 +2470,63 @@ a {
   box-shadow: 0 26px 60px rgba(15, 23, 42, 0.2);
 }
 
+.comparison-mobile-list {
+  display: none;
+  margin-top: 1.25rem;
+  display: none;
+}
+
+.comparison-mobile-card {
+  border-radius: 16px;
+  border: 1px solid var(--border-soft);
+  background-color: #ffffff;
+  padding: 1.1rem 1rem 1rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  margin-bottom: 0.9rem;
+}
+
+.comparison-mobile-feature {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.comparison-mobile-row {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: flex-start;
+  column-gap: 0.5rem;
+}
+
+.comparison-mobile-row + .comparison-mobile-row {
+  margin-top: 0.4rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--border-soft);
+}
+
+.comparison-mobile-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+}
+
+.comparison-mobile-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.comparison-mobile-row-bine .comparison-mobile-label {
+  color: var(--green-main);
+}
+
+.comparison-mobile-row-other .comparison-mobile-label {
+  color: #9ca3af;
+}
+
 .comparison-table {
   width: 100%;
   border-collapse: collapse;
@@ -3081,6 +3138,15 @@ a {
   .comparison-table td {
     padding: 0.55rem 0.7rem;
     font-size: 0.85rem;
+  }
+
+  /* On small screens, show stacked comparison cards instead of wide table */
+  .comparison-table-wrapper {
+    display: none;
+  }
+
+  .comparison-mobile-list {
+    display: block;
   }
 
   .hero-section {
