@@ -2996,6 +2996,11 @@ a {
     row-gap: 2rem;
   }
 
+  /* Make value/benefit cards easier to read on medium screens */
+  .why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   /* Collapse header navigation into overlay panel on tablet/mobile */
   .header-inner {
     gap: 0.5rem;
@@ -3064,6 +3069,18 @@ a {
 
   .main-nav ul {
     font-size: 0.9rem;
+  }
+
+  /* Single-column value/benefit cards on small devices */
+  .why-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Slightly denser comparison table for narrow screens */
+  .comparison-table th,
+  .comparison-table td {
+    padding: 0.55rem 0.7rem;
+    font-size: 0.85rem;
   }
 
   .hero-section {
