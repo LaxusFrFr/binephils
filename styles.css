@@ -3070,7 +3070,7 @@ a {
 
   .main-nav {
     position: fixed;
-    top: var(--header-height);
+    top: var(--nav-offset, var(--header-height));
     right: 0;
     left: 0;
     bottom: 0;
@@ -3081,18 +3081,16 @@ a {
     flex-direction: column;
     align-items: flex-start;
     gap: 1.25rem;
-    max-height: 0;
+    height: calc(100vh - var(--nav-offset, var(--header-height)));
     opacity: 0;
     pointer-events: none;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 40;
-    transform-origin: top right;
-    transform: scale(0.98);
+    transform: translateY(-100%);
     transition:
       opacity 0.18s ease-out,
-      transform 0.18s ease-out,
-      max-height 0.22s ease-out;
+      transform 0.22s ease-out;
   }
 
   .main-nav ul {
@@ -3109,10 +3107,9 @@ a {
   }
 
   .main-nav.is-open {
-    max-height: none;
     opacity: 1;
     pointer-events: auto;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 

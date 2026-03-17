@@ -38,6 +38,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainNav = document.querySelector(".main-nav");
   const navToggle = document.querySelector(".nav-toggle");
 
+  // Measure header height so mobile nav can fill the rest of the viewport cleanly
+  const siteHeader = document.querySelector(".site-header");
+  const updateNavOffset = () => {
+    if (!siteHeader) return;
+    const headerHeight = siteHeader.offsetHeight || 0;
+    document.documentElement.style.setProperty(
+      "--nav-offset",
+      `${headerHeight}px`
+    );
+  };
+  updateNavOffset();
+  window.addEventListener("resize", updateNavOffset);
+
   navLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
       const href = link.getAttribute("href") || "";
