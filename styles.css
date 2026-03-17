@@ -3012,6 +3012,12 @@ a {
 /* Responsive */
 
 @media (max-width: 960px) {
+  /* Mobile/tablet: remove drop shadow on header logo only on smaller screens */
+  .logo img {
+    filter: none;
+    box-shadow: none;
+  }
+
   .divisions-grid {
     grid-template-columns: minmax(0, 1fr);
   }
