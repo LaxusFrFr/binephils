@@ -1257,6 +1257,10 @@ a {
   margin-top: 0.75rem;
 }
 
+.services-dropdown-panel-inline {
+  margin-top: 0.5rem;
+}
+
 /* Services CTA: Font Awesome chevron arrows (pro look, not global .arrow) */
 .construction-services-cta-btn .arrow-chevron {
   display: inline-block;
@@ -3446,12 +3450,14 @@ a {
   }
 
   /* On mobile, show inline CTAs under each card and hide the separate CTA row */
-  .construction-services-cta-row {
+  .construction-services-cta-row,
+  .services-dropdowns-wrap {
     display: none;
   }
 
-  .construction-services-cta-btn-inline {
-    display: inline-flex;
+  .construction-services-cta-btn-inline,
+  .services-dropdown-panel-inline {
+    display: block;
   }
 
   .projects-grid {
