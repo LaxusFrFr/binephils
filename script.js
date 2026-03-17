@@ -371,9 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const moveProjectsIndicator = (activeTab) => {
     if (!projectsTabsContainer || !projectsTabsIndicator || !activeTab) return;
-    // Use offsetLeft relative to the scroll position so the indicator
-    // aligns correctly even when the tabs container is horizontally scrollable.
-    const left = activeTab.offsetLeft - projectsTabsContainer.scrollLeft;
+    // Use offsetLeft within the tabs container; because the indicator
+    // is positioned inside the same scrolling container, we do not
+    // subtract scrollLeft, which keeps alignment correct on mobile.
+    const left = activeTab.offsetLeft;
     const width = activeTab.offsetWidth;
     projectsTabsIndicator.style.transform = `translateX(${left}px)`;
     projectsTabsIndicator.style.width = `${width}px`;
