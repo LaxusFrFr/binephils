@@ -3301,23 +3301,22 @@ a {
     display: block;
   }
 
-  /* Projects tabs: make filter pill scrollable horizontally on small screens */
+  /* Projects tabs (mobile): keep same 4-button layout as desktop,
+     but tighten spacing so all labels stay inside the pill on small screens. */
   .projects-tabs {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     max-width: 100%;
-    overflow-x: auto;
-    padding: 0.18rem 0.18rem 0.18rem 0;
-  }
-
-  .projects-tabs::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
+    padding: 0.18rem;
   }
 
   .projects-tab {
-    flex: 0 0 auto;
-    padding: 0.55rem 1.2rem;
-    font-size: 0.9rem;
+    flex: 1 1 0;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+    text-align: center;
+    white-space: nowrap;
   }
 
   /* Products page: use stacked cards for thickness table on small screens */
