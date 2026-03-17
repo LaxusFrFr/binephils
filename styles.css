@@ -3128,6 +3128,11 @@ a {
     justify-content: space-between;
   }
 
+  /* Align mobile hamburger with the same side padding as the logo */
+  .nav-toggle {
+    margin-left: 0;
+  }
+
   .main-nav ul {
     font-size: 1.05rem;
     font-weight: 600;
