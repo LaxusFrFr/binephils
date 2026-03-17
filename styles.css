@@ -3131,6 +3131,7 @@ a {
   /* Align mobile hamburger with the same side padding as the logo */
   .nav-toggle {
     margin-left: 0;
+    margin-right: 0.5rem;
   }
 
   .main-nav ul {
