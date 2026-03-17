@@ -3306,29 +3306,6 @@ a {
     margin-top: 1.4rem;
     margin-bottom: 1.6rem;
   }
-
-  /* Homepage footer contact icons: remove circular background on mobile */
-  .home-footer .footer-contact-row .footer-icon {
-    width: auto;
-    height: auto;
-    border-radius: 0;
-    background: none;
-    font-size: 0.9rem;
-  }
-
-  /* Homepage only (body#top): use phone emoji for Mobile icon on mobile */
-  body#top .home-footer .footer-contact-row:nth-child(3) .footer-icon {
-    font-size: 0;
-    position: relative;
-    margin-right: -1.2em;
-  }
-
-  body#top .home-footer .footer-contact-row:nth-child(3) .footer-icon::before {
-    content: "📱";
-    font-size: 0.9rem;
-    line-height: 1;
-    display: inline-block;
-  }
 }
 
 
