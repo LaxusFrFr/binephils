@@ -2889,20 +2889,22 @@ a {
 
 @media (max-width: 720px) {
   .cta-section {
-    padding: 2.2rem 0 2.4rem;
+    padding: 2rem 0 2.2rem;
   }
 
   .cta-inner {
-    max-width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
   }
 
   .cta-section h2 {
-    font-size: 1.6rem;
+    font-size: 1.45rem;
   }
 
   .cta-section p {
-    font-size: 0.9rem;
-    margin-bottom: 1.25rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.1rem;
   }
 }
 
