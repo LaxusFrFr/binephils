@@ -325,16 +325,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const storyClose = storyModal?.querySelector(".story-modal-close");
 
   if (storyButton && storyModal && storyClose) {
+    // Detect iOS devices (including iPadOS) so we can apply a safer scroll-lock strategy.
+    const isIOS =
+      /iP(ad|hone|od)/i.test(window.navigator.userAgent || "") ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    let storyScrollY = 0;
+
+    const lockBodyScroll = () => {
+      if (!isIOS) {
+        document.body.style.overflow = "hidden";
+        return;
+      }
+      // iOS Safari: use fixed positioning instead of overflow: hidden to avoid
+      // leaving the page in a non-scrollable, gray-overlay state after closing.
+      storyScrollY =
+        window.scrollY ||
+        window.pageYOffset ||
+        document.documentElement.scrollTop ||
+        0;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${storyScrollY}px`;
+      document.body.style.width = "100%";
+    };
+
+    const unlockBodyScroll = () => {
+      if (!isIOS) {
+        document.body.style.overflow = "";
+        return;
+      }
+      // Restore original scroll position and layout on iOS after closing modal.
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, storyScrollY || 0);
+    };
+
     const openModal = () => {
       storyModal.classList.add("is-open");
       storyModal.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
+      lockBodyScroll();
     };
 
     const closeModal = () => {
       storyModal.classList.remove("is-open");
       storyModal.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+      unlockBodyScroll();
     };
 
     storyButton.addEventListener("click", openModal);
