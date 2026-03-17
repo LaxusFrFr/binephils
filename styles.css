@@ -3256,14 +3256,17 @@ a {
 
   /* Homepage footer: force vertical stack and spacing on mobile (overrides desktop grid) */
   .home-footer .footer-inner {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
     padding-bottom: 2rem;
-    align-items: center;
   }
 
   .home-footer .footer-links-col .footer-links-grid {
-    grid-template-columns: minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1rem;
   }
 
