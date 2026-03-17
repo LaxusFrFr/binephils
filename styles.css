@@ -602,7 +602,8 @@ a {
 .hero-actions .btn-primary {
   background-color: var(--hero-accent);
   color: #ffffff;
-  border: none;
+  /* Match outline button height by using the same border thickness */
+  border: 1px solid transparent;
   font-weight: 600;
   padding: 0.75rem 1.75rem;
   border-radius: var(--radius-md);
