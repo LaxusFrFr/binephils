@@ -3320,7 +3320,7 @@ a {
   body#top .home-footer .footer-contact-row:nth-child(3) .footer-icon {
     font-size: 0;
     position: relative;
-    margin-right: -0.6em;
+    margin-right: -1.2em;
   }
 
   body#top .home-footer .footer-contact-row:nth-child(3) .footer-icon::before {
