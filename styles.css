@@ -1250,6 +1250,13 @@ a {
   text-decoration: none;
 }
 
+/* Inline CTA buttons inside cards (used on mobile only) */
+.construction-services-cta-btn-inline {
+  display: none;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
 /* Services CTA: Font Awesome chevron arrows (pro look, not global .arrow) */
 .construction-services-cta-btn .arrow-chevron {
   display: inline-block;
@@ -3436,6 +3443,15 @@ a {
 
   .services-dropdowns-wrap {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* On mobile, show inline CTAs under each card and hide the separate CTA row */
+  .construction-services-cta-row {
+    display: none;
+  }
+
+  .construction-services-cta-btn-inline {
+    display: inline-flex;
   }
 
   .projects-grid {
