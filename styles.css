@@ -1399,7 +1399,7 @@ a {
 }
 
 .projects-tabs {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0;
@@ -1408,6 +1408,8 @@ a {
   padding: 0.18rem;
   margin-bottom: 2.1rem;
   position: relative;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .projects-tabs-indicator {
@@ -1434,6 +1436,7 @@ a {
   cursor: pointer;
   position: relative;
   z-index: 1;
+  white-space: nowrap;
 }
 
 .projects-tab.is-active {
@@ -3298,6 +3301,25 @@ a {
 
   .comparison-mobile-list {
     display: block;
+  }
+
+  /* Projects tabs: make filter pill scrollable horizontally on small screens */
+  .projects-tabs {
+    display: flex;
+    justify-content: flex-start;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 0.18rem 0.18rem 0.18rem 0;
+  }
+
+  .projects-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .projects-tab {
+    flex: 0 0 auto;
+    padding: 0.55rem 1.2rem;
+    font-size: 0.9rem;
   }
 
   /* Products page: use stacked cards for thickness table on small screens */
