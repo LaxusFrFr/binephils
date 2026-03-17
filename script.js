@@ -333,32 +333,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let storyScrollY = 0;
 
     const lockBodyScroll = () => {
-      if (!isIOS) {
-        document.body.style.overflow = "hidden";
-        return;
-      }
-      // iOS Safari: use fixed positioning instead of overflow: hidden to avoid
-      // leaving the page in a non-scrollable, gray-overlay state after closing.
-      storyScrollY =
-        window.scrollY ||
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        0;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${storyScrollY}px`;
-      document.body.style.width = "100%";
+      // On iOS we avoid locking the body altogether because both
+      // overflow: hidden and position: fixed can leave the page
+      // stuck behind a dark overlay after closing the modal.
+      if (isIOS) return;
+
+      document.body.style.overflow = "hidden";
     };
 
     const unlockBodyScroll = () => {
-      if (!isIOS) {
-        document.body.style.overflow = "";
-        return;
-      }
-      // Restore original scroll position and layout on iOS after closing modal.
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      window.scrollTo(0, storyScrollY || 0);
+      if (isIOS) return;
+      document.body.style.overflow = "";
     };
 
     const openModal = () => {
