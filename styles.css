@@ -1046,6 +1046,32 @@ a {
   text-shadow: none;
 }
 
+@media (max-width: 720px) {
+  /* Match home CTA card sizing for construction CTA on mobile only */
+  .construction-cta-section {
+    padding: 2rem 0 2.2rem;
+    background-color: transparent;
+  }
+
+  .construction-cta-inner {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 1.4rem 1.25rem 1.8rem;
+    border-radius: 24px;
+    background-color: var(--construction-green);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .construction-cta-title {
+    font-size: 1.45rem;
+  }
+
+  .construction-cta-text {
+    font-size: 0.88rem;
+    margin-bottom: 1.1rem;
+  }
+}
+
 .bcdc-advantage-section .section-header p {
   margin: 0;
   color: var(--text-muted);
