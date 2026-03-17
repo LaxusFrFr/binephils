@@ -944,6 +944,54 @@ a {
   background-color: #ffffff;
 }
 
+/* Mobile stacked layout for thickness table (Products page) */
+.thickness-mobile-list {
+  display: none;
+  margin-top: 1.25rem;
+}
+
+.thickness-mobile-card {
+  border-radius: 14px;
+  border: 1px solid var(--border-soft);
+  background-color: #ffffff;
+  padding: 1rem 1rem 0.9rem;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+  margin-bottom: 0.85rem;
+}
+
+.thickness-mobile-occupancy {
+  margin: 0 0 0.6rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.thickness-mobile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.9rem;
+  padding-top: 0.3rem;
+}
+
+.thickness-mobile-row + .thickness-mobile-row {
+  border-top: 1px dashed var(--border-soft);
+  margin-top: 0.3rem;
+}
+
+.thickness-mobile-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+}
+
+.thickness-mobile-value {
+  font-weight: 600;
+  color: var(--green-main);
+}
+
 .construction-stat-label {
   font-size: 0.8rem;
   color: var(--text-muted);
@@ -3249,6 +3297,15 @@ a {
   }
 
   .comparison-mobile-list {
+    display: block;
+  }
+
+  /* Products page: use stacked cards for thickness table on small screens */
+  .thickness-table-wrapper {
+    display: none;
+  }
+
+  .thickness-mobile-list {
     display: block;
   }
 
