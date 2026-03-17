@@ -2986,6 +2986,11 @@ a {
   margin-bottom: 0.7rem;
 }
 
+/* Extra spacing between Company and Divisions groups when stacked */
+.home-footer .footer-links-group-divisions {
+  margin-top: 0.9rem;
+}
+
 .footer-social-center {
   display: flex;
   justify-content: center;
