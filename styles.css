@@ -2126,9 +2126,9 @@ a {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  transform: translateY(18px) scale(0.98);
-  animation: fade-up-modal 0.3s ease-out forwards;
+  opacity: 1;
+  transform: none;
+  animation: none;
 }
 
 .story-modal-logo {
