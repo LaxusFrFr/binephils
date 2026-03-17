@@ -3255,6 +3255,33 @@ a {
     max-width: calc(100vw - 2rem);
     padding: 1.4rem 1.25rem 1.6rem;
   }
+
+  /* Homepage footer: center-align content on mobile for a cleaner look */
+  .home-footer .footer-column {
+    text-align: center;
+  }
+
+  .home-footer .footer-brand p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-footer .footer-contact-row {
+    justify-content: center;
+  }
+
+  .home-footer .footer-links-col .footer-links-group {
+    align-items: center;
+  }
+
+  .home-footer .footer-links-col ul {
+    align-items: center;
+  }
+
+  .home-footer .footer-social-center {
+    margin-top: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
 }
 
 
