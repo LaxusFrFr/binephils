@@ -2890,12 +2890,24 @@ a {
 @media (max-width: 720px) {
   .cta-section {
     padding: 2rem 0 2.2rem;
+    /* On mobile, let the background be the page color and move
+       the green gradient into a smaller inner card instead. */
+    background: transparent;
   }
 
   .cta-inner {
     max-width: 360px;
     margin: 0 auto;
-    padding: 0 1.25rem;
+    padding: 1.4rem 1.25rem 1.8rem;
+    border-radius: 24px;
+    background: linear-gradient(
+        135deg,
+        rgba(11, 122, 59, 0.92) 0%,
+        rgba(8, 60, 35, 0.95) 50%,
+        rgba(5, 40, 24, 0.97) 100%
+      ),
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+    color: #ffffff;
   }
 
   .cta-section h2 {
