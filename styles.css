@@ -3089,8 +3089,8 @@ a {
     z-index: 40;
     transform: translateY(-100%);
     transition:
-      opacity 0.18s ease-out,
-      transform 0.22s ease-out;
+      opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .main-nav ul {
@@ -3104,6 +3104,47 @@ a {
     width: 100%;
     justify-content: center;
     margin-top: 0.25rem;
+  }
+
+  /* Staggered entrance: menu items start hidden and animate in one by one */
+  .main-nav ul li,
+  .main-nav .nav-cta {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: 0s;
+  }
+
+  .main-nav.is-open ul li:nth-child(1) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.06s;
+  }
+
+  .main-nav.is-open ul li:nth-child(2) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.12s;
+  }
+
+  .main-nav.is-open ul li:nth-child(3) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.18s;
+  }
+
+  .main-nav.is-open ul li:nth-child(4) {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.24s;
+  }
+
+  .main-nav.is-open .nav-cta {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.3s;
   }
 
   .main-nav.is-open {
