@@ -3314,7 +3314,7 @@ a {
   }
 
   body#top .home-footer .footer-contact-row:nth-child(3) .footer-icon::before {
-    content: "📞";
+    content: "📱";
     font-size: 0.9rem;
     line-height: 1;
     display: inline-block;
