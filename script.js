@@ -371,10 +371,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const moveProjectsIndicator = (activeTab) => {
     if (!projectsTabsContainer || !projectsTabsIndicator || !activeTab) return;
-    const containerRect = projectsTabsContainer.getBoundingClientRect();
-    const tabRect = activeTab.getBoundingClientRect();
-    const left = tabRect.left - containerRect.left;
-    const width = tabRect.width;
+    // Use offsetLeft relative to the scroll position so the indicator
+    // aligns correctly even when the tabs container is horizontally scrollable.
+    const left = activeTab.offsetLeft - projectsTabsContainer.scrollLeft;
+    const width = activeTab.offsetWidth;
     projectsTabsIndicator.style.transform = `translateX(${left}px)`;
     projectsTabsIndicator.style.width = `${width}px`;
   };
