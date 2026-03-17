@@ -2887,6 +2887,25 @@ a {
   font-size: 0.98rem;
 }
 
+@media (max-width: 720px) {
+  .cta-section {
+    padding: 2.2rem 0 2.4rem;
+  }
+
+  .cta-inner {
+    max-width: 100%;
+  }
+
+  .cta-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .cta-section p {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
 .contact-anchor {
   height: 0;
   padding: 0;
