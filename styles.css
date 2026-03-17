@@ -219,9 +219,9 @@ a {
   position: absolute;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   border-radius: 999px;
-  background-color: #0f172a;
+  background-color: var(--green-main);
   transition:
     transform 0.2s ease,
     opacity 0.2s ease,
@@ -3084,7 +3084,9 @@ a {
     max-height: 0;
     opacity: 0;
     pointer-events: none;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 40;
     transform-origin: top right;
     transform: scale(0.98);
     transition:
@@ -3107,7 +3109,7 @@ a {
   }
 
   .main-nav.is-open {
-    max-height: 100vh;
+    max-height: none;
     opacity: 1;
     pointer-events: auto;
     transform: scale(1);
