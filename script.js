@@ -69,10 +69,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Mobile navigation toggle
   if (mainNav && navToggle) {
+    const restoreBodyScroll = () => {
+      document.body.style.overflow = "";
+    };
+
     const closeMenu = () => {
       mainNav.classList.remove("is-open");
       navToggle.classList.remove("is-open");
       navToggle.setAttribute("aria-expanded", "false");
+      restoreBodyScroll();
     };
 
     navToggle.addEventListener("click", () => {
@@ -80,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       mainNav.classList.toggle("is-open", willOpen);
       navToggle.classList.toggle("is-open", willOpen);
       navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      document.body.style.overflow = willOpen ? "hidden" : "";
     });
 
     window.addEventListener(
