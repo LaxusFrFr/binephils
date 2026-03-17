@@ -3301,19 +3301,23 @@ a {
     display: block;
   }
 
-  /* Projects tabs (mobile): keep same 4-button layout as desktop,
-     but tighten spacing so all labels stay inside the pill on small screens. */
+  /* Projects tabs (mobile): horizontally scrollable pill, text fully inside bar */
   .projects-tabs {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     max-width: 100%;
-    overflow: visible;
-    padding: 0.18rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 0.18rem 0.4rem;
+  }
+
+  .projects-tabs::-webkit-scrollbar {
+    display: none;
   }
 
   .projects-tab {
-    flex: 1 1 0;
-    padding: 0.5rem 0.6rem;
+    flex: 0 0 auto;
+    padding: 0.5rem 1.1rem;
     font-size: 0.85rem;
     text-align: center;
     white-space: nowrap;
