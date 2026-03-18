@@ -519,12 +519,21 @@ document.addEventListener("DOMContentLoaded", () => {
             ? Math.abs(parseInt(top, 10) || 0)
             : lockedScrollY;
         window.scrollTo(0, restoreY);
+        if (isMobileModal()) {
+          // iOS can apply a second layout pass after unlocking; re-apply.
+          requestAnimationFrame(() => {
+            window.scrollTo(0, lockedScrollY);
+          });
+        }
       } else {
         document.body.style.overflow = "";
         // Android/mobile browsers can jump after unlocking; force-restore.
         if (isMobileModal()) {
           requestAnimationFrame(() => {
             window.scrollTo(0, lockedScrollY);
+            requestAnimationFrame(() => {
+              window.scrollTo(0, lockedScrollY);
+            });
           });
         }
       }
@@ -572,7 +581,10 @@ document.addEventListener("DOMContentLoaded", () => {
       lockPageScroll();
 
       renderGallery();
-      productModalClose.focus();
+      // On mobile, focusing can cause scroll jumps when closing.
+      if (!isMobileModal()) {
+        productModalClose.focus();
+      }
     };
 
     const closeProductModal = () => {
