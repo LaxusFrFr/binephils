@@ -1688,11 +1688,13 @@ a {
   filter: none;
 }
 
-.products-category-section .product-tile {
+.products-category-section .product-tile,
+#projects .product-tile {
   cursor: pointer;
 }
 
-.products-category-section .product-tile:focus-visible {
+.products-category-section .product-tile:focus-visible,
+#projects .product-tile:focus-visible {
   outline: none;
   box-shadow:
     0 24px 60px rgba(15, 23, 42, 0.22),

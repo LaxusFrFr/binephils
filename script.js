@@ -447,9 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const category = card.getAttribute("data-category") || "";
         const matches =
           normalized === "all"
-            ? sectionId === "product-category"
-              ? true // Product Category: show all tiles in All tab
-              : index < 8 // Projects: keep "All shows 8 tiles"
+            ? true // All Projects / All Products: show all tiles
             : category === normalized;
 
         if (matches) {
@@ -501,8 +499,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const productModalMedia = productModal?.querySelector(".product-modal-media");
 
   const productsSection = document.getElementById("product-category");
+  const projectsSection = document.getElementById("projects");
 
-  if (productModal && productModalDialog && productModalMedia && productsSection && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
+  if (productModal && productModalDialog && productModalMedia && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
     let gallery = [];
     let galleryIndex = 0;
     let lastFocusedEl = null;
@@ -683,11 +682,13 @@ document.addEventListener("DOMContentLoaded", () => {
       renderGallery();
     };
 
-    productsSection.addEventListener("click", (e) => {
+    const handleTileClick = (e) => {
       const tile = e.target?.closest?.(".product-tile");
       if (!tile) return;
       openProductModal(tile);
-    });
+    };
+    if (productsSection) productsSection.addEventListener("click", handleTileClick);
+    if (projectsSection) projectsSection.addEventListener("click", handleTileClick);
 
     productPrev.addEventListener("click", () => step(-1));
     productNext.addEventListener("click", () => step(1));
