@@ -1383,6 +1383,20 @@ a {
   box-shadow: 0 8px 24px rgba(9, 110, 51, 0.12);
 }
 
+/* Services page dropdown items should be static (not clickable) */
+.services-dropdown-panel .services-dropdown-box,
+.services-dropdown-panel .services-dropdown-box-link {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Keep the reveal visuals but avoid "clickable" hover cues */
+.services-dropdown-panel .services-dropdown-box:hover,
+.services-dropdown-panel .services-dropdown-box-link:hover {
+  background-color: inherit;
+  box-shadow: none;
+}
+
 /* Aluminum dropdown: one box per panel (title + 3 links inside), no underlines */
 .services-dropdown-box-group {
   display: block;
@@ -3502,6 +3516,18 @@ a {
 /* Responsive */
 
 @media (max-width: 960px) {
+  /* Prevent iOS/Android flicker when mobile nav animates */
+  .header-wrap,
+  .header-slide,
+  .site-header,
+  .logo,
+  .logo img {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
   /* Mobile/tablet: remove drop shadow on header logo only on smaller screens */
   .logo img {
     filter: none;
@@ -3609,10 +3635,11 @@ a {
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 40;
-    transform: translateY(-100%);
+    /* Dropdown feel: start just above header bottom (not from page top) */
+    transform: translateY(-14px);
     transition:
-      opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .main-nav ul {
