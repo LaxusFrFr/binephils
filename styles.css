@@ -3539,8 +3539,16 @@ a {
   gap: 1.1rem;
 }
 
+.contact-form-stagger {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
 .contact-field {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .contact-label {
@@ -3548,7 +3556,6 @@ a {
   font-weight: 500;
   color: var(--text-main);
   display: block;
-  margin-bottom: 0.4rem;
 }
 
 .contact-optional {
@@ -4562,5 +4569,6 @@ a {
     display: none;
   }
 }
+
 
 
