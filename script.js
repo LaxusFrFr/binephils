@@ -465,61 +465,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const productsSection = document.getElementById("product-category");
 
   if (productModal && productModalDialog && productsSection && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
-    const isIOS =
-      /iP(ad|hone|od)/i.test(window.navigator.userAgent || "") ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
     let gallery = [];
     let galleryIndex = 0;
     let lastFocusedEl = null;
-    let lockedScrollY = 0;
-    let isScrollLocked = false;
-    let usedFixedLock = false;
 
     const isMobileModal = () => {
       return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
     };
 
+    // Mobile: block background scroll without altering body scroll position
+    const preventBackgroundScroll = (e) => {
+      if (!productModal.classList.contains("is-open")) return;
+      if (!isMobileModal()) return;
+      // Allow interactions inside the dialog; block background page scroll.
+      if (e.target && productModalDialog.contains(e.target)) return;
+      e.preventDefault();
+    };
+
     const lockPageScroll = () => {
-      if (isScrollLocked) return;
-      isScrollLocked = true;
-      usedFixedLock = false;
-
-      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-
       if (isMobileModal()) {
-        // Mobile (iOS + Android): most stable scroll lock is body fixed.
-        usedFixedLock = true;
-        document.body.style.position = "fixed";
-        document.body.style.top = `-${lockedScrollY}px`;
-        document.body.style.left = "0";
-        document.body.style.right = "0";
-        document.body.style.width = "100%";
+        // iOS + Android mobile: don't touch body styles (prevents jump on close).
+        document.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
+        document.addEventListener("wheel", preventBackgroundScroll, { passive: false });
       } else {
-        // Desktop + Android: overflow lock is reliable and keeps background fixed.
+        // Desktop: overflow lock is reliable and keeps background fixed.
         document.body.style.overflow = "hidden";
       }
     };
 
     const unlockPageScroll = () => {
-      if (!isScrollLocked) return;
-      isScrollLocked = false;
-
-      if (usedFixedLock) {
-        const top = document.body.style.top;
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.left = "";
-        document.body.style.right = "";
-        document.body.style.width = "";
-        // Always restore to the exact captured position on mobile.
-        const restoreY =
-          top && top.length ? Math.abs(parseInt(top, 10) || 0) : lockedScrollY;
-        window.scrollTo(0, restoreY);
-        // Mobile browsers may apply a late layout pass; re-apply a few times.
-        requestAnimationFrame(() => window.scrollTo(0, restoreY));
-        requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, restoreY)));
-        setTimeout(() => window.scrollTo(0, restoreY), 0);
+      if (isMobileModal()) {
+        document.removeEventListener("touchmove", preventBackgroundScroll);
+        document.removeEventListener("wheel", preventBackgroundScroll);
       } else {
         document.body.style.overflow = "";
       }
@@ -606,17 +583,6 @@ document.addEventListener("DOMContentLoaded", () => {
     productModal.addEventListener("click", (e) => {
       if (e.target === productModal) closeProductModal();
     });
-
-    // Mobile: block background scroll gestures on the overlay itself.
-    productModal.addEventListener(
-      "touchmove",
-      (e) => {
-        if (productModal.classList.contains("is-open") && isMobileModal()) {
-          e.preventDefault();
-        }
-      },
-      { passive: false }
-    );
 
     // Prevent wheel/touch scrolling from bubbling to the page behind the modal
     productModalDialog.addEventListener(
