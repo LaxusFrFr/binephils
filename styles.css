@@ -3824,17 +3824,14 @@ a {
     padding: 1.4rem 1.25rem 1.6rem;
   }
 
-  /* About "Read More" modal: prevent close button overlapping centered title */
-  .story-modal-title {
-    padding-left: 2.75rem;
-    padding-right: 2.75rem;
-  }
-
+  /* About "Read More" modal (mobile): keep title full-width, move close to overlay */
   .story-modal-close {
-    top: 0.55rem;
-    right: 0.6rem;
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: calc(env(safe-area-inset-right, 0px) + 10px);
     width: 44px;
     height: 44px;
+    z-index: 70;
   }
 
   .story-modal-close i {
