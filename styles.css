@@ -1695,6 +1695,7 @@ a {
   padding: 1.5rem;
   z-index: 60;
   background-color: rgba(15, 23, 42, 0.55);
+  overscroll-behavior: contain;
 }
 
 .product-modal.is-open {
@@ -1881,6 +1882,65 @@ a {
 }
 
 @media (max-width: 720px) {
+  /* Product modal: prevent mobile scroll-chaining behind overlay */
+  .product-modal {
+    touch-action: none;
+  }
+
+  /* Product modal (mobile): swipeable carousel for multi-photo products */
+  .product-modal-media {
+    touch-action: pan-x;
+  }
+
+  .product-modal-carousel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    overscroll-behavior: contain;
+  }
+
+  .product-modal-carousel::-webkit-scrollbar {
+    display: none; /* Safari/Chrome */
+  }
+
+  .product-modal-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+  }
+
+  .product-modal-slide-image {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    display: block;
+    background-color: #ffffff;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* Product modal: prevent long titles overlapping close button (mobile only) */
+  .product-modal-header {
+    padding-right: 4.25rem;
+  }
+
+  .product-modal-title,
+  .product-modal-subtitle {
+    padding-right: 0.75rem;
+    max-width: calc(100% - 0.5rem);
+    display: block;
+  }
+
   .product-modal-body {
     grid-template-columns: minmax(0, 1fr);
     padding: 0.9rem 0.9rem 1rem;
@@ -2362,6 +2422,7 @@ a {
   justify-content: center;
   z-index: 50;
   padding: 1.5rem;
+  overscroll-behavior: contain;
 }
 
 .story-modal-overlay.is-open {
@@ -3824,19 +3885,33 @@ a {
     padding: 1.4rem 1.25rem 1.6rem;
   }
 
+  /* About "Read More" modal (mobile): prevent scroll chaining behind overlay */
+  .story-modal-overlay {
+    touch-action: none;
+  }
+
+  .story-modal-body {
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+  }
+
   /* About "Read More" modal (mobile): keep title full-width, align close to card corner */
   .story-modal-close {
     position: absolute;
-    top: 0.55rem;
-    right: 0.55rem;
+    top: 0.0rem;
+    right: 0.0rem;
     width: 44px;
     height: 44px;
-    font-size: 1.55rem;
+    font-size: 1.25rem;
     z-index: 3;
   }
 
   .story-modal-close i {
     font-size: 1.2rem;
+  }
+
+  .story-modal-title {
+    margin-top: 0.35rem;
   }
 
   /* Homepage footer: center-align content on mobile for a cleaner look */

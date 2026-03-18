@@ -325,25 +325,58 @@ document.addEventListener("DOMContentLoaded", () => {
   const storyClose = storyModal?.querySelector(".story-modal-close");
 
   if (storyButton && storyModal && storyClose) {
-    // Detect iOS devices (including iPadOS) so we can apply a safer scroll-lock strategy.
-    const isIOS =
-      /iP(ad|hone|od)/i.test(window.navigator.userAgent || "") ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const isMobileStoryModal = () => {
+      return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+    };
 
-    let storyScrollY = 0;
+    const storyModalInner = storyModal.querySelector(".story-modal");
+    const storyModalBody = storyModal.querySelector(".story-modal-body");
+
+    // Mobile: block background scroll without touching body scroll position
+    const preventStoryBackgroundScroll = (e) => {
+      if (!storyModal.classList.contains("is-open")) return;
+      if (!isMobileStoryModal()) return;
+      // Allow scrolling inside the modal body only.
+      if (e.target && storyModalBody && storyModalBody.contains(e.target)) return;
+      e.preventDefault();
+    };
 
     const lockBodyScroll = () => {
-      // On iOS we avoid locking the body altogether because both
-      // overflow: hidden and position: fixed can leave the page
-      // stuck behind a dark overlay after closing the modal.
-      if (isIOS) return;
+      if (isMobileStoryModal()) {
+        // Also lock overflow on root to stop scroll chaining behind the overlay.
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
 
-      document.body.style.overflow = "hidden";
+        document.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
+        document.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
+        // iOS Safari: prevent default on the overlay itself is the most reliable.
+        storyModal.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
+        storyModal.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
+        // Also block gesture scrolling on the card itself (prevents edge scroll chaining).
+        if (storyModalInner) {
+          storyModalInner.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
+          storyModalInner.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
+        }
+      } else {
+        document.body.style.overflow = "hidden";
+      }
     };
 
     const unlockBodyScroll = () => {
-      if (isIOS) return;
-      document.body.style.overflow = "";
+      if (isMobileStoryModal()) {
+        document.documentElement.style.overflow = "";
+        document.removeEventListener("touchmove", preventStoryBackgroundScroll);
+        document.removeEventListener("wheel", preventStoryBackgroundScroll);
+        storyModal.removeEventListener("touchmove", preventStoryBackgroundScroll);
+        storyModal.removeEventListener("wheel", preventStoryBackgroundScroll);
+        if (storyModalInner) {
+          storyModalInner.removeEventListener("touchmove", preventStoryBackgroundScroll);
+          storyModalInner.removeEventListener("wheel", preventStoryBackgroundScroll);
+        }
+        document.body.style.overflow = "";
+      } else {
+        document.body.style.overflow = "";
+      }
     };
 
     const openModal = () => {
@@ -368,10 +401,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* Prevent wheel from scrolling the page when scrolling inside the modal */
-    const storyModalInner = storyModal.querySelector(".story-modal");
     if (storyModalInner) {
       storyModalInner.addEventListener(
         "wheel",
+        (e) => e.stopPropagation(),
+        { passive: false }
+      );
+      storyModalInner.addEventListener(
+        "touchmove",
         (e) => e.stopPropagation(),
         { passive: false }
       );
@@ -461,32 +498,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const productModalCounter = document.getElementById("product-modal-counter");
   const productPrev = productModal?.querySelector(".product-modal-prev");
   const productNext = productModal?.querySelector(".product-modal-next");
+  const productModalMedia = productModal?.querySelector(".product-modal-media");
 
   const productsSection = document.getElementById("product-category");
 
-  if (productModal && productModalDialog && productsSection && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
+  if (productModal && productModalDialog && productModalMedia && productsSection && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
     let gallery = [];
     let galleryIndex = 0;
     let lastFocusedEl = null;
+    let carouselEl = null;
+    let carouselBound = false;
 
     const isMobileModal = () => {
       return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+    };
+
+    const ensureCarousel = () => {
+      if (carouselEl) return carouselEl;
+      carouselEl = document.createElement("div");
+      carouselEl.className = "product-modal-carousel";
+      productModalMedia.appendChild(carouselEl);
+      return carouselEl;
     };
 
     // Mobile: block background scroll without altering body scroll position
     const preventBackgroundScroll = (e) => {
       if (!productModal.classList.contains("is-open")) return;
       if (!isMobileModal()) return;
-      // Allow interactions inside the dialog; block background page scroll.
-      if (e.target && productModalDialog.contains(e.target)) return;
+      // Allow horizontal swipe inside the carousel (2+ images).
+      if (carouselEl && e.target && carouselEl.contains(e.target)) return;
       e.preventDefault();
     };
 
     const lockPageScroll = () => {
       if (isMobileModal()) {
         // iOS + Android mobile: don't touch body styles (prevents jump on close).
+        document.documentElement.style.overflow = "hidden";
+        document.body.style.overflow = "hidden";
         document.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
         document.addEventListener("wheel", preventBackgroundScroll, { passive: false });
+        productModal.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
+        productModal.addEventListener("wheel", preventBackgroundScroll, { passive: false });
+        // Also block gesture scrolling inside the dialog to prevent scroll chaining to the page.
+        productModalDialog.addEventListener("touchmove", preventBackgroundScroll, { passive: false });
+        productModalDialog.addEventListener("wheel", preventBackgroundScroll, { passive: false });
       } else {
         // Desktop: overflow lock is reliable and keeps background fixed.
         document.body.style.overflow = "hidden";
@@ -495,8 +550,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const unlockPageScroll = () => {
       if (isMobileModal()) {
+        document.documentElement.style.overflow = "";
         document.removeEventListener("touchmove", preventBackgroundScroll);
         document.removeEventListener("wheel", preventBackgroundScroll);
+        productModal.removeEventListener("touchmove", preventBackgroundScroll);
+        productModal.removeEventListener("wheel", preventBackgroundScroll);
+        productModalDialog.removeEventListener("touchmove", preventBackgroundScroll);
+        productModalDialog.removeEventListener("wheel", preventBackgroundScroll);
+        document.body.style.overflow = "";
       } else {
         document.body.style.overflow = "";
       }
@@ -512,7 +573,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const renderGallery = () => {
       const hasImages = gallery.length > 0;
       productModalEmpty.hidden = hasImages;
-      productModalImg.style.display = hasImages ? "block" : "none";
+      productModalImg.style.display = "none";
+      if (carouselEl) carouselEl.style.display = "none";
 
       productPrev.disabled = !hasImages || gallery.length <= 1;
       productNext.disabled = !hasImages || gallery.length <= 1;
@@ -521,13 +583,58 @@ document.addEventListener("DOMContentLoaded", () => {
         productModalImg.removeAttribute("src");
         productModalImg.alt = "";
         productModalCounter.textContent = "";
+        if (carouselEl) carouselEl.replaceChildren();
         return;
       }
 
+      // Mobile: swipeable carousel for multi-photo products
+      if (isMobileModal() && gallery.length > 1) {
+        const c = ensureCarousel();
+        c.style.display = "flex";
+        c.replaceChildren(
+          ...gallery.map((src) => {
+            const slide = document.createElement("div");
+            slide.className = "product-modal-slide";
+            const img = document.createElement("img");
+            img.className = "product-modal-slide-image";
+            img.src = src;
+            img.alt = (productModalTitle.textContent || "Product") + " photo";
+            img.loading = "eager";
+            slide.appendChild(img);
+            return slide;
+          })
+        );
+
+        if (!carouselBound) {
+          carouselBound = true;
+          c.addEventListener(
+            "scroll",
+            () => {
+              const w = c.clientWidth || 1;
+              const idx = Math.round(c.scrollLeft / w);
+              galleryIndex = Math.max(0, Math.min(gallery.length - 1, idx));
+              productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
+            },
+            { passive: true }
+          );
+        }
+
+        // Jump to current index
+        requestAnimationFrame(() => {
+          const w = c.clientWidth || 0;
+          c.scrollLeft = w * galleryIndex;
+        });
+
+        productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
+        return;
+      }
+
+      // Desktop (and single-photo): normal image + nav buttons
       const src = gallery[galleryIndex];
+      productModalImg.style.display = "block";
       productModalImg.src = src;
       productModalImg.alt = productModalTitle.textContent || "Product photo";
-      productModalCounter.textContent = `${galleryIndex + 1} / ${gallery.length}`;
+      productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
     };
 
     const openProductModal = (tile) => {
@@ -536,7 +643,13 @@ document.addEventListener("DOMContentLoaded", () => {
       gallery = parseGallery(tile.getAttribute("data-gallery"));
       galleryIndex = 0;
 
-      productModalTitle.textContent = title;
+      if (title === "Solar-powered Bus Sheds") {
+        productModalTitle.innerHTML = "Solar-powered<br>Bus Sheds";
+      } else if (title === "Thermoplastic Road Marking" || title === "Thermoplasctic Road Marking") {
+        productModalTitle.innerHTML = "Thermoplastic<br>Road Marking";
+      } else {
+        productModalTitle.textContent = title;
+      }
       productModalSubtitle.textContent = gallery.length ? "Photos" : "Photos coming soon";
 
       productModal.classList.add("is-open");
