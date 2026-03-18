@@ -143,6 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
         section.classList.add("hero-revealed");
       }
       if (section.classList.contains("stagger-reveal-on-load")) {
+        /* Skip contact form – its stagger is triggered by the Contact Us button, not on load */
+        if (section.closest("#contact-form")) return;
         section.classList.add("stagger-revealed");
       }
     });
@@ -178,6 +180,58 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function runPageSpecificScripts() {
+  // 4a) Homepage contact form – empty dropdown first, then elements appear one by one
+  const contactFormToggle = document.getElementById("contact-form-toggle");
+  const contactFormSection = document.getElementById("contact-form");
+  const contactFormInner = contactFormSection?.querySelector(".contact-form-inner");
+  if (contactFormToggle && contactFormSection && contactFormInner) {
+    const DROPDOWN_DURATION = 500;
+    const staggerContainers = () =>
+      contactFormSection.querySelectorAll(".stagger-reveal-on-load");
+
+    contactFormToggle.addEventListener("click", () => {
+      const isExpanding = contactFormSection.classList.contains("contact-form-collapsed");
+
+      if (isExpanding) {
+        /* Expand: hide content first, then open dropdown (empty), then reveal after it finishes */
+        contactFormInner.classList.add("contact-form-content-pending");
+        contactFormSection.classList.remove("contact-form-collapsed");
+        contactFormToggle.setAttribute("aria-expanded", "true");
+        contactFormSection.setAttribute("aria-hidden", "false");
+        const toggleText = contactFormToggle.querySelector(".contact-form-toggle-text");
+        if (toggleText) toggleText.textContent = "Hide Form";
+        contactFormSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        setTimeout(() => {
+          contactFormInner.classList.remove("contact-form-content-pending");
+          staggerContainers().forEach((el) => {
+            el.classList.remove("stagger-revealed");
+            void el.offsetHeight;
+            el.classList.add("stagger-revealed");
+          });
+        }, DROPDOWN_DURATION);
+      } else {
+        /* Collapse: hide content, close dropdown, clear stagger */
+        contactFormInner.classList.add("contact-form-content-pending");
+        contactFormSection.classList.add("contact-form-collapsed");
+        contactFormToggle.setAttribute("aria-expanded", "false");
+        contactFormSection.setAttribute("aria-hidden", "true");
+        const toggleText = contactFormToggle.querySelector(".contact-form-toggle-text");
+        if (toggleText) toggleText.textContent = "Contact Us";
+        staggerContainers().forEach((el) => el.classList.remove("stagger-revealed"));
+      }
+    });
+  }
+
+  // 4b) Homepage contact form – local demo (prevents submit, shows success message)
+  const homeContactForm = document.getElementById("home-contact-form");
+  if (homeContactForm) {
+    homeContactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("Thanks for reaching out! Our team will get back to you within 24 hours.");
+    });
+  }
+
   // 5) Construction/Services sections: dropdown groups (arrow down, boxes appear one by one)
   const serviceSections = document.querySelectorAll(".construction-services-section");
 

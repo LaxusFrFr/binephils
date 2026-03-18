@@ -521,14 +521,100 @@
             Whether you need electroplating services or construction solutions,
             we're here to bring your vision to life.
           </p>
-          <a href="#contact-form" class="btn btn-accent">
-            Contact Us
-          </a>
+          <button type="button" class="btn btn-accent contact-form-toggle" id="contact-form-toggle" aria-expanded="false" aria-controls="contact-form">
+            <span class="contact-form-toggle-text">Contact Us</span>
+            <span class="contact-form-toggle-chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+          </button>
         </div>
       </section>
 
-      <!-- Placeholder contact form anchor -->
-      <section id="contact-form" class="contact-anchor" aria-hidden="true"></section>
+      <!-- Contact Form Section (collapsible, toggled by button above) -->
+      <section id="contact-form" class="contact-form-section contact-form-collapsed" aria-hidden="true">
+        <div class="container contact-form-inner contact-form-content-pending">
+          <header class="contact-form-header contact-form-header-stagger stagger-reveal-on-load">
+            <h2 class="contact-form-title stagger-reveal-item">Get in Touch</h2>
+            <p class="contact-form-tagline stagger-reveal-item">
+              Have a project in mind or questions about our services? Send us a message and our team will get back to you within 24 hours.
+            </p>
+          </header>
+
+          <div class="contact-form-grid">
+            <div class="contact-form-card">
+              <form class="contact-form" action="#" method="post" id="home-contact-form">
+                <div class="contact-form-stagger stagger-reveal-on-load">
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-name" class="contact-label">Name</label>
+                  <input type="text" id="contact-name" name="name" class="contact-input" placeholder="Your full name" autocomplete="name" required />
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-email" class="contact-label">Email</label>
+                  <input type="email" id="contact-email" name="email" class="contact-input" placeholder="you@company.com" inputmode="email" autocomplete="email" required />
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-phone" class="contact-label">Phone <span class="contact-optional">(optional)</span></label>
+                  <input type="tel" id="contact-phone" name="phone" class="contact-input" placeholder="+63 000-000-0000" inputmode="tel" autocomplete="tel" />
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-subject" class="contact-label">Subject</label>
+                  <select id="contact-subject" name="subject" class="contact-select" required>
+                    <option value="">— Select topic —</option>
+                    <option value="industrial">Industrial / Electroplating</option>
+                    <option value="construction">Construction / Traffic Safety</option>
+                    <option value="products">Products &amp; Installation</option>
+                    <option value="general">General Inquiry</option>
+                  </select>
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-message" class="contact-label">Message</label>
+                  <textarea id="contact-message" name="message" class="contact-textarea" rows="4" placeholder="Tell us about your needs or project..." required></textarea>
+                </div>
+                <div class="stagger-reveal-item">
+                  <button type="submit" class="btn btn-primary contact-submit">Send Message</button>
+                </div>
+                </div>
+              </form>
+            </div>
+
+            <aside class="contact-info-card">
+              <div class="contact-info-stagger stagger-reveal-on-load">
+              <h3 class="contact-info-title stagger-reveal-item">Reach Us Directly</h3>
+              <p class="contact-info-desc stagger-reveal-item">Prefer a quick call or email? We’re here to help.</p>
+              <div class="contact-info-list stagger-reveal-on-load stagger-reveal-item">
+                <a href="tel:+63285844474" class="contact-info-item stagger-reveal-item">
+                  <span class="contact-info-icon"><i class="fas fa-phone"></i></span>
+                  <div class="contact-info-text">
+                    <strong>Landline</strong>
+                    <span>+632-8584-4474</span>
+                  </div>
+                </a>
+                <a href="tel:09285048877" class="contact-info-item stagger-reveal-item">
+                  <span class="contact-info-icon"><i class="fas fa-mobile-screen-button"></i></span>
+                  <div class="contact-info-text">
+                    <strong>Mobile</strong>
+                    <span>0928-504-8877</span>
+                  </div>
+                </a>
+                <a href="mailto:bine1@binephils.com" class="contact-info-item stagger-reveal-item">
+                  <span class="contact-info-icon"><i class="fas fa-envelope"></i></span>
+                  <div class="contact-info-text">
+                    <strong>Email</strong>
+                    <span>bine1@binephils.com</span>
+                  </div>
+                </a>
+                <div class="contact-info-item contact-info-address stagger-reveal-item">
+                  <span class="contact-info-icon"><i class="fas fa-location-dot"></i></span>
+                  <div class="contact-info-text">
+                    <strong>Head Office</strong>
+                    <span>Lot 11 blk 13 Golden Mile Avenue, Golden Mile Business Park, Carmona, Philippines 4116</span>
+                  </div>
+                </div>
+              </div>
+              <a href="quote.html" class="btn btn-outline contact-quote-link stagger-reveal-item">Request a Free Quote →</a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer home-footer">
@@ -631,3 +717,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+
