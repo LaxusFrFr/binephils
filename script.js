@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let lastFocusedEl = null;
     let lockedScrollY = 0;
     let isScrollLocked = false;
-    let usedIOSFixedLock = false;
+    let usedFixedLock = false;
 
     const isMobileModal = () => {
       return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
@@ -483,13 +483,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const lockPageScroll = () => {
       if (isScrollLocked) return;
       isScrollLocked = true;
-      usedIOSFixedLock = false;
+      usedFixedLock = false;
 
       lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
 
-      if (isIOS && isMobileModal()) {
-        // iOS + mobile: safest scroll lock is body fixed.
-        usedIOSFixedLock = true;
+      if (isMobileModal()) {
+        // Mobile (iOS + Android): most stable scroll lock is body fixed.
+        usedFixedLock = true;
         document.body.style.position = "fixed";
         document.body.style.top = `-${lockedScrollY}px`;
         document.body.style.left = "0";
@@ -505,7 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!isScrollLocked) return;
       isScrollLocked = false;
 
-      if (usedIOSFixedLock) {
+      if (usedFixedLock) {
         const top = document.body.style.top;
         document.body.style.position = "";
         document.body.style.top = "";
@@ -513,29 +513,15 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.right = "";
         document.body.style.width = "";
         // Always restore to the exact captured position on mobile.
-        const restoreY = isMobileModal()
-          ? lockedScrollY
-          : top
-            ? Math.abs(parseInt(top, 10) || 0)
-            : lockedScrollY;
+        const restoreY =
+          top && top.length ? Math.abs(parseInt(top, 10) || 0) : lockedScrollY;
         window.scrollTo(0, restoreY);
-        if (isMobileModal()) {
-          // iOS can apply a second layout pass after unlocking; re-apply.
-          requestAnimationFrame(() => {
-            window.scrollTo(0, lockedScrollY);
-          });
-        }
+        // Mobile browsers may apply a late layout pass; re-apply a few times.
+        requestAnimationFrame(() => window.scrollTo(0, restoreY));
+        requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, restoreY)));
+        setTimeout(() => window.scrollTo(0, restoreY), 0);
       } else {
         document.body.style.overflow = "";
-        // Android/mobile browsers can jump after unlocking; force-restore.
-        if (isMobileModal()) {
-          requestAnimationFrame(() => {
-            window.scrollTo(0, lockedScrollY);
-            requestAnimationFrame(() => {
-              window.scrollTo(0, lockedScrollY);
-            });
-          });
-        }
       }
     };
 
