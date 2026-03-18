@@ -384,33 +384,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 7) Projects filter tabs
-  const projectTabs = document.querySelectorAll(".projects-tab");
-  const projectCards = document.querySelectorAll(".project-card");
-  const projectsTabsContainer = document.querySelector(".projects-tabs");
-  const projectsTabsIndicator = document.querySelector(".projects-tabs-indicator");
+  // 7) Projects / Product Category filter tabs (safe per-section)
+  const initProjectsTabs = (tabsContainer) => {
+    const tabs = tabsContainer.querySelectorAll(".projects-tab");
+    const indicator = tabsContainer.querySelector(".projects-tabs-indicator");
+    const section = tabsContainer.closest("section") || document;
+    const sectionId = section && section.id ? section.id : "";
+    const grid = section.querySelector(".projects-grid");
+    const cards = grid ? grid.querySelectorAll(".project-card") : [];
+    if (!tabs.length || !cards.length) return;
 
-  const moveProjectsIndicator = (activeTab) => {
-    if (!projectsTabsContainer || !projectsTabsIndicator || !activeTab) return;
-    // Use offsetLeft within the tabs container; because the indicator
-    // is positioned inside the same scrolling container, we do not
-    // subtract scrollLeft, which keeps alignment correct on mobile.
-    const left = activeTab.offsetLeft;
-    const width = activeTab.offsetWidth;
-    projectsTabsIndicator.style.transform = `translateX(${left}px)`;
-    projectsTabsIndicator.style.width = `${width}px`;
-  };
+    const moveIndicator = (activeTab) => {
+      if (!indicator || !activeTab) return;
+      const left = activeTab.offsetLeft;
+      const width = activeTab.offsetWidth;
+      indicator.style.transform = `translateX(${left}px)`;
+      indicator.style.width = `${width}px`;
+    };
 
-  if (projectTabs.length && projectCards.length) {
     const applyFilter = (filter) => {
       const visibleCards = [];
+      const normalized = (filter || "all").trim();
 
-      projectCards.forEach((card, index) => {
-        const category = card.getAttribute("data-category");
+      cards.forEach((card, index) => {
+        const category = card.getAttribute("data-category") || "";
         const matches =
-          filter === "all"
-            ? index < 8 // All Projects: always show only the first 8 cards
-            : category === filter;
+          normalized === "all"
+            ? sectionId === "product-category"
+              ? true // Product Category: show all tiles in All tab
+              : index < 8 // Projects: keep "All shows 8 tiles"
+            : category === normalized;
 
         if (matches) {
           card.style.display = "";
@@ -422,7 +425,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Professional staggered effect: tiles fade/slide in one by one
       visibleCards.forEach((card, index) => {
         setTimeout(() => {
           card.classList.add("project-visible");
@@ -430,22 +432,152 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     };
 
-    projectTabs.forEach((tab) => {
+    tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
-        projectTabs.forEach((t) => t.classList.remove("is-active"));
+        tabs.forEach((t) => t.classList.remove("is-active"));
         tab.classList.add("is-active");
-        moveProjectsIndicator(tab);
-        const filter = tab.getAttribute("data-filter") || "all";
-        applyFilter(filter);
+        moveIndicator(tab);
+        applyFilter(tab.getAttribute("data-filter") || "all");
       });
     });
 
-    // Initialize indicator position on load
-    const initialActive = document.querySelector(".projects-tab.is-active");
+    const initialActive = tabsContainer.querySelector(".projects-tab.is-active") || tabs[0];
     if (initialActive) {
-      moveProjectsIndicator(initialActive);
+      moveIndicator(initialActive);
       applyFilter(initialActive.getAttribute("data-filter") || "all");
     }
+  };
+
+  document.querySelectorAll(".projects-tabs").forEach(initProjectsTabs);
+
+  // 8) Products page: clickable tiles → modal gallery
+  const productModal = document.getElementById("product-modal");
+  const productModalDialog = productModal?.querySelector(".product-modal-dialog");
+  const productModalClose = productModal?.querySelector(".product-modal-close");
+  const productModalTitle = document.getElementById("product-modal-title");
+  const productModalSubtitle = document.getElementById("product-modal-subtitle");
+  const productModalImg = document.getElementById("product-modal-image");
+  const productModalEmpty = document.getElementById("product-modal-empty");
+  const productModalCounter = document.getElementById("product-modal-counter");
+  const productPrev = productModal?.querySelector(".product-modal-prev");
+  const productNext = productModal?.querySelector(".product-modal-next");
+
+  const productsSection = document.getElementById("product-category");
+
+  if (productModal && productModalDialog && productsSection && productModalClose && productModalTitle && productModalSubtitle && productModalImg && productModalEmpty && productModalCounter && productPrev && productNext) {
+    const isIOS =
+      /iP(ad|hone|od)/i.test(window.navigator.userAgent || "") ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    let gallery = [];
+    let galleryIndex = 0;
+    let lastFocusedEl = null;
+
+    const parseGallery = (value) => {
+      return (value || "")
+        .split("|")
+        .map((s) => s.trim())
+        .filter(Boolean);
+    };
+
+    const renderGallery = () => {
+      const hasImages = gallery.length > 0;
+      productModalEmpty.hidden = hasImages;
+      productModalImg.style.display = hasImages ? "block" : "none";
+
+      productPrev.disabled = !hasImages || gallery.length <= 1;
+      productNext.disabled = !hasImages || gallery.length <= 1;
+
+      if (!hasImages) {
+        productModalImg.removeAttribute("src");
+        productModalImg.alt = "";
+        productModalCounter.textContent = "";
+        return;
+      }
+
+      const src = gallery[galleryIndex];
+      productModalImg.src = src;
+      productModalImg.alt = productModalTitle.textContent || "Product photo";
+      productModalCounter.textContent = `${galleryIndex + 1} / ${gallery.length}`;
+    };
+
+    const openProductModal = (tile) => {
+      lastFocusedEl = document.activeElement;
+      const title = tile.getAttribute("data-product-title") || tile.textContent?.trim() || "Product";
+      gallery = parseGallery(tile.getAttribute("data-gallery"));
+      galleryIndex = 0;
+
+      productModalTitle.textContent = title;
+      productModalSubtitle.textContent = gallery.length ? "Photos" : "Photos coming soon";
+
+      productModal.classList.add("is-open");
+      productModal.setAttribute("aria-hidden", "false");
+      // Avoid aggressive scroll-lock on iOS (can leave page "stuck" behind overlay)
+      if (!isIOS) {
+        document.body.style.overflow = "hidden";
+      }
+
+      renderGallery();
+      productModalClose.focus();
+    };
+
+    const closeProductModal = () => {
+      productModal.classList.remove("is-open");
+      productModal.setAttribute("aria-hidden", "true");
+      if (!isIOS) {
+        document.body.style.overflow = "";
+      }
+
+      gallery = [];
+      galleryIndex = 0;
+
+      if (lastFocusedEl && typeof lastFocusedEl.focus === "function") {
+        lastFocusedEl.focus();
+      }
+    };
+
+    const step = (dir) => {
+      if (gallery.length <= 1) return;
+      galleryIndex = (galleryIndex + dir + gallery.length) % gallery.length;
+      renderGallery();
+    };
+
+    productsSection.addEventListener("click", (e) => {
+      const tile = e.target?.closest?.(".product-tile");
+      if (!tile) return;
+      openProductModal(tile);
+    });
+
+    productPrev.addEventListener("click", () => step(-1));
+    productNext.addEventListener("click", () => step(1));
+    productModalClose.addEventListener("click", closeProductModal);
+
+    productModal.addEventListener("click", (e) => {
+      if (e.target === productModal) closeProductModal();
+    });
+
+    // Prevent wheel/touch scrolling from bubbling to the page behind the modal
+    productModalDialog.addEventListener(
+      "wheel",
+      (e) => e.stopPropagation(),
+      { passive: true }
+    );
+    productModalDialog.addEventListener(
+      "touchmove",
+      (e) => e.stopPropagation(),
+      { passive: true }
+    );
+
+    document.addEventListener("keydown", (e) => {
+      if (!productModal.classList.contains("is-open")) return;
+      if (e.key === "Escape") {
+        closeProductModal();
+      } else if (e.key === "ArrowLeft") {
+        step(-1);
+      } else if (e.key === "ArrowRight") {
+        step(1);
+      }
+    });
   }
   } // end runPageSpecificScripts
 });
