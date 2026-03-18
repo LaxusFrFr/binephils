@@ -3824,6 +3824,23 @@ a {
     padding: 1.4rem 1.25rem 1.6rem;
   }
 
+  /* About "Read More" modal: prevent close button overlapping centered title */
+  .story-modal-title {
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
+  }
+
+  .story-modal-close {
+    top: 0.55rem;
+    right: 0.6rem;
+    width: 44px;
+    height: 44px;
+  }
+
+  .story-modal-close i {
+    font-size: 1.2rem;
+  }
+
   /* Homepage footer: center-align content on mobile for a cleaner look */
   .home-footer .footer-column {
     text-align: center;
