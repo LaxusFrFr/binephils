@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (mainNav && navToggle) {
     const restoreBodyScroll = () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
 
     let navOverlay = document.querySelector(".nav-overlay");
@@ -80,7 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
       navToggle.classList.toggle("is-open", willOpen);
       navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
       if (navOverlay) navOverlay.classList.toggle("is-visible", willOpen);
-      document.body.style.overflow = willOpen ? "hidden" : "";
+      if (willOpen) {
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+      } else {
+        restoreBodyScroll();
+      }
     });
 
     navOverlay.addEventListener("click", closeMenu);
@@ -122,6 +128,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  /* Get started (nav-cta) is outside .main-nav ul – must close menu on mobile (fixes scroll lock bug) */
+  mainNav?.addEventListener(
+    "click",
+    (e) => {
+      const link = e.target?.closest?.("a");
+      if (link && link.classList.contains("nav-cta") && window.innerWidth <= 960) {
+        closeMenu();
+      }
+    },
+    { capture: true }
+  );
 
   // Defer reveal/stagger so the page paints first (faster perceived load, especially on Services/Projects)
   requestAnimationFrame(() => {
