@@ -512,10 +512,21 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.left = "";
         document.body.style.right = "";
         document.body.style.width = "";
-        const restoreY = top ? Math.abs(parseInt(top, 10) || 0) : lockedScrollY;
+        // Always restore to the exact captured position on mobile.
+        const restoreY = isMobileModal()
+          ? lockedScrollY
+          : top
+            ? Math.abs(parseInt(top, 10) || 0)
+            : lockedScrollY;
         window.scrollTo(0, restoreY);
       } else {
         document.body.style.overflow = "";
+        // Android/mobile browsers can jump after unlocking; force-restore.
+        if (isMobileModal()) {
+          requestAnimationFrame(() => {
+            window.scrollTo(0, lockedScrollY);
+          });
+        }
       }
     };
 
@@ -572,7 +583,8 @@ document.addEventListener("DOMContentLoaded", () => {
       gallery = [];
       galleryIndex = 0;
 
-      if (lastFocusedEl && typeof lastFocusedEl.focus === "function") {
+      // On mobile, restoring focus can scroll the page unexpectedly.
+      if (lastFocusedEl && typeof lastFocusedEl.focus === "function" && !isMobileModal()) {
         lastFocusedEl.focus();
       }
     };
