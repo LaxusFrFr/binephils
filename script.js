@@ -472,6 +472,52 @@ document.addEventListener("DOMContentLoaded", () => {
     let gallery = [];
     let galleryIndex = 0;
     let lastFocusedEl = null;
+    let lockedScrollY = 0;
+    let isScrollLocked = false;
+    let usedIOSFixedLock = false;
+
+    const isMobileModal = () => {
+      return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+    };
+
+    const lockPageScroll = () => {
+      if (isScrollLocked) return;
+      isScrollLocked = true;
+      usedIOSFixedLock = false;
+
+      lockedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+      if (isIOS && isMobileModal()) {
+        // iOS + mobile: safest scroll lock is body fixed.
+        usedIOSFixedLock = true;
+        document.body.style.position = "fixed";
+        document.body.style.top = `-${lockedScrollY}px`;
+        document.body.style.left = "0";
+        document.body.style.right = "0";
+        document.body.style.width = "100%";
+      } else {
+        // Desktop + Android: overflow lock is reliable and keeps background fixed.
+        document.body.style.overflow = "hidden";
+      }
+    };
+
+    const unlockPageScroll = () => {
+      if (!isScrollLocked) return;
+      isScrollLocked = false;
+
+      if (usedIOSFixedLock) {
+        const top = document.body.style.top;
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        const restoreY = top ? Math.abs(parseInt(top, 10) || 0) : lockedScrollY;
+        window.scrollTo(0, restoreY);
+      } else {
+        document.body.style.overflow = "";
+      }
+    };
 
     const parseGallery = (value) => {
       return (value || "")
@@ -512,10 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       productModal.classList.add("is-open");
       productModal.setAttribute("aria-hidden", "false");
-      // Avoid aggressive scroll-lock on iOS (can leave page "stuck" behind overlay)
-      if (!isIOS) {
-        document.body.style.overflow = "hidden";
-      }
+      lockPageScroll();
 
       renderGallery();
       productModalClose.focus();
@@ -524,9 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeProductModal = () => {
       productModal.classList.remove("is-open");
       productModal.setAttribute("aria-hidden", "true");
-      if (!isIOS) {
-        document.body.style.overflow = "";
-      }
+      unlockPageScroll();
 
       gallery = [];
       galleryIndex = 0;
@@ -555,6 +596,17 @@ document.addEventListener("DOMContentLoaded", () => {
     productModal.addEventListener("click", (e) => {
       if (e.target === productModal) closeProductModal();
     });
+
+    // Mobile: block background scroll gestures on the overlay itself.
+    productModal.addEventListener(
+      "touchmove",
+      (e) => {
+        if (productModal.classList.contains("is-open") && isMobileModal()) {
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
 
     // Prevent wheel/touch scrolling from bubbling to the page behind the modal
     productModalDialog.addEventListener(
