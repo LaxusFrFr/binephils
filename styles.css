@@ -3803,7 +3803,7 @@ a {
 
 @media (max-width: 720px) {
   .cta-section {
-    padding: 2rem 0 2.2rem;
+    padding: 1.1rem 0 1.7rem;
     /* On mobile, let the background be the page color and move
        the green gradient into a smaller inner card instead. */
     background: transparent;
@@ -3812,7 +3812,7 @@ a {
   .cta-inner {
     max-width: 360px;
     margin: 0 auto;
-    padding: 1.4rem 1.25rem 1.8rem;
+    padding: 1.25rem 1.25rem 1.6rem;
     border-radius: 24px;
     background: linear-gradient(
         135deg,
