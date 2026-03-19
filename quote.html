@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="prefetch" href="services.html" />
     <link rel="prefetch" href="projects.html" />
+    <script src="https://cdn.jsdelivr.net/gh/Zaenalos/PH-Geolocation@refs/heads/main/ph-geo.js" defer></script>
   </head>
   <body>
     <div class="header-wrap" id="header-wrap">
@@ -68,22 +69,115 @@
             <form class="quote-form" action="#" method="post" id="quote-form">
               <div class="quote-form-panel-stagger stagger-reveal-on-load">
                 <h2 class="quote-form-title stagger-reveal-item">Get a free quote</h2>
-                <p class="quote-form-sub stagger-reveal-item">Fill out the form below and we'll get back to you within 24 hours.</p>
-                <div class="quote-field stagger-reveal-item">
-                  <label for="quote-name" class="quote-label">Name</label>
-                  <input type="text" id="quote-name" name="name" class="quote-input" placeholder="Your name" required />
+
+                <!-- Progress Bar -->
+                <div class="wizard-progress stagger-reveal-item">
+                  <div class="wizard-steps-bar">
+                    <div class="wizard-step-dot is-active" data-step="1"><span>1</span></div>
+                    <div class="wizard-step-line"><div class="wizard-step-line-fill" id="wizard-line-1"></div></div>
+                    <div class="wizard-step-dot" data-step="2"><span>2</span></div>
+                    <div class="wizard-step-line"><div class="wizard-step-line-fill" id="wizard-line-2"></div></div>
+                    <div class="wizard-step-dot" data-step="3"><span>3</span></div>
+                  </div>
+                  <div class="wizard-steps-labels">
+                    <span class="wizard-step-label is-active">Personal Info</span>
+                    <span class="wizard-step-label">Project Location</span>
+                    <span class="wizard-step-label">Service Details</span>
+                  </div>
                 </div>
-                <div class="quote-field stagger-reveal-item">
-                  <label for="quote-email" class="quote-label">Email</label>
-                  <input type="email" id="quote-email" name="email" class="quote-input" placeholder="you@company.com" required />
+
+                <!-- Step 1: Personal Info -->
+                <div class="wizard-panel is-active" data-wizard-step="1">
+                  <div class="wizard-panel-stagger stagger-reveal-on-load stagger-revealed">
+                    <p class="quote-form-sub stagger-reveal-item">Let's start with your contact details.</p>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-name" class="quote-label">Full Name <span class="contact-required">*</span></label>
+                      <input type="text" id="quote-name" name="name" class="quote-input" placeholder="Your full name" autocomplete="name" required />
+                    </div>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-email" class="quote-label">Email <span class="contact-required">*</span></label>
+                      <input type="email" id="quote-email" name="email" class="quote-input" placeholder="you@company.com" inputmode="email" autocomplete="email" required />
+                    </div>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-phone" class="quote-label">Contact Number <span class="contact-required">*</span></label>
+                      <div class="quote-phone-wrap">
+                        <span class="quote-phone-prefix">
+                          <img src="https://flagcdn.com/w40/ph.png" alt="PH" class="quote-phone-flag" width="20" height="15" />
+                          <span>+63</span>
+                        </span>
+                        <input type="tel" id="quote-phone" name="phone" class="quote-input quote-phone-input" placeholder="9XX XXX XXXX" inputmode="tel" autocomplete="tel" maxlength="12" pattern="[0-9\s]{10,12}" title="Enter a valid 10-digit mobile number" required />
+                      </div>
+                    </div>
+                    <div class="wizard-nav wizard-nav-single stagger-reveal-item">
+                      <button type="button" class="btn btn-primary wizard-btn-next">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                  </div>
                 </div>
-                <div class="quote-field stagger-reveal-item">
-                  <label for="quote-message" class="quote-label">Message</label>
-                  <textarea id="quote-message" name="message" class="quote-textarea" rows="4" placeholder="Tell us about your project, timeline, and location." required></textarea>
+
+                <!-- Step 2: Project Location -->
+                <div class="wizard-panel" data-wizard-step="2">
+                  <div class="wizard-panel-stagger stagger-reveal-on-load">
+                    <p class="quote-form-sub stagger-reveal-item">Where is the project located?</p>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-address" class="quote-label">Street Address <span class="contact-required">*</span></label>
+                      <textarea id="quote-address" name="address" class="quote-textarea" rows="2" placeholder="Street, Barangay, Landmark or full site address" required></textarea>
+                    </div>
+                    <div class="quote-fields-grid stagger-reveal-item">
+                      <div class="quote-field">
+                        <label for="quote-province" class="quote-label">Province <span class="contact-required">*</span></label>
+                        <div class="search-dropdown" id="province-dropdown">
+                          <input type="text" id="quote-province" name="province" class="quote-input" placeholder="Type to search..." autocomplete="off" required />
+                          <input type="hidden" id="quote-province-value" name="province_key" />
+                          <ul class="search-dropdown-list" id="province-list"></ul>
+                        </div>
+                      </div>
+                      <div class="quote-field">
+                        <label for="quote-city" class="quote-label">City / Municipality <span class="contact-required">*</span></label>
+                        <div class="search-dropdown" id="city-dropdown">
+                          <input type="text" id="quote-city" name="city" class="quote-input" placeholder="Select province first" autocomplete="off" disabled required />
+                          <input type="hidden" id="quote-city-value" name="city_key" />
+                          <ul class="search-dropdown-list" id="city-list"></ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="wizard-nav stagger-reveal-item">
+                      <button type="button" class="btn btn-outline wizard-btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                      <button type="button" class="btn btn-primary wizard-btn-next">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                  </div>
                 </div>
-                <div class="stagger-reveal-item">
-                  <button type="submit" class="btn btn-primary quote-submit">Submit</button>
+
+                <!-- Step 3: Service Details -->
+                <div class="wizard-panel" data-wizard-step="3">
+                  <div class="wizard-panel-stagger stagger-reveal-on-load">
+                    <p class="quote-form-sub stagger-reveal-item">Tell us about the service you need.</p>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-service" class="quote-label">Service Needed <span class="contact-required">*</span></label>
+                      <select id="quote-service" name="service" class="quote-select" required>
+                        <option value="">— Select service —</option>
+                        <option value="construction">General Construction</option>
+                        <option value="traffic-safety">Traffic Safety Solutions</option>
+                        <option value="aluminum-panels">Aluminum Insulated Panels</option>
+                        <option value="products">Products &amp; Installation</option>
+                        <option value="industrial">Industrial / Electroplating</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-timeline" class="quote-label">Target Timeline <span class="contact-optional">(optional)</span></label>
+                      <input type="text" id="quote-timeline" name="timeline" class="quote-input" placeholder="e.g. Within 1 month, ASAP" />
+                    </div>
+                    <div class="quote-field stagger-reveal-item">
+                      <label for="quote-message" class="quote-label">Project Details <span class="contact-required">*</span></label>
+                      <textarea id="quote-message" name="message" class="quote-textarea" rows="4" placeholder="Describe your project requirements, scope, and any specifications..." required></textarea>
+                    </div>
+                    <div class="wizard-nav stagger-reveal-item">
+                      <button type="button" class="btn btn-outline wizard-btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                      <button type="submit" class="btn btn-primary quote-submit">Submit Request <i class="fas fa-paper-plane"></i></button>
+                    </div>
+                  </div>
                 </div>
+
               </div>
             </form>
           </div>
@@ -118,14 +212,14 @@
             </div>
             <div class="footer-contact-row">
               <span class="footer-icon">☎</span>
-              <span>Tel: +632-8584-4474</span>
+              <span>Tel: +63 2 8584 4474</span>
             </div>
             <div class="footer-contact-row">
               <span class="footer-icon">
                 <span class="footer-icon-mobile-emoji" aria-hidden="true">📱</span>
                 <i class="fas fa-mobile-screen-button" aria-hidden="true"></i>
               </span>
-              <span>Mobile: 0928-504-8877</span>
+              <span>Mobile: 09285048877</span>
             </div>
           </div>
         </div>

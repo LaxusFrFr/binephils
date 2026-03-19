@@ -543,19 +543,37 @@
               <form class="contact-form" action="#" method="post" id="home-contact-form">
                 <div class="contact-form-stagger stagger-reveal-on-load">
                 <div class="contact-field stagger-reveal-item">
-                  <label for="contact-name" class="contact-label">Name</label>
+                  <label for="contact-name" class="contact-label">Name <span class="contact-required">*</span></label>
                   <input type="text" id="contact-name" name="name" class="contact-input" placeholder="Your full name" autocomplete="name" required />
                 </div>
                 <div class="contact-field stagger-reveal-item">
-                  <label for="contact-email" class="contact-label">Email</label>
+                  <label for="contact-address" class="contact-label">Address <span class="contact-required">*</span></label>
+                  <input type="text" id="contact-address" name="address" class="contact-input" placeholder="Street address" autocomplete="street-address" required />
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-phone" class="contact-label">Contact Number <span class="contact-required">*</span></label>
+                  <div class="quote-phone-wrap">
+                    <span class="quote-phone-prefix">
+                      <img src="https://flagcdn.com/w40/ph.png" alt="PH" class="quote-phone-flag" width="20" height="15" />
+                      <span>+63</span>
+                    </span>
+                    <input type="tel" id="contact-phone" name="phone" class="contact-input quote-phone-input" placeholder="9XX XXX XXXX" inputmode="tel" autocomplete="tel" maxlength="12" pattern="[0-9\s]{10,12}" title="Enter a valid 10-digit mobile number" required />
+                  </div>
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-city" class="contact-label">City <span class="contact-required">*</span></label>
+                  <input type="text" id="contact-city" name="city" class="contact-input" placeholder="City / Municipality" autocomplete="address-level2" required />
+                </div>
+                <div class="contact-field stagger-reveal-item">
+                  <label for="contact-email" class="contact-label">Email <span class="contact-required">*</span></label>
                   <input type="email" id="contact-email" name="email" class="contact-input" placeholder="you@company.com" inputmode="email" autocomplete="email" required />
                 </div>
                 <div class="contact-field stagger-reveal-item">
-                  <label for="contact-phone" class="contact-label">Phone <span class="contact-optional">(optional)</span></label>
-                  <input type="tel" id="contact-phone" name="phone" class="contact-input" placeholder="+63 000-000-0000" inputmode="tel" autocomplete="tel" />
+                  <label for="contact-province" class="contact-label">Province <span class="contact-optional">(optional)</span></label>
+                  <input type="text" id="contact-province" name="province" class="contact-input" placeholder="Province" autocomplete="address-level1" />
                 </div>
-                <div class="contact-field stagger-reveal-item">
-                  <label for="contact-subject" class="contact-label">Subject</label>
+                <div class="contact-field contact-field-full stagger-reveal-item">
+                  <label for="contact-subject" class="contact-label">Subject <span class="contact-required">*</span></label>
                   <select id="contact-subject" name="subject" class="contact-select" required>
                     <option value="">— Select topic —</option>
                     <option value="industrial">Industrial / Electroplating</option>
@@ -564,11 +582,11 @@
                     <option value="general">General Inquiry</option>
                   </select>
                 </div>
-                <div class="contact-field stagger-reveal-item">
-                  <label for="contact-message" class="contact-label">Message</label>
+                <div class="contact-field contact-field-full stagger-reveal-item">
+                  <label for="contact-message" class="contact-label">Message <span class="contact-required">*</span></label>
                   <textarea id="contact-message" name="message" class="contact-textarea" rows="4" placeholder="Tell us about your needs or project..." required></textarea>
                 </div>
-                <div class="stagger-reveal-item">
+                <div class="stagger-reveal-item contact-field-full">
                   <button type="submit" class="btn btn-primary contact-submit">Send Message</button>
                 </div>
                 </div>
@@ -584,14 +602,14 @@
                   <span class="contact-info-icon"><i class="fas fa-phone"></i></span>
                   <div class="contact-info-text">
                     <strong>Landline</strong>
-                    <span>+632-8584-4474</span>
+                    <span>+63 2 8584 4474</span>
                   </div>
                 </a>
                 <a href="tel:09285048877" class="contact-info-item stagger-reveal-item">
                   <span class="contact-info-icon"><i class="fas fa-mobile-screen-button"></i></span>
                   <div class="contact-info-text">
                     <strong>Mobile</strong>
-                    <span>0928-504-8877</span>
+                    <span>09285048877</span>
                   </div>
                 </a>
                 <a href="mailto:bine1@binephils.com" class="contact-info-item stagger-reveal-item">
@@ -644,14 +662,14 @@
             </div>
             <div class="footer-contact-row">
               <span class="footer-icon">☎</span>
-              <span>Tel: +632-8584-4474</span>
+              <span>Tel: +63 2 8584 4474</span>
             </div>
             <div class="footer-contact-row">
                 <span class="footer-icon">
                   <span class="footer-icon-mobile-emoji" aria-hidden="true">📱</span>
                   <i class="fas fa-mobile-screen-button" aria-hidden="true"></i>
                 </span>
-              <span>Mobile: 0928-504-8877</span>
+              <span>Mobile: 09285048877</span>
             </div>
           </div>
         </div>

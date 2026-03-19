@@ -161,8 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
         section.classList.add("hero-revealed");
       }
       if (section.classList.contains("stagger-reveal-on-load")) {
-        /* Skip contact form – its stagger is triggered by the Contact Us button, not on load */
+        /* Skip contact form & hidden wizard panels – their stagger is triggered manually */
         if (section.closest("#contact-form")) return;
+        if (section.closest(".wizard-panel:not(.is-active)")) return;
         section.classList.add("stagger-revealed");
       }
     });
@@ -241,14 +242,396 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4b) Homepage contact form – local demo (prevents submit, shows success message)
-  const homeContactForm = document.getElementById("home-contact-form");
-  if (homeContactForm) {
-    homeContactForm.addEventListener("submit", (e) => {
+  // ── Form validation (shared by contact + quote forms) ──
+  function getFieldError(field) {
+    const val = field.value.trim();
+    const empty = field.tagName === "SELECT" ? !field.value : !val;
+    if (empty) return "required";
+
+    if (field.type === "email" && val) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return "Please enter a valid email address";
+    }
+
+    if (field.type === "tel" && val) {
+      const digits = val.replace(/\D/g, "");
+      if (digits.length < 10) return "Please enter a complete 10-digit number";
+    }
+
+    return null;
+  }
+
+  function showFieldError(field, errorText) {
+    const wrapper = field.closest(".quote-field, .contact-field, .stagger-reveal-item");
+    const label = wrapper?.querySelector("label");
+    const name = label ? label.textContent.replace(/\s*\*\s*$/, "").trim() : "This field";
+    const msg = document.createElement("span");
+    msg.className = "field-error-msg";
+    msg.textContent = errorText === "required" ? name + " is required" : errorText;
+    field.classList.add("field-invalid");
+    const outerWrap = field.closest(".quote-phone-wrap") || field.closest(".search-dropdown");
+    (outerWrap || field).insertAdjacentElement("afterend", msg);
+  }
+
+  function validateForm(form) {
+    let firstInvalid = null;
+    form.querySelectorAll("[required]").forEach((field) => {
+      const wrapper = field.closest(".quote-field, .contact-field, .stagger-reveal-item");
+      const existing = wrapper?.querySelector(".field-error-msg");
+      if (existing) existing.remove();
+      field.classList.remove("field-invalid");
+
+      const error = getFieldError(field);
+      if (error) {
+        showFieldError(field, error);
+        if (!firstInvalid) firstInvalid = field;
+      }
+    });
+    return firstInvalid;
+  }
+
+  function clearFieldError(field) {
+    const wrapper = field.closest(".quote-field, .contact-field, .stagger-reveal-item");
+    const msg = wrapper?.querySelector(".field-error-msg");
+    if (msg) msg.remove();
+    field.classList.remove("field-invalid");
+  }
+
+  function setupFormValidation(form, successMessage) {
+    if (!form) return;
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-      alert("Thanks for reaching out! Our team will get back to you within 24 hours.");
+      const firstInvalid = validateForm(form);
+      if (firstInvalid) {
+        firstInvalid.focus();
+        firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+      alert(successMessage);
+      form.reset();
+    });
+    form.querySelectorAll("[required]").forEach((field) => {
+      field.addEventListener("input", () => clearFieldError(field));
+      field.addEventListener("change", () => clearFieldError(field));
     });
   }
+
+  // 4b) Homepage contact form
+  setupFormValidation(
+    document.getElementById("home-contact-form"),
+    "Thanks for reaching out! Our team will get back to you within 24 hours."
+  );
+
+  // Quote form wizard
+  const quoteForm = document.getElementById("quote-form");
+  if (quoteForm) {
+    const panels = quoteForm.querySelectorAll(".wizard-panel");
+    const dots = quoteForm.querySelectorAll(".wizard-step-dot");
+    const labels = quoteForm.querySelectorAll(".wizard-step-label");
+    const lineFills = [
+      document.getElementById("wizard-line-1"),
+      document.getElementById("wizard-line-2"),
+    ];
+    let currentStep = 1;
+
+    function updateProgress(step) {
+      dots.forEach((dot) => {
+        const s = parseInt(dot.dataset.step);
+        dot.classList.toggle("is-active", s === step);
+        dot.classList.toggle("is-done", s < step);
+      });
+      labels.forEach((label, i) => {
+        label.classList.toggle("is-active", i + 1 === step);
+        label.classList.toggle("is-done", i + 1 < step);
+      });
+      lineFills.forEach((line, i) => {
+        if (line) line.classList.toggle("is-filled", i + 1 < step);
+      });
+    }
+
+    function goToStep(step) {
+      const currentPanel = quoteForm.querySelector('.wizard-panel.is-active');
+      if (currentPanel) {
+        const stagger = currentPanel.querySelector(".wizard-panel-stagger");
+        if (stagger) stagger.classList.remove("stagger-revealed");
+        currentPanel.classList.remove("is-active");
+      }
+
+      const nextPanel = quoteForm.querySelector('[data-wizard-step="' + step + '"]');
+      if (nextPanel) {
+        nextPanel.classList.add("is-active");
+        const stagger = nextPanel.querySelector(".wizard-panel-stagger");
+        if (stagger) {
+          stagger.classList.remove("stagger-revealed");
+          void stagger.offsetHeight;
+          stagger.classList.add("stagger-revealed");
+        }
+      }
+
+      currentStep = step;
+      updateProgress(step);
+    }
+
+    function validateCurrentStep() {
+      const panel = quoteForm.querySelector('.wizard-panel.is-active');
+      if (!panel) return true;
+      let firstInvalid = null;
+      panel.querySelectorAll("[required]").forEach((field) => {
+        const wrapper = field.closest(".quote-field, .stagger-reveal-item");
+        const existing = wrapper?.querySelector(".field-error-msg");
+        if (existing) existing.remove();
+        field.classList.remove("field-invalid");
+        if (field.disabled) return;
+
+        const error = getFieldError(field);
+        if (error) {
+          showFieldError(field, error);
+          if (!firstInvalid) firstInvalid = field;
+        }
+      });
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return false;
+      }
+      return true;
+    }
+
+    quoteForm.addEventListener("click", (e) => {
+      const nextBtn = e.target.closest(".wizard-btn-next");
+      const backBtn = e.target.closest(".wizard-btn-back");
+      if (nextBtn) {
+        if (!validateCurrentStep()) return;
+        if (currentStep < panels.length) goToStep(currentStep + 1);
+      }
+      if (backBtn) {
+        if (currentStep > 1) goToStep(currentStep - 1);
+      }
+    });
+
+    quoteForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!validateCurrentStep()) return;
+      alert("Quote request submitted! Our team will get back to you within 24 hours.");
+      quoteForm.reset();
+      const cityField = document.getElementById("quote-city");
+      if (cityField) { cityField.disabled = true; cityField.placeholder = "Select province first"; }
+      goToStep(1);
+    });
+
+    quoteForm.querySelectorAll("[required]").forEach((field) => {
+      field.addEventListener("input", () => clearFieldError(field));
+      field.addEventListener("change", () => clearFieldError(field));
+    });
+  }
+
+  // ── Philippine Location Search (Province → City cascading dropdowns) ──
+  (function initLocationSearch() {
+    const provinceInput = document.getElementById("quote-province");
+    const cityInput = document.getElementById("quote-city");
+    const provinceList = document.getElementById("province-list");
+    const cityList = document.getElementById("city-list");
+    const provinceHidden = document.getElementById("quote-province-value");
+    const cityHidden = document.getElementById("quote-city-value");
+    const provinceDropdown = document.getElementById("province-dropdown");
+    const cityDropdown = document.getElementById("city-dropdown");
+
+    if (!provinceInput || !cityInput) return;
+
+    let allProvinces = [];
+    let provinceCityMap = {};
+    let provinceRegionMap = {};
+    let highlightIdx = -1;
+
+    async function loadLocationData() {
+      if (typeof PHGeo === "undefined") return;
+      await PHGeo.ensureDataLoaded();
+      const data = PHGeo.data;
+      if (!data || !data.regions) return;
+
+      const provinceSet = new Set();
+      const regionNames = new Set(Object.keys(data.regions).map((r) => r.toLowerCase()));
+
+      for (const regionName of Object.keys(data.regions)) {
+        const region = data.regions[regionName];
+        if (!region.provinces) continue;
+        for (const provinceName of Object.keys(region.provinces)) {
+          const lower = provinceName.toLowerCase();
+          const isRegion = regionNames.has(lower) || /\(NCR\)|Region|BARMM|CAR|CARAGA/i.test(provinceName);
+          if (isRegion && provinceName !== "Metro Manila") continue;
+
+          const province = region.provinces[provinceName];
+          const cities = province.cities ? Object.keys(province.cities).sort() : [];
+
+          if (provinceSet.has(provinceName)) {
+            if (provinceCityMap[provinceName]) {
+              const merged = new Set([...provinceCityMap[provinceName], ...cities]);
+              provinceCityMap[provinceName] = [...merged].sort();
+            }
+            continue;
+          }
+
+          provinceSet.add(provinceName);
+          provinceRegionMap[provinceName] = regionName;
+          provinceCityMap[provinceName] = cities;
+        }
+      }
+      allProvinces = [...provinceSet].sort();
+      provinceInput.placeholder = "Type to search province...";
+    }
+
+    function highlightMatch(text, query) {
+      if (!query) return text;
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return text;
+      return text.slice(0, idx) + "<mark>" + text.slice(idx, idx + query.length) + "</mark>" + text.slice(idx + query.length);
+    }
+
+    function renderList(listEl, items, query, onSelect, wrapperEl) {
+      listEl.innerHTML = "";
+      highlightIdx = -1;
+      if (!items.length) {
+        const li = document.createElement("li");
+        li.className = "search-dropdown-empty";
+        li.textContent = query ? "No results found" : "Type to search...";
+        listEl.appendChild(li);
+        wrapperEl.classList.add("is-open");
+        return;
+      }
+      const shown = items.slice(0, 50);
+      shown.forEach((item) => {
+        const li = document.createElement("li");
+        li.innerHTML = highlightMatch(item, query);
+        li.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          onSelect(item);
+        });
+        listEl.appendChild(li);
+      });
+      wrapperEl.classList.add("is-open");
+    }
+
+    function closeAll() {
+      provinceDropdown?.classList.remove("is-open");
+      cityDropdown?.classList.remove("is-open");
+      highlightIdx = -1;
+    }
+
+    function keyboardNav(e, listEl, wrapperEl, onSelect, items) {
+      const lis = listEl.querySelectorAll("li:not(.search-dropdown-empty)");
+      if (!lis.length) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        highlightIdx = Math.min(highlightIdx + 1, lis.length - 1);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        highlightIdx = Math.max(highlightIdx - 1, 0);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (highlightIdx >= 0 && highlightIdx < items.length) {
+          onSelect(items[highlightIdx]);
+        }
+        return;
+      } else if (e.key === "Escape") {
+        closeAll();
+        return;
+      } else {
+        return;
+      }
+      lis.forEach((li, i) => li.classList.toggle("is-highlighted", i === highlightIdx));
+      lis[highlightIdx]?.scrollIntoView({ block: "nearest" });
+    }
+
+    let filteredProvinces = [];
+    let filteredCities = [];
+
+    function selectProvince(name) {
+      provinceInput.value = name;
+      if (provinceHidden) provinceHidden.value = name;
+      closeAll();
+      clearFieldError(provinceInput);
+
+      const cities = provinceCityMap[name] || [];
+      cityInput.value = "";
+      if (cityHidden) cityHidden.value = "";
+      cityInput.disabled = false;
+      cityInput.placeholder = cities.length ? "Type to search city..." : "No cities found";
+      filteredCities = cities;
+    }
+
+    function selectCity(name) {
+      cityInput.value = name;
+      if (cityHidden) cityHidden.value = name;
+      closeAll();
+      clearFieldError(cityInput);
+    }
+
+    function closeDropdown(wrapperEl) {
+      wrapperEl?.classList.remove("is-open");
+      highlightIdx = -1;
+    }
+
+    provinceInput.addEventListener("focus", () => {
+      const q = provinceInput.value.trim().toLowerCase();
+      filteredProvinces = q ? allProvinces.filter((p) => p.toLowerCase().includes(q)) : allProvinces;
+      renderList(provinceList, filteredProvinces, q, selectProvince, provinceDropdown);
+    });
+
+    provinceInput.addEventListener("input", () => {
+      const q = provinceInput.value.trim().toLowerCase();
+      filteredProvinces = q ? allProvinces.filter((p) => p.toLowerCase().includes(q)) : allProvinces;
+      renderList(provinceList, filteredProvinces, q, selectProvince, provinceDropdown);
+      cityInput.value = "";
+      cityInput.disabled = true;
+      cityInput.placeholder = "Select province first";
+      if (cityHidden) cityHidden.value = "";
+      if (provinceHidden) provinceHidden.value = "";
+    });
+
+    provinceInput.addEventListener("keydown", (e) => {
+      keyboardNav(e, provinceList, provinceDropdown, selectProvince, filteredProvinces);
+    });
+
+    provinceInput.addEventListener("blur", () => {
+      setTimeout(() => {
+        if (document.activeElement !== provinceInput) closeDropdown(provinceDropdown);
+      }, 150);
+    });
+
+    cityInput.addEventListener("focus", () => {
+      if (cityInput.disabled) return;
+      closeDropdown(provinceDropdown);
+      const selectedProvince = provinceInput.value.trim();
+      const cities = provinceCityMap[selectedProvince] || [];
+      const q = cityInput.value.trim().toLowerCase();
+      filteredCities = q ? cities.filter((c) => c.toLowerCase().includes(q)) : cities;
+      renderList(cityList, filteredCities, q, selectCity, cityDropdown);
+    });
+
+    cityInput.addEventListener("input", () => {
+      const selectedProvince = provinceInput.value.trim();
+      const cities = provinceCityMap[selectedProvince] || [];
+      const q = cityInput.value.trim().toLowerCase();
+      filteredCities = q ? cities.filter((c) => c.toLowerCase().includes(q)) : cities;
+      renderList(cityList, filteredCities, q, selectCity, cityDropdown);
+      if (cityHidden) cityHidden.value = "";
+    });
+
+    cityInput.addEventListener("keydown", (e) => {
+      keyboardNav(e, cityList, cityDropdown, selectCity, filteredCities);
+    });
+
+    cityInput.addEventListener("blur", () => {
+      setTimeout(() => {
+        if (document.activeElement !== cityInput) closeDropdown(cityDropdown);
+      }, 150);
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("#province-dropdown")) closeDropdown(provinceDropdown);
+      if (!e.target.closest("#city-dropdown")) closeDropdown(cityDropdown);
+    });
+
+    loadLocationData();
+  })();
 
   // 5) Construction/Services sections: dropdown groups (arrow down, boxes appear one by one)
   const serviceSections = document.querySelectorAll(".construction-services-section");
@@ -793,6 +1176,39 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  const isAndroidOrIOS = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const normalizePhoneDigits = (rawValue) => {
+    let digits = rawValue.replace(/\D/g, "");
+    if (!isAndroidOrIOS) {
+      return digits.length > 10 ? digits.slice(0, 10) : digits;
+    }
+
+    // Mobile keyboard suggestions may inject +63 / 63 / 0 prefixes.
+    if (digits.startsWith("63") && digits.length > 10) digits = digits.slice(2);
+    if (digits.startsWith("0") && digits.length > 10) digits = digits.slice(1);
+
+    // Guard for suggestions that append one extra trailing zero.
+    if (digits.length === 11 && digits.startsWith("9") && digits.endsWith("0")) {
+      digits = digits.slice(0, 10);
+    }
+
+    if (digits.length > 10) {
+      digits = digits.startsWith("9") ? digits.slice(0, 10) : digits.slice(-10);
+    }
+    return digits;
+  };
+
+  document.querySelectorAll("#quote-phone, #contact-phone").forEach((phoneInput) => {
+    const applyNormalizedValue = () => {
+      const normalized = normalizePhoneDigits(phoneInput.value);
+      if (phoneInput.value !== normalized) phoneInput.value = normalized;
+    };
+
+    phoneInput.addEventListener("input", applyNormalizedValue);
+    phoneInput.addEventListener("change", applyNormalizedValue);
+    phoneInput.addEventListener("blur", applyNormalizedValue);
+  });
+
   } // end runPageSpecificScripts
 });
 
