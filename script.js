@@ -244,6 +244,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Form validation (shared by contact + quote forms) ──
   function getFieldError(field) {
+    if (field.type === "checkbox") {
+      if (field.required && !field.checked) {
+        return "Please agree to the Privacy Policy before submitting.";
+      }
+      return null;
+    }
+
     const val = field.value.trim();
     const empty = field.tagName === "SELECT" ? !field.value : !val;
     if (empty) return "required";
@@ -266,8 +273,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = label ? label.textContent.replace(/\s*\*\s*$/, "").trim() : "This field";
     const msg = document.createElement("span");
     msg.className = "field-error-msg";
+    msg.setAttribute("role", "alert");
     msg.textContent = errorText === "required" ? name + " is required" : errorText;
     field.classList.add("field-invalid");
+    field.setAttribute("aria-invalid", "true");
     const outerWrap = field.closest(".quote-phone-wrap") || field.closest(".search-dropdown");
     (outerWrap || field).insertAdjacentElement("afterend", msg);
   }
@@ -294,11 +303,93 @@ document.addEventListener("DOMContentLoaded", () => {
     const msg = wrapper?.querySelector(".field-error-msg");
     if (msg) msg.remove();
     field.classList.remove("field-invalid");
+    field.removeAttribute("aria-invalid");
   }
 
-  function setupFormValidation(form, successMessage) {
+  const API_ENDPOINTS = {
+    contact: "/api/contact",
+    quote: "/api/quote",
+  };
+
+  function updateFormStatus(form, type, message) {
+    const statusEl = form.querySelector(".form-status");
+    if (!statusEl) {
+      if (message) alert(message);
+      return;
+    }
+
+    statusEl.hidden = false;
+    statusEl.textContent = message || "";
+    statusEl.classList.remove("is-success", "is-error", "is-loading");
+    if (type === "success") statusEl.classList.add("is-success");
+    if (type === "error") statusEl.classList.add("is-error");
+    if (type === "loading") statusEl.classList.add("is-loading");
+  }
+
+  function clearFormStatus(form) {
+    const statusEl = form.querySelector(".form-status");
+    if (!statusEl) return;
+    statusEl.hidden = true;
+    statusEl.textContent = "";
+    statusEl.classList.remove("is-success", "is-error", "is-loading");
+  }
+
+  function toPayload(form) {
+    const data = new FormData(form);
+    const payload = {};
+    data.forEach((value, key) => {
+      payload[key] = typeof value === "string" ? value.trim() : value;
+    });
+    return payload;
+  }
+
+  async function postFormPayload(endpoint, payload) {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    let body = {};
+    try {
+      body = await response.json();
+    } catch (_) {
+      body = {};
+    }
+
+    if (!response.ok) {
+      const errorMessage = body?.error || "Unable to submit your request right now. Please try again.";
+      throw new Error(errorMessage);
+    }
+
+    return body;
+  }
+
+  function setSubmitState(form, isLoading) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (!submitBtn) return;
+
+    submitBtn.disabled = isLoading;
+    submitBtn.classList.toggle("is-loading", isLoading);
+    if (isLoading) {
+      submitBtn.dataset.originalText = submitBtn.innerHTML;
+      submitBtn.textContent = "Sending...";
+      return;
+    }
+
+    if (submitBtn.dataset.originalText) {
+      submitBtn.innerHTML = submitBtn.dataset.originalText;
+      delete submitBtn.dataset.originalText;
+    }
+  }
+
+  function setupFormValidation(form, options) {
     if (!form) return;
-    form.addEventListener("submit", (e) => {
+    const endpoint = options?.endpoint;
+    const successMessage = options?.successMessage || "Your request has been submitted successfully.";
+    const onSuccess = options?.onSuccess;
+
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const firstInvalid = validateForm(form);
       if (firstInvalid) {
@@ -306,19 +397,46 @@ document.addEventListener("DOMContentLoaded", () => {
         firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
-      alert(successMessage);
-      form.reset();
+
+      clearFormStatus(form);
+      setSubmitState(form, true);
+      updateFormStatus(form, "loading", "Submitting your request...");
+
+      try {
+        const payload = toPayload(form);
+        await postFormPayload(endpoint, payload);
+        updateFormStatus(form, "success", successMessage);
+        form.reset();
+        if (typeof onSuccess === "function") onSuccess();
+      } catch (error) {
+        updateFormStatus(
+          form,
+          "error",
+          error?.message || "Unable to submit your request right now. Please try again."
+        );
+      } finally {
+        setSubmitState(form, false);
+      }
     });
     form.querySelectorAll("[required]").forEach((field) => {
-      field.addEventListener("input", () => clearFieldError(field));
-      field.addEventListener("change", () => clearFieldError(field));
+      field.addEventListener("input", () => {
+        clearFieldError(field);
+        clearFormStatus(form);
+      });
+      field.addEventListener("change", () => {
+        clearFieldError(field);
+        clearFormStatus(form);
+      });
     });
   }
 
   // 4b) Homepage contact form
   setupFormValidation(
     document.getElementById("home-contact-form"),
-    "Thanks for reaching out! Our team will get back to you within 24 hours."
+    {
+      endpoint: API_ENDPOINTS.contact,
+      successMessage: "Thanks for reaching out. Our team will get back to you within 24 hours.",
+    }
   );
 
   // Quote form wizard
@@ -407,19 +525,50 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    quoteForm.addEventListener("submit", (e) => {
+    quoteForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!validateCurrentStep()) return;
-      alert("Quote request submitted! Our team will get back to you within 24 hours.");
-      quoteForm.reset();
-      const cityField = document.getElementById("quote-city");
-      if (cityField) { cityField.disabled = true; cityField.placeholder = "Select province first"; }
-      goToStep(1);
+
+      clearFormStatus(quoteForm);
+      setSubmitState(quoteForm, true);
+      updateFormStatus(quoteForm, "loading", "Submitting your quote request...");
+
+      try {
+        const payload = toPayload(quoteForm);
+        await postFormPayload(API_ENDPOINTS.quote, payload);
+
+        updateFormStatus(
+          quoteForm,
+          "success",
+          "Quote request submitted. Our team will get back to you within 24 hours."
+        );
+        quoteForm.reset();
+        const cityField = document.getElementById("quote-city");
+        if (cityField) {
+          cityField.disabled = true;
+          cityField.placeholder = "Select province first";
+        }
+        goToStep(1);
+      } catch (error) {
+        updateFormStatus(
+          quoteForm,
+          "error",
+          error?.message || "Unable to submit your quote right now. Please try again."
+        );
+      } finally {
+        setSubmitState(quoteForm, false);
+      }
     });
 
     quoteForm.querySelectorAll("[required]").forEach((field) => {
-      field.addEventListener("input", () => clearFieldError(field));
-      field.addEventListener("change", () => clearFieldError(field));
+      field.addEventListener("input", () => {
+        clearFieldError(field);
+        clearFormStatus(quoteForm);
+      });
+      field.addEventListener("change", () => {
+        clearFieldError(field);
+        clearFormStatus(quoteForm);
+      });
     });
   }
 

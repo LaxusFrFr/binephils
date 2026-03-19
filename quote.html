@@ -4,6 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Get a Free Quote - Bine Philippines Inc.</title>
+    <meta
+      name="description"
+      content="Request a free quote from Bine Philippines Inc. for construction, traffic safety, industrial services, and aluminum panel solutions."
+    />
+    <link rel="canonical" href="https://binephils.com/quote.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bine Philippines Inc." />
+    <meta property="og:title" content="Get a Free Quote | Bine Philippines Inc." />
+    <meta
+      property="og:description"
+      content="Submit your project requirements and get a professional quote from Bine Philippines Inc. within 24 hours."
+    />
+    <meta property="og:url" content="https://binephils.com/quote.html" />
+    <meta property="og:image" content="https://binephils.com/images/Logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Get a Free Quote | Bine Philippines Inc." />
+    <meta
+      name="twitter:description"
+      content="Submit your project requirements and get a professional quote from Bine Philippines Inc. within 24 hours."
+    />
+    <meta name="twitter:image" content="https://binephils.com/images/Logo.png" />
     <link rel="icon" type="image/x-icon" href="images/Logo.ico" />
     <link
       rel="stylesheet"
@@ -171,9 +192,35 @@
                       <label for="quote-message" class="quote-label">Project Details <span class="contact-required">*</span></label>
                       <textarea id="quote-message" name="message" class="quote-textarea" rows="4" placeholder="Describe your project requirements, scope, and any specifications..." required></textarea>
                     </div>
+                    <div class="quote-field stagger-reveal-item consent-field">
+                      <label for="quote-privacy-consent" class="consent-label">
+                        <input
+                          type="checkbox"
+                          id="quote-privacy-consent"
+                          name="privacy_consent"
+                          class="consent-checkbox"
+                          required
+                        />
+                        <span>
+                          I have read and agree to Bine Philippines Inc.'s
+                          <a href="cookie-policy.html" target="_blank" rel="noopener">Cookie Policy</a>
+                          and
+                          <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                        </span>
+                      </label>
+                    </div>
+                    <input
+                      type="text"
+                      name="company_website"
+                      tabindex="-1"
+                      autocomplete="off"
+                      class="form-honeypot"
+                      aria-hidden="true"
+                    />
+                    <p class="form-status stagger-reveal-item" hidden aria-live="polite"></p>
                     <div class="wizard-nav stagger-reveal-item">
                       <button type="button" class="btn btn-outline wizard-btn-back"><i class="fas fa-arrow-left"></i> Back</button>
-                      <button type="submit" class="btn btn-primary quote-submit">Submit Request <i class="fas fa-paper-plane"></i></button>
+                      <button type="submit" class="btn btn-primary quote-submit">Submit <i class="fas fa-paper-plane"></i></button>
                     </div>
                   </div>
                 </div>
@@ -234,6 +281,8 @@
                 <li><a href="products.html">Products</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="cookie-policy.html">Cookie Policy</a></li>
               </ul>
             </div>
             <div class="footer-links-group">

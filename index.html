@@ -3,7 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bine Philippines Inc. </title>
+    <title>Bine Philippines Inc. - Industrial and Construction Solutions</title>
+    <meta
+      name="description"
+      content="Bine Philippines Inc. delivers industrial electroplating, construction, traffic safety systems, and aluminum panel solutions across the Philippines."
+    />
+    <link rel="canonical" href="https://binephils.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Bine Philippines Inc." />
+    <meta property="og:title" content="Bine Philippines Inc. | Industrial and Construction Solutions" />
+    <meta
+      property="og:description"
+      content="Reliable industrial electroplating, construction, and traffic safety solutions tailored for public and private projects."
+    />
+    <meta property="og:url" content="https://binephils.com/" />
+    <meta property="og:image" content="https://binephils.com/images/Logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bine Philippines Inc. | Industrial and Construction Solutions" />
+    <meta
+      name="twitter:description"
+      content="Reliable industrial electroplating, construction, and traffic safety solutions tailored for public and private projects."
+    />
+    <meta name="twitter:image" content="https://binephils.com/images/Logo.png" />
     <link rel="icon" type="image/x-icon" href="images/Logo.ico" />
     <!-- Typography -->
     <link
@@ -42,7 +63,7 @@
             </button>
             <nav class="main-nav">
               <ul>
-                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#home" class="active" aria-current="page">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="industrial.html">Industrial</a></li>
                 <li><a href="construction.html">Construction</a></li>
@@ -62,7 +83,7 @@
         <div class="container hero-inner">
           <div class="hero-content">
             <p class="hero-tagline hero-reveal-item">Bine Philippines Inc.</p>
-            <h1 class="hero-title hero-reveal-item">We make your Vision comes to <span class="hero-title-accent">life!</span></h1>
+            <h1 class="hero-title hero-reveal-item">We bring your vision to <span class="hero-title-accent">life!</span></h1>
             <nav class="hero-underlined-links hero-reveal-item" aria-label="Divisions">
               <a href="industrial.html" class="hero-underline-link"><span>Industrial</span></a>
               <a href="construction.html" class="hero-underline-link"><span>Construction</span></a>
@@ -586,6 +607,32 @@
                   <label for="contact-message" class="contact-label">Message <span class="contact-required">*</span></label>
                   <textarea id="contact-message" name="message" class="contact-textarea" rows="4" placeholder="Tell us about your needs or project..." required></textarea>
                 </div>
+                <div class="contact-field contact-field-full stagger-reveal-item consent-field">
+                  <label for="contact-privacy-consent" class="consent-label">
+                    <input
+                      type="checkbox"
+                      id="contact-privacy-consent"
+                      name="privacy_consent"
+                      class="consent-checkbox"
+                      required
+                    />
+                    <span>
+                      I have read and agree to Bine Philippines Inc.'s
+                      <a href="cookie-policy.html" target="_blank" rel="noopener">Cookie Policy</a>
+                      and
+                      <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.
+                    </span>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  name="company_website"
+                  tabindex="-1"
+                  autocomplete="off"
+                  class="form-honeypot"
+                  aria-hidden="true"
+                />
+                <p class="form-status contact-field-full stagger-reveal-item" hidden aria-live="polite"></p>
                 <div class="stagger-reveal-item contact-field-full">
                   <button type="submit" class="btn btn-primary contact-submit">Send Message</button>
                 </div>
@@ -684,6 +731,8 @@
                 <li><a href="products.html">Products</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                <li><a href="cookie-policy.html">Cookie Policy</a></li>
               </ul>
             </div>
             <div class="footer-links-group">

@@ -8,18 +8,46 @@ This folder contains the source for the main public website for **binephils.com*
 - `styles.css` – global stylesheet, linked from `index.html`.
 - `script.js` – global JavaScript file, linked from `index.html`.
 
-## How to view the site locally
+## Run locally with professional form email API
 
-You can open the site in your browser in either of these ways:
+This project now includes backend API endpoints for:
 
-1. **Direct open**
-   - Double-click `index.html` in your file explorer.
-   - The site will open in your default browser.
+- `POST /api/contact`
+- `POST /api/quote`
 
-2. **Using a live server extension in Cursor/VS Code**
-   - Install the "Live Server" extension.
-   - Right-click `index.html` in the editor.
-   - Choose "Open with Live Server".
+Both endpoints send:
 
-As you edit the files, save your changes and refresh the browser (or let Live Server auto-reload) to see updates.
+- Internal notification email to your team inbox.
+- Professional acknowledgment email to the customer.
+
+### 1) Install dependencies
+
+```bash
+npm install
+```
+
+### 2) Configure environment variables
+
+Create `.env` from `.env.example` and set:
+
+- `RESEND_API_KEY`
+- `FROM_EMAIL` (must be a verified sender/domain in your provider)
+- `CONTACT_TO_EMAIL`
+- `QUOTE_TO_EMAIL`
+
+### 3) Start the app
+
+```bash
+npm start
+```
+
+Open `http://localhost:3000`.
+
+## Production requirements (for inbox delivery and professionalism)
+
+To reduce spam placement and avoid "untrusted" emails:
+
+- Configure domain DNS authentication: SPF, DKIM, and DMARC.
+- Use a real monitored sender (example `contact@yourdomain.com`) instead of `no-reply`.
+- Keep `Reply-To` pointed correctly so your team can reply directly to the customer.
 
