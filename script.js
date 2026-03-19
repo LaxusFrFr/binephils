@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         contactFormToggle.setAttribute("aria-expanded", "false");
         contactFormSection.setAttribute("aria-hidden", "true");
         const toggleText = contactFormToggle.querySelector(".contact-form-toggle-text");
-        if (toggleText) toggleText.textContent = "Contact Us";
+        if (toggleText) toggleText.textContent = "Contact";
         staggerContainers().forEach((el) => el.classList.remove("stagger-revealed"));
       }
     });
