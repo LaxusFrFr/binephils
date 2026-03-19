@@ -3858,7 +3858,7 @@ a {
 }
 
 .contact-form-section:not(.contact-form-collapsed) {
-  max-height: 1400px;
+  max-height: 3200px;
   padding: 4rem 0 5rem;
   opacity: 1;
 }
@@ -4331,6 +4331,11 @@ a {
 }
 
 @media (max-width: 960px) {
+  .contact-form-section:not(.contact-form-collapsed) {
+    max-height: none;
+    overflow: visible;
+  }
+
   .contact-form-grid {
     grid-template-columns: 1fr;
   }
