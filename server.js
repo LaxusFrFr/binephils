@@ -180,6 +180,10 @@ function formatPhoneInternational(phoneDigits) {
   return phoneDigits ? `+63 ${phoneDigits}` : "";
 }
 
+function isSameEmail(a, b) {
+  return sanitizeText(a, 200).toLowerCase() === sanitizeText(b, 200).toLowerCase();
+}
+
 function assertNotRateLimited(req, routeName) {
   const now = Date.now();
   const ip = getClientIp(req);
@@ -218,18 +222,25 @@ function collectValidationErrors(payload, fields) {
 }
 
 function makeEmailLayout({ title, subtitle, bodyRows }) {
+  const brandPrimary = "#0f6a3a";
+  const brandPrimaryDark = "#0b4e2b";
+  const brandSoft = "#eaf7f0";
+  const borderSoft = "#cfe9da";
+  const textPrimary = "#0f172a";
+  const textMuted = "#334155";
+
   const logoBlock = COMPANY_LOGO_URL
-    ? `<img src="${escapeHtml(COMPANY_LOGO_URL)}" alt="${escapeHtml(COMPANY_NAME)} logo" width="120" style="display:block; margin:0 auto 16px auto;" />`
-    : "";
+    ? `<img src="${escapeHtml(COMPANY_LOGO_URL)}" alt="${escapeHtml(COMPANY_NAME)} logo" width="138" style="display:block;margin:0 auto 14px auto;max-width:138px;height:auto;" />`
+    : `<div style="display:inline-block;margin:0 auto 14px auto;padding:8px 14px;border-radius:999px;background:${brandSoft};color:${brandPrimaryDark};font-weight:700;font-size:13px;letter-spacing:.3px;">${escapeHtml(COMPANY_NAME)}</div>`;
 
   return `
-  <div style="background:#f3f7fb;padding:28px 14px;font-family:Arial,Helvetica,sans-serif;color:#0f172a;">
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:650px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #dbe6f4;">
+  <div style="background:${brandSoft};padding:28px 14px;font-family:Arial,Helvetica,sans-serif;color:${textPrimary};">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:650px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid ${borderSoft};">
       <tr>
-        <td style="background:#0b5fad;padding:26px 20px;text-align:center;">
+        <td style="background:linear-gradient(145deg, ${brandPrimary} 0%, ${brandPrimaryDark} 100%);padding:26px 20px;text-align:center;">
           ${logoBlock}
           <h1 style="margin:0;font-size:22px;line-height:1.3;color:#ffffff;">${escapeHtml(title)}</h1>
-          <p style="margin:8px 0 0 0;color:#dbeafe;font-size:14px;line-height:1.4;">${escapeHtml(subtitle)}</p>
+          <p style="margin:8px 0 0 0;color:#d1fae5;font-size:14px;line-height:1.4;">${escapeHtml(subtitle)}</p>
         </td>
       </tr>
       <tr>
@@ -240,10 +251,10 @@ function makeEmailLayout({ title, subtitle, bodyRows }) {
         </td>
       </tr>
       <tr>
-        <td style="padding:18px 20px;background:#f8fafc;border-top:1px solid #e2e8f0;">
-          <p style="margin:0 0 6px 0;font-weight:700;color:#0f172a;">${escapeHtml(COMPANY_NAME)}</p>
-          <p style="margin:0 0 6px 0;color:#334155;font-size:13px;">${escapeHtml(COMPANY_ADDRESS)}</p>
-          <p style="margin:0;color:#334155;font-size:13px;">Phone: ${escapeHtml(COMPANY_PHONE)} | Website: <a href="${escapeHtml(COMPANY_WEBSITE)}" style="color:#0b5fad;">${escapeHtml(COMPANY_WEBSITE)}</a></p>
+        <td style="padding:18px 20px;background:#f8fffb;border-top:1px solid ${borderSoft};">
+          <p style="margin:0 0 6px 0;font-weight:700;color:${textPrimary};">${escapeHtml(COMPANY_NAME)}</p>
+          <p style="margin:0 0 6px 0;color:${textMuted};font-size:13px;">${escapeHtml(COMPANY_ADDRESS)}</p>
+          <p style="margin:0;color:${textMuted};font-size:13px;">Phone: ${escapeHtml(COMPANY_PHONE)} | Website: <a href="${escapeHtml(COMPANY_WEBSITE)}" style="color:${brandPrimary};font-weight:600;">${escapeHtml(COMPANY_WEBSITE)}</a></p>
         </td>
       </tr>
     </table>
@@ -251,10 +262,14 @@ function makeEmailLayout({ title, subtitle, bodyRows }) {
 }
 
 function makeRow(label, value) {
+  const rowBorder = "#dbe7df";
+  const labelBg = "#f2fbf6";
+  const labelText = "#14532d";
+  const valueText = "#1f2937";
   return `
   <tr>
-    <td style="width:185px;padding:10px 12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:700;font-size:13px;vertical-align:top;">${escapeHtml(label)}</td>
-    <td style="padding:10px 12px;border:1px solid #e2e8f0;font-size:13px;line-height:1.5;white-space:pre-wrap;">${escapeHtml(value)}</td>
+    <td style="width:185px;padding:10px 12px;border:1px solid ${rowBorder};background:${labelBg};color:${labelText};font-weight:700;font-size:13px;vertical-align:top;">${escapeHtml(label)}</td>
+    <td style="padding:10px 12px;border:1px solid ${rowBorder};font-size:13px;line-height:1.5;color:${valueText};white-space:pre-wrap;">${escapeHtml(value)}</td>
   </tr>`;
 }
 
@@ -328,6 +343,10 @@ async function sendContactEmails(contact) {
     reply_to: [contact.email],
   });
 
+  if (isSameEmail(contact.email, CONTACT_TO_EMAIL)) {
+    return;
+  }
+
   const acknowledgmentHtml = makeEmailLayout({
     title: "We Received Your Message",
     subtitle: "Thank you for contacting Bine Philippines Inc.",
@@ -353,14 +372,24 @@ async function sendContactEmails(contact) {
     `Status: Received successfully`,
   ].join("\n");
 
-  await sendEmail({
-    from: FROM_EMAIL,
-    to: [contact.email],
-    subject: `We received your contact request - ${COMPANY_NAME}`,
-    html: acknowledgmentHtml,
-    text: acknowledgmentText,
-    reply_to: [CONTACT_TO_EMAIL],
-  });
+  try {
+    await sendEmail({
+      from: FROM_EMAIL,
+      to: [contact.email],
+      subject: `We received your contact request - ${COMPANY_NAME}`,
+      html: acknowledgmentHtml,
+      text: acknowledgmentText,
+      reply_to: [CONTACT_TO_EMAIL],
+    });
+  } catch (error) {
+    // Keep the form submission successful if customer acknowledgment is blocked
+    // by provider sandbox rules before domain verification.
+    log("warn", "Contact acknowledgment email skipped", {
+      endpoint: "contact",
+      reason: error?.message || "unknown",
+      providerError: error?.providerError || undefined,
+    });
+  }
 }
 
 async function sendQuoteEmails(quote) {
@@ -406,6 +435,10 @@ async function sendQuoteEmails(quote) {
     reply_to: [quote.email],
   });
 
+  if (isSameEmail(quote.email, QUOTE_TO_EMAIL)) {
+    return;
+  }
+
   const acknowledgmentHtml = makeEmailLayout({
     title: "We Received Your Quote Request",
     subtitle: "Thank you for choosing Bine Philippines Inc.",
@@ -441,14 +474,24 @@ async function sendQuoteEmails(quote) {
     "Status: Quote request received",
   ].join("\n");
 
-  await sendEmail({
-    from: FROM_EMAIL,
-    to: [quote.email],
-    subject: `We received your quote request - ${COMPANY_NAME}`,
-    html: acknowledgmentHtml,
-    text: acknowledgmentText,
-    reply_to: [QUOTE_TO_EMAIL],
-  });
+  try {
+    await sendEmail({
+      from: FROM_EMAIL,
+      to: [quote.email],
+      subject: `We received your quote request - ${COMPANY_NAME}`,
+      html: acknowledgmentHtml,
+      text: acknowledgmentText,
+      reply_to: [QUOTE_TO_EMAIL],
+    });
+  } catch (error) {
+    // Keep the form submission successful if customer acknowledgment is blocked
+    // by provider sandbox rules before domain verification.
+    log("warn", "Quote acknowledgment email skipped", {
+      endpoint: "quote",
+      reason: error?.message || "unknown",
+      providerError: error?.providerError || undefined,
+    });
+  }
 }
 
 function buildContactPayload(body) {

@@ -542,13 +542,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "success",
           "Quote request submitted. Our team will get back to you within 24 hours."
         );
-        quoteForm.reset();
-        const cityField = document.getElementById("quote-city");
-        if (cityField) {
-          cityField.disabled = true;
-          cityField.placeholder = "Select province first";
-        }
-        goToStep(1);
       } catch (error) {
         updateFormStatus(
           quoteForm,
