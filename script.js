@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (field.type === "tel" && val) {
       const digits = val.replace(/\D/g, "");
-      if (digits.length < 10) return "Please enter a complete 10-digit number";
+      if (digits.length !== 10) return "Please enter a complete 10-digit number";
     }
 
     return null;
@@ -1183,18 +1183,22 @@ document.addEventListener("DOMContentLoaded", () => {
       return digits.length > 10 ? digits.slice(0, 10) : digits;
     }
 
-    // Mobile keyboard suggestions may inject +63 / 63 / 0 prefixes.
-    if (digits.startsWith("63") && digits.length > 10) digits = digits.slice(2);
-    if (digits.startsWith("0") && digits.length > 10) digits = digits.slice(1);
+    // Pattern-first parsing for mobile suggestions/autofill.
+    // Handles:
+    // - +639XXXXXXXXX / 639XXXXXXXXX
+    // - 09XXXXXXXXX (e.g. 09662292414)
+    // - 9XXXXXXXXX
+    const intlMatch = digits.match(/639\d{9}/);
+    if (intlMatch) return intlMatch[0].slice(2); // -> 9XXXXXXXXX
 
-    // Guard for suggestions that append one extra trailing zero.
-    if (digits.length === 11 && digits.startsWith("9") && digits.endsWith("0")) {
-      digits = digits.slice(0, 10);
-    }
+    const localWithZeroMatch = digits.match(/09\d{9}/);
+    if (localWithZeroMatch) return localWithZeroMatch[0].slice(1); // -> 9XXXXXXXXX
 
-    if (digits.length > 10) {
-      digits = digits.startsWith("9") ? digits.slice(0, 10) : digits.slice(-10);
-    }
+    const localMatch = digits.match(/9\d{9}/);
+    if (localMatch) return localMatch[0];
+
+    // Fallbacks for partially typed values.
+    if (digits.length > 10) digits = digits.slice(0, 10);
     return digits;
   };
 
@@ -1207,6 +1211,14 @@ document.addEventListener("DOMContentLoaded", () => {
     phoneInput.addEventListener("input", applyNormalizedValue);
     phoneInput.addEventListener("change", applyNormalizedValue);
     phoneInput.addEventListener("blur", applyNormalizedValue);
+    phoneInput.addEventListener("keyup", applyNormalizedValue);
+    phoneInput.addEventListener("paste", () => setTimeout(applyNormalizedValue, 0));
+
+    // iOS/Android keyboard suggestions can commit value slightly after input event.
+    phoneInput.addEventListener("input", () => {
+      setTimeout(applyNormalizedValue, 0);
+      requestAnimationFrame(applyNormalizedValue);
+    });
   });
 
   } // end runPageSpecificScripts
