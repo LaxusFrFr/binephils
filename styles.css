@@ -1794,16 +1794,19 @@ a {
   pointer-events: none;
 }
 
-/* Products page: allow tiles to use real photos when available */
-.products-category-section .project-card {
+/* Products + Projects page: allow tiles to use real photos when available */
+.products-category-section .project-card,
+#projects .project-card {
   --tile-image: url("images/Logo.png");
 }
 
-.products-category-section .project-card::before {
+.products-category-section .project-card::before,
+#projects .project-card::before {
   background-image: var(--tile-image);
 }
 
-.products-category-section .project-card.has-photo::before {
+.products-category-section .project-card.has-photo::before,
+#projects .project-card.has-photo::before {
   background-size: cover;
   background-position: center;
   opacity: 0.9;
