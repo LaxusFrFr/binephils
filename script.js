@@ -5,6 +5,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const isAndroid = /Android/i.test(navigator.userAgent || "");
   if (isAndroid) {
     document.body.classList.add("android-device");
+
+    // Android-only: use explicit emoji glyphs for footer contact icons.
+    const footerContactRows = document.querySelectorAll(".footer-contact-row");
+    footerContactRows.forEach((row) => {
+      const icon = row.querySelector(".footer-icon");
+      if (!icon) return;
+
+      const rowText = (row.textContent || "").toLowerCase();
+      let emoji = "";
+      if (rowText.includes("@")) emoji = "📧";
+      else if (rowText.includes("tel:")) emoji = "☎️";
+      else if (rowText.includes("mobile:")) emoji = "📱";
+
+      if (emoji) {
+        icon.textContent = emoji;
+      }
+    });
   }
 
   // 0) Homepage: hide header on scroll down, show on scroll up (smooth slide like Framer)
