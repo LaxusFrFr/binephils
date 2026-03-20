@@ -5234,12 +5234,12 @@ a {
     margin-bottom: 1.6rem;
   }
 
-  /* On mobile, show 📱 emoji for the mobile contact row and hide the Font Awesome icon */
-  .footer-icon-mobile-emoji {
+  /* Android-only footer icon fallback (keep iOS/PC unchanged). */
+  .android-device .footer-icon-mobile-emoji {
     display: inline;
   }
 
-  .footer-icon i.fa-mobile-screen-button {
+  .android-device .footer-icon i.fa-mobile-screen-button {
     display: none;
   }
 }

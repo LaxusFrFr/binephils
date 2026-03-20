@@ -1,6 +1,12 @@
 // Interactive behaviors for buttons and navigation
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Device hint class for platform-specific visual polish.
+  const isAndroid = /Android/i.test(navigator.userAgent || "");
+  if (isAndroid) {
+    document.body.classList.add("android-device");
+  }
+
   // 0) Homepage: hide header on scroll down, show on scroll up (smooth slide like Framer)
   const headerWrap = document.getElementById("header-wrap");
   if (headerWrap) {
