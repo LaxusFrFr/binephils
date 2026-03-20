@@ -3675,6 +3675,17 @@ a {
     border-radius: 16px;
   }
 
+  /* Mobile: keep quote form content left-aligned like contact form. */
+  .quote-form-panel,
+  .quote-form,
+  .wizard-panel,
+  .wizard-panel-stagger,
+  .quote-field,
+  .quote-form-sub,
+  .quote-label {
+    text-align: left;
+  }
+
   .quote-form-wrap {
     margin-bottom: 0.75rem;
   }
