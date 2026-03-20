@@ -5234,7 +5234,15 @@ a {
     margin-bottom: 1.6rem;
   }
 
-  /* Android-only footer icon fallback (keep iOS/PC unchanged). */
+  /* Platform-specific footer icon behavior on mobile. */
+  body:not(.android-device) .footer-icon-mobile-emoji {
+    display: inline;
+  }
+
+  body:not(.android-device) .footer-icon i.fa-mobile-screen-button {
+    display: none;
+  }
+
   .android-device .footer-icon-mobile-emoji {
     display: inline;
   }
