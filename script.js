@@ -1261,9 +1261,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const title = tile.getAttribute("data-product-title") || tile.textContent?.trim() || "Product";
       gallery = parseGallery(tile.getAttribute("data-gallery"));
       galleryIndex = 0;
+      productModalDialog.classList.remove("product-modal-bus-sheds");
 
       if (title === "Solar-powered Bus Sheds") {
-        productModalTitle.innerHTML = "Solar-powered<br>Bus Sheds";
+        productModalTitle.innerHTML = "<span>Solar-powered</span> <span>Bus Sheds</span>";
+        productModalDialog.classList.add("product-modal-bus-sheds");
       } else if (title === "Thermoplastic Road Marking" || title === "Thermoplasctic Road Marking") {
         productModalTitle.innerHTML = "Thermoplastic<br>Road Marking";
       } else {
@@ -1285,6 +1287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeProductModal = () => {
       productModal.classList.remove("is-open");
       productModal.setAttribute("aria-hidden", "true");
+      productModalDialog.classList.remove("product-modal-bus-sheds");
       unlockPageScroll();
 
       gallery = [];

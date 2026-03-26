@@ -401,14 +401,27 @@ a {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-      135deg,
-      rgba(11, 122, 59, 0.92) 0%,
-      rgba(8, 60, 35, 0.95) 50%,
-      rgba(5, 40, 24, 0.97) 100%
-    ),
-    linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+  background-image: url("images/Homepage Background.png");
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
   z-index: 0;
+}
+
+.hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 46%, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0) 56%),
+    linear-gradient(
+      95deg,
+      rgba(7, 22, 13, 0.78) 0%,
+      rgba(8, 26, 15, 0.6) 38%,
+      rgba(10, 30, 18, 0.3) 62%,
+      rgba(10, 30, 18, 0.1) 100%
+    );
+  pointer-events: none;
 }
 
 .hero-inner {
@@ -671,19 +684,43 @@ a {
 /* Construction page */
 
 .construction-hero {
+  position: relative;
+  isolation: isolate;
   background-color: var(--green-light);
+  background-image: url("images/Traffic Lights.png");
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 4.5rem 0 4rem;
 }
 
+.construction-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    92deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.62) 32%,
+    rgba(255, 255, 255, 0.28) 50%,
+    rgba(255, 255, 255, 0.08) 62%,
+    rgba(255, 255, 255, 0) 72%
+  );
+}
+
 .construction-hero-inner {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 2.75rem;
 }
 
 .construction-hero-text {
-  flex: 1 1 0;
+  flex: 1 1 auto;
+  max-width: 760px;
 }
 
 .construction-hero-media {
@@ -744,7 +781,13 @@ a {
 .construction-hero-actions .btn-outline {
   border-color: var(--construction-green);
   color: var(--construction-green);
+  background-color: transparent;
 }
+
+.construction-hero-actions .btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.86);
+}
+
 
 .construction-stats {
   display: flex;
@@ -762,6 +805,10 @@ a {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--construction-green);
+}
+
+.construction-stat-label {
+  color: var(--text-muted);
 }
 
 /* Services page hero (reuse construction hero typography) */
@@ -1040,14 +1087,14 @@ a {
   padding: 3.75rem 0 4rem;
 }
 
-/* Safer Roads Hero Banner (above CTA) – Road Main.png, centered white uppercase text */
+/* Shared hero banner (above CTA) – Drone View image */
 .construction-road-banner {
   position: relative;
   min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url("images/Road Main.png");
+  background-image: url("images/Drone View.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -1587,7 +1634,7 @@ a {
 }
 
 .projects-title.projects-category-title {
-  color: var(--green-main);
+  color: var(--construction-green);
   font-weight: 700;
 }
 
@@ -2030,6 +2077,11 @@ a {
     position: relative;
     z-index: 1;
   }
+
+  /* Desktop only: keep Bus Sheds title in one line */
+  .product-modal-dialog.product-modal-bus-sheds .product-modal-title {
+    white-space: nowrap;
+  }
 }
 
 .product-modal-counter {
@@ -2095,6 +2147,10 @@ a {
   .product-modal-subtitle {
     padding-right: 0.75rem;
     max-width: calc(100% - 0.5rem);
+    display: block;
+  }
+
+  .product-modal-dialog.product-modal-bus-sheds .product-modal-title span {
     display: block;
   }
 
@@ -2789,7 +2845,7 @@ a {
 }
 
 #manufacturing .division-image {
-  background-image: url("images/Manufacturing.png");
+  background-image: url("images/Industrial.png");
 }
 
 #construction .division-image {
@@ -4824,7 +4880,7 @@ a {
   }
 
   .construction-hero-inner {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: flex-start;
   }
 
