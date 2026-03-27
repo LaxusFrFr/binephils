@@ -3,6 +3,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   // Device hint class for platform-specific visual polish.
   const isAndroid = /Android/i.test(navigator.userAgent || "");
+  const isIOS =
+    /iPad|iPhone|iPod/i.test(navigator.userAgent || "") ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    document.body.classList.add("ios-device");
+  }
+
   if (isAndroid) {
     document.body.classList.add("android-device");
 
@@ -22,6 +30,66 @@ document.addEventListener("DOMContentLoaded", () => {
         icon.textContent = emoji;
       }
     });
+  }
+
+  /**
+   * Lenis smooth scroll on any page with `<html class="lenis-scroll">`. Self-hosted `js/lenis.min.js`.
+   * Browsers often disable CSS `scroll-behavior: smooth` and `scrollIntoView({behavior:'smooth'})`
+   * when the user prefers reduced motion—Lenis uses its own interpolation, so it still feels smooth
+   * (like many marketing sites) once this script runs. Not gated on prefers-reduced-motion.
+   * Tune: wheelMultiplier / lerp (see Lenis docs).
+   */
+  let bineLenis = null;
+  const HOME_HASH_SCROLL_OFFSET = -80;
+
+  const LenisCtor = typeof Lenis !== "undefined" ? Lenis : window.Lenis || globalThis.Lenis;
+  if (document.documentElement.classList.contains("lenis-scroll") && LenisCtor) {
+    document.documentElement.style.scrollBehavior = "auto";
+    bineLenis = new LenisCtor({
+      autoRaf: true,
+      smoothWheel: true,
+      wheelMultiplier: 1.15,
+      touchMultiplier: 1.15,
+      lerp: 0.085,
+    });
+  }
+
+  /** Call after body/html overflow scroll-lock is cleared so Lenis resyncs (fixes “back to normal” scroll). */
+  function refreshLenisAfterScrollLock() {
+    if (!bineLenis) return;
+    requestAnimationFrame(() => {
+      bineLenis.resize();
+    });
+  }
+
+  if (bineLenis) {
+    let lenisResizeRaf = 0;
+    window.addEventListener(
+      "resize",
+      () => {
+        cancelAnimationFrame(lenisResizeRaf);
+        lenisResizeRaf = requestAnimationFrame(() => bineLenis.resize());
+      },
+      { passive: true }
+    );
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") refreshLenisAfterScrollLock();
+    });
+  }
+
+  function scrollToHashAnchor(href, event) {
+    if (!href || !href.startsWith("#")) return false;
+    const id = href.slice(1);
+    if (!id) return false;
+    const target = document.getElementById(id);
+    if (!target) return false;
+    if (event) event.preventDefault();
+    if (bineLenis) {
+      bineLenis.scrollTo(target, { offset: HOME_HASH_SCROLL_OFFSET });
+    } else {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    return true;
   }
 
   // 0) Homepage: hide header on scroll down, show on scroll up (smooth slide like Framer)
@@ -80,6 +148,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const restoreBodyScroll = () => {
       document.body.style.overflow = "";
       document.documentElement.style.overflow = "";
+      if (bineLenis) {
+        bineLenis.start();
+        refreshLenisAfterScrollLock();
+      }
     };
 
     let navOverlay = document.querySelector(".nav-overlay");
@@ -105,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navToggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
       if (navOverlay) navOverlay.classList.toggle("is-visible", willOpen);
       if (willOpen) {
+        if (bineLenis) bineLenis.stop();
         document.body.style.overflow = "hidden";
         document.documentElement.style.overflow = "hidden";
       } else {
@@ -135,7 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = href.slice(1);
         const target = id ? document.getElementById(id) : null;
         if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          if (bineLenis) {
+            bineLenis.scrollTo(target, { offset: HOME_HASH_SCROLL_OFFSET });
+          } else {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }
       }
 
@@ -151,6 +228,19 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  document.querySelectorAll("footer a[href^='#']").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      scrollToHashAnchor(link.getAttribute("href") || "", e);
+    });
+  });
+
+  const navCtaHash = document.querySelector(".main-nav a.nav-cta[href^='#']");
+  if (navCtaHash) {
+    navCtaHash.addEventListener("click", (e) => {
+      scrollToHashAnchor(navCtaHash.getAttribute("href") || "", e);
+    });
+  }
 
   /* Get started (nav-cta) is outside .main-nav ul – must close menu on mobile (fixes scroll lock bug) */
   mainNav?.addEventListener(
@@ -242,7 +332,11 @@ document.addEventListener("DOMContentLoaded", () => {
         contactFormSection.setAttribute("aria-hidden", "false");
         const toggleText = contactFormToggle.querySelector(".contact-form-toggle-text");
         if (toggleText) toggleText.textContent = "Hide Form";
-        contactFormSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (bineLenis) {
+          bineLenis.scrollTo(contactFormSection, { offset: HOME_HASH_SCROLL_OFFSET });
+        } else {
+          contactFormSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
 
         setTimeout(() => {
           contactFormInner.classList.remove("contact-form-content-pending");
@@ -851,13 +945,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 5b) About page: timeline line and scroll move together (scroll-driven fill + glowing dot)
+  const aboutStoryflow = document.getElementById("about-storyflow");
   const aboutTimeline = document.getElementById("about-timeline");
   const timelineLineFill = document.getElementById("timeline-line-fill");
   const timelineItems = document.querySelectorAll("#about-timeline .about-timeline-item");
 
   if (aboutTimeline && timelineLineFill && timelineItems.length) {
     function updateTimelineLine() {
-      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
       const timelineRect = aboutTimeline.getBoundingClientRect();
       const sectionHeight = timelineRect.height;
       const viewportHeight = window.innerHeight;
@@ -872,50 +966,42 @@ document.addEventListener("DOMContentLoaded", () => {
           })()
         : 40;
 
-      const atTopOfPage = scrollY < 180;
-
       let fillHeight;
       let activeIndex;
 
-      if (atTopOfPage) {
-        // At very top of page: first circle glows, green line reaches first dot (always visible)
-        fillHeight = Math.max(firstDotCenterY, 24);
-        activeIndex = 0;
-      } else {
-        // Scrolled: fill grows with scroll so glow moves 1st → 2nd → 3rd (no skipping)
-        const scrollStart = 180 - firstDotCenterY;
-        const scrolledThroughSection = Math.max(0, Math.min(sectionHeight, scrollY - scrollStart));
-        const atBottomOfPage =
-          scrollY >=
-          (document.documentElement.scrollHeight - window.innerHeight - 20);
-        const timelineFullyScrolledPast = timelineRect.bottom < 0;
+      // Progress starts when timeline enters viewport and ends when it is nearly passed.
+      const progressStart = viewportHeight * 0.82;
+      const progressEnd = -viewportHeight * 0.18;
+      const progress = (progressStart - timelineRect.top) / (progressStart - progressEnd);
+      const clampedProgress = Math.max(0, Math.min(1, progress));
 
-        if (atBottomOfPage || timelineFullyScrolledPast) {
-          fillHeight = sectionHeight;
-        } else {
-          fillHeight = Math.min(
-            sectionHeight,
-            Math.max(firstDotCenterY, scrolledThroughSection)
-          );
-        }
+      fillHeight = Math.min(
+        sectionHeight,
+        Math.max(firstDotCenterY, clampedProgress * sectionHeight)
+      );
 
-        // Glow the dot that the line has reached (one by one)
-        activeIndex = 0;
-        timelineItems.forEach((item, index) => {
-          const dot = item.querySelector(".about-timeline-dot");
-          if (!dot) return;
-          const dotRect = dot.getBoundingClientRect();
-          const dotCenterY = dotRect.top - timelineRect.top + dotRect.height / 2;
-          if (dotCenterY <= fillHeight + 2) {
-            activeIndex = index;
-          }
-        });
+      if (aboutStoryflow) {
+        const fadeProgress = Math.max(0, Math.min(1, (clampedProgress - 0.01) / 0.72));
+        aboutStoryflow.style.setProperty("--about-photo-fade", String(fadeProgress));
       }
+
+      // Cumulative glow: passed dots stay active; scrolling up deactivates in reverse.
+      const dotActivationOffset = 4;
+      activeIndex = 0;
+      timelineItems.forEach((item, index) => {
+        const dot = item.querySelector(".about-timeline-dot");
+        if (!dot) return;
+        const dotRect = dot.getBoundingClientRect();
+        const dotCenterY = dotRect.top - timelineRect.top + dotRect.height / 2;
+        if (dotCenterY <= fillHeight - dotActivationOffset) {
+          activeIndex = index;
+        }
+      });
 
       timelineLineFill.style.height = fillHeight + "px";
 
       timelineItems.forEach((item, index) => {
-        item.classList.toggle("about-timeline-item-active", index === activeIndex);
+        item.classList.toggle("about-timeline-item-active", index <= activeIndex);
       });
     }
 
@@ -962,6 +1048,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const lockBodyScroll = () => {
+      if (bineLenis) bineLenis.stop();
       if (isMobileStoryModal()) {
         // Also lock overflow on root to stop scroll chaining behind the overlay.
         document.documentElement.style.overflow = "hidden";
@@ -996,6 +1083,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "";
       } else {
         document.body.style.overflow = "";
+      }
+      if (bineLenis) {
+        bineLenis.start();
+        refreshLenisAfterScrollLock();
       }
     };
 
@@ -1150,6 +1241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const lockPageScroll = () => {
+      if (bineLenis) bineLenis.stop();
       if (isMobileModal()) {
         // iOS + Android mobile: don't touch body styles (prevents jump on close).
         document.documentElement.style.overflow = "hidden";
@@ -1179,6 +1271,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.style.overflow = "";
       } else {
         document.body.style.overflow = "";
+      }
+      if (bineLenis) {
+        bineLenis.start();
+        refreshLenisAfterScrollLock();
       }
     };
 

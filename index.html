@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="lenis-scroll">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -117,7 +117,7 @@
                 </div>
                 <p class="division-text">
                   Industrial electroplating and surface-finishing solutions for the
-                  electronics industry—including casting, non-toxic plating, and
+                  electric and electronics components—including casting, electroplating, and
                   specialized manufacturing for quality and reliability.
                 </p>
                 <a href="industrial.html" class="division-link">
@@ -741,7 +741,6 @@
                 <li><strong>Industrial</strong></li>
                 <li><a href="#manufacturing">Casting</a></li>
                 <li><a href="#manufacturing">Electroplating</a></li>
-                <li><a href="#manufacturing">Non-toxic Plating</a></li>
               </ul>
               <ul>
                 <li><strong>Construction</strong></li>
@@ -781,6 +780,8 @@
       </div>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Lenis: self-hosted; loads before script.js (all pages use class lenis-scroll on <html>). -->
+    <script src="js/lenis.min.js"></script>
+    <script src="script.js" defer></script>
   </body>
 </html>
