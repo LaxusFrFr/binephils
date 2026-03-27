@@ -1166,6 +1166,20 @@ a {
 }
 
 @media (min-width: 721px) {
+  .construction-road-banner-intro {
+    margin-top: 0.45rem;
+  }
+
+  .construction-road-banner-intro-title {
+    white-space: nowrap;
+    line-height: 1.14;
+    margin-bottom: 0.6rem;
+  }
+
+  .construction-road-banner-intro-text {
+    margin-bottom: 0.95rem;
+  }
+
   .construction-road-banner-title {
     white-space: nowrap;
   }
@@ -4997,6 +5011,11 @@ a {
 
 .footer-column a {
   color: #374151;
+}
+
+.footer-column a.footer-link-active {
+  color: var(--green-main);
+  font-weight: 700;
 }
 
 .footer-bottom {

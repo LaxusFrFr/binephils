@@ -229,6 +229,60 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Footer: highlight the current Company page link (About/Services/Products/etc.)
+  const footerCompanyLinks = Array.from(
+    document.querySelectorAll(".footer-links-group ul a")
+  ).filter((link) => {
+    const group = link.closest(".footer-links-group");
+    const heading = group?.querySelector("h4");
+    return heading && (heading.textContent || "").trim().toLowerCase() === "company";
+  });
+  if (footerCompanyLinks.length) {
+    const normalizePath = (value) => {
+      const path = (value || "").toLowerCase().replace(/\\/g, "/");
+      const clean = path.endsWith("/") ? `${path}index.html` : path;
+      const parts = clean.split("/");
+      return parts[parts.length - 1] || "index.html";
+    };
+
+    const currentPath = normalizePath(window.location.pathname || "index.html");
+    const currentHash = (window.location.hash || "").toLowerCase();
+
+    footerCompanyLinks.forEach((link) => {
+      const href = link.getAttribute("href") || "";
+      if (!href) return;
+
+      let isActive = false;
+
+      if (href.startsWith("#")) {
+        // On homepage, section links only become active when that section hash is open.
+        isActive =
+          currentPath === "index.html" &&
+          currentHash.length > 0 &&
+          href.toLowerCase() === currentHash;
+      } else {
+        const url = new URL(href, window.location.href);
+        const linkPath = normalizePath(url.pathname);
+        const linkHash = (url.hash || "").toLowerCase();
+
+        // Exact page match for normal links (about/services/products/projects/privacy/cookie).
+        if (linkPath === currentPath) {
+          // If link contains hash, require hash match too; otherwise page match is enough.
+          isActive = !linkHash || linkHash === currentHash;
+        }
+
+        // For links to index sections (e.g., index.html#contact), only active when hash matches.
+        if (linkPath === "index.html" && linkHash) {
+          isActive = currentPath === "index.html" && currentHash === linkHash;
+        }
+      }
+
+      link.classList.toggle("footer-link-active", isActive);
+      if (isActive) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
   document.querySelectorAll("footer a[href^='#']").forEach((link) => {
     link.addEventListener("click", (e) => {
       scrollToHashAnchor(link.getAttribute("href") || "", e);
