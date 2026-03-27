@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const HOME_HASH_SCROLL_OFFSET = -80;
 
   const LenisCtor = typeof Lenis !== "undefined" ? Lenis : window.Lenis || globalThis.Lenis;
-  if (document.documentElement.classList.contains("lenis-scroll") && LenisCtor) {
+  if (LenisCtor) {
     document.documentElement.style.scrollBehavior = "auto";
     bineLenis = new LenisCtor({
       autoRaf: true,
