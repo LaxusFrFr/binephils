@@ -1440,58 +1440,6 @@ a {
   font-size: 0.98rem;
 }
 
-.bcdc-legend {
-  margin-top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  justify-content: center;
-}
-
-.bcdc-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
-  color: #1f2937;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.bcdc-legend-icon {
-  font-size: 0.78rem;
-  color: var(--construction-green);
-  line-height: 1;
-}
-
-.bcdc-legend-item-general {
-  color: #1f2937;
-  background: #ffffff;
-  border-color: #d1d5db;
-}
-
-.bcdc-legend-item-traffic {
-  color: #1f2937;
-  background: #ffffff;
-  border-color: #d1d5db;
-}
-
-.bcdc-legend-item-panels {
-  color: #1f2937;
-  background: #ffffff;
-  border-color: #d1d5db;
-}
-
-.bcdc-legend-item:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
-}
-
 .bcdc-advantage-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1516,11 +1464,36 @@ a {
   box-shadow: 0 24px 55px rgba(15, 23, 42, 0.16);
 }
 
-.bcdc-advantage-card h3 {
-  margin: 0 0 0.7rem;
+.bcdc-advantage-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.7rem;
+}
+
+.bcdc-advantage-icon {
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: rgba(9, 110, 51, 0.09);
+  color: var(--construction-green);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.bcdc-advantage-card-head h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding-top: 0.15rem;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--construction-green);
+  line-height: 1.25;
 }
 
 .bcdc-advantage-card p {
@@ -1528,27 +1501,6 @@ a {
   color: var(--text-muted);
   font-size: 0.95rem;
   line-height: 1.5;
-}
-
-.bcdc-card-links {
-  margin-top: 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.bcdc-card-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.34rem;
-  padding: 0.26rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-decoration: none;
-  color: #1f2937;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
 }
 
 .construction-services-section {
@@ -5464,16 +5416,6 @@ a {
 
   .bcdc-advantage-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .bcdc-legend {
-    justify-content: flex-start;
-    gap: 0.5rem;
-  }
-
-  .bcdc-legend-item {
-    font-size: 0.74rem;
-    padding: 0.3rem 0.58rem;
   }
 
   .construction-services-grid {
