@@ -676,10 +676,10 @@ a {
   border-radius: var(--radius-md);
   font-weight: 600;
   font-size: 1rem;
-  background: transparent;
+  background-color: transparent;
   color: #ffffff;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 
 .btn-hero-outline:hover {
@@ -4747,6 +4747,30 @@ a {
   color: rgba(255, 255, 255, 0.93);
   font-size: clamp(0.99rem, 1.8vw, 1.12rem);
   line-height: 1.62;
+}
+
+/* 404 / policy hero CTAs: spacing from copy; no extra bottom margin (construction hero keeps margin before stats) */
+.policy-hero-inner .construction-hero-actions {
+  margin-top: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 0;
+}
+
+/* 404 “Request a Quote”: same *hover* tint as index “Our Services” only — default uses .btn/.btn-outline */
+.policy-hero-inner .construction-hero-actions .btn-outline {
+  border-color: rgba(255, 255, 255, 0.92);
+  color: #ffffff;
+  background-color: transparent;
+}
+
+.policy-hero-inner .construction-hero-actions .btn-outline:hover {
+  border-color: var(--hero-accent);
+  color: var(--hero-accent);
+  background: rgba(154, 230, 166, 0.08);
+}
+
+/* 404: hero height follows content + equal vertical padding — avoids a tall empty green band below CTAs */
+.policy-page--compact-hero .policy-hero {
+  min-height: 0;
 }
 
 .policy-content-section {
