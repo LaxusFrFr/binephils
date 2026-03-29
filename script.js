@@ -998,6 +998,60 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // 5a) road-banner-page — mobile: banner bg layer with slight zoom on scroll
+  (function initConstructionBannerMobileScrollZoom() {
+    if (!document.body.classList.contains("road-banner-page")) return;
+    const banner = document.querySelector(".construction-road-banner--parallax");
+    const layer = document.querySelector(".construction-road-banner-scroll-bg");
+    if (!banner || !layer) return;
+
+    const mobileMq = window.matchMedia("(max-width: 720px)");
+    const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let ticking = false;
+    const zoomExtra = 0.072;
+
+    function applyZoom() {
+      ticking = false;
+      if (!mobileMq.matches) {
+        layer.style.transform = "";
+        return;
+      }
+      if (reduceMotionMq.matches) {
+        layer.style.transform = "scale(1)";
+        return;
+      }
+      const rect = banner.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const span = Math.max(vh + rect.height * 0.75, 1);
+      const progress = Math.max(0, Math.min(1, (vh - rect.top) / span));
+      const scale = 1 + progress * zoomExtra;
+      layer.style.transform = `scale(${scale})`;
+    }
+
+    function onScrollOrResize() {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(applyZoom);
+      }
+    }
+
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize, { passive: true });
+    if (typeof mobileMq.addEventListener === "function") {
+      mobileMq.addEventListener("change", onScrollOrResize);
+    } else if (typeof mobileMq.addListener === "function") {
+      mobileMq.addListener(onScrollOrResize);
+    }
+    if (typeof reduceMotionMq.addEventListener === "function") {
+      reduceMotionMq.addEventListener("change", onScrollOrResize);
+    } else if (typeof reduceMotionMq.addListener === "function") {
+      reduceMotionMq.addListener(onScrollOrResize);
+    }
+
+    applyZoom();
+    requestAnimationFrame(applyZoom);
+  })();
+
   // 5b) About page: timeline line and scroll move together (scroll-driven fill + glowing dot)
   const aboutStoryflow = document.getElementById("about-storyflow");
   const aboutTimeline = document.getElementById("about-timeline");
@@ -1005,10 +1059,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const timelineItems = document.querySelectorAll("#about-timeline .about-timeline-item");
 
   if (aboutTimeline && timelineLineFill && timelineItems.length) {
+    const aboutTimelineMobileMq =
+      window.matchMedia && window.matchMedia("(max-width: 720px)");
+
+    function isAboutTimelineMobile() {
+      return aboutTimelineMobileMq && aboutTimelineMobileMq.matches;
+    }
+
     function updateTimelineLine() {
       const timelineRect = aboutTimeline.getBoundingClientRect();
       const sectionHeight = timelineRect.height;
       const viewportHeight = window.innerHeight;
+      const mobileLayout = isAboutTimelineMobile();
 
       // First dot position (line always reaches at least this when timeline is in view)
       const firstItem = timelineItems[0];
@@ -1026,7 +1088,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Progress starts when timeline enters viewport and ends when it is nearly passed.
       const progressStart = viewportHeight * 0.82;
       const progressEnd = -viewportHeight * 0.18;
-      const progress = (progressStart - timelineRect.top) / (progressStart - progressEnd);
+      const span = progressStart - progressEnd;
+      // Mobile: stretch the scroll distance so the green fill advances much slower (iOS/Android).
+      const progressStretch = mobileLayout ? 2.65 : 1;
+      const progress = (progressStart - timelineRect.top) / (span * progressStretch);
       const clampedProgress = Math.max(0, Math.min(1, progress));
 
       fillHeight = Math.min(
@@ -1035,11 +1100,12 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (aboutStoryflow) {
-        const fadeProgress = Math.max(0, Math.min(1, (clampedProgress - 0.01) / 0.72));
+        const fadeSpan = mobileLayout ? 0.72 * progressStretch : 0.72;
+        const fadeProgress = Math.max(0, Math.min(1, (clampedProgress - 0.01) / fadeSpan));
         aboutStoryflow.style.setProperty("--about-photo-fade", String(fadeProgress));
       }
 
-      // Cumulative glow: passed dots stay active; scrolling up deactivates in reverse.
+      // Glow locked to the green fill on mobile and desktop (same logic, consistent behavior).
       const dotActivationOffset = 4;
       activeIndex = 0;
       timelineItems.forEach((item, index) => {
@@ -1073,6 +1139,13 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     window.addEventListener("load", updateTimelineLine);
+    if (aboutTimelineMobileMq) {
+      if (typeof aboutTimelineMobileMq.addEventListener === "function") {
+        aboutTimelineMobileMq.addEventListener("change", updateTimelineLine);
+      } else if (typeof aboutTimelineMobileMq.addListener === "function") {
+        aboutTimelineMobileMq.addListener(updateTimelineLine);
+      }
+    }
     updateTimelineLine();
     requestAnimationFrame(updateTimelineLine);
     setTimeout(updateTimelineLine, 100);
