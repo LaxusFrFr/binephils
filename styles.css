@@ -66,6 +66,11 @@ a {
 .blank-page {
   min-height: 70vh;
   background-color: var(--green-main);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url("images/Industrial Main.png");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
   color: #ffffff;
   display: flex;
   align-items: center;
