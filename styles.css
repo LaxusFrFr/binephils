@@ -1589,9 +1589,17 @@ a {
   gap: 1.5rem;
 }
 
-/* 2x2 layout for products traffic section */
+/* 2x2 layout for products traffic section; fifth card centered on last row */
 .construction-services-grid.products-services-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.construction-services-grid.products-services-grid
+  > .construction-service-card.product-card--traffic-last {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 100%;
+  max-width: calc((100% - 1.5rem) / 2);
 }
 
 .construction-service-card {
@@ -1917,6 +1925,24 @@ a {
 
 .projects-tab.is-active {
   color: var(--green-main);
+}
+
+/* Product category tabs: independent behavior from projects tabs */
+#product-category .projects-tabs {
+  justify-content: flex-start;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#product-category .projects-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+#product-category .projects-tab {
+  flex: 0 0 auto;
 }
 
 /* Project category: 4 vertical rectangles (image bg, overlay, title, View More) */
@@ -5409,7 +5435,22 @@ a {
     max-width: 100%;
     overflow-x: auto;
     overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     padding: 0.18rem 0.4rem;
+  }
+
+  /* Ensure product-category tabs can swipe horizontally on mobile */
+  #product-category .projects-tabs {
+    overflow-x: auto;
+    overflow-y: visible;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .projects-tabs::-webkit-scrollbar {
@@ -5478,6 +5519,13 @@ a {
 
   .construction-services-grid.products-services-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .construction-services-grid.products-services-grid
+    > .construction-service-card.product-card--traffic-last {
+    grid-column: auto;
+    justify-self: stretch;
+    max-width: none;
   }
 
   .construction-services-cta-row {

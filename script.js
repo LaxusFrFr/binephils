@@ -1277,6 +1277,30 @@ document.addEventListener("DOMContentLoaded", () => {
       indicator.style.width = `${width}px`;
     };
 
+    const revealActiveTab = (activeTab) => {
+      const isMobileTabs = window.matchMedia("(max-width: 720px)").matches;
+      if (!activeTab || !isMobileTabs) return;
+      const container = tabsContainer;
+      const tabStart = activeTab.offsetLeft;
+      const tabEnd = tabStart + activeTab.offsetWidth;
+      const viewStart = container.scrollLeft;
+      const viewEnd = viewStart + container.clientWidth;
+
+      let nextScrollLeft = viewStart;
+      if (tabStart < viewStart) {
+        nextScrollLeft = tabStart - 12;
+      } else if (tabEnd > viewEnd) {
+        nextScrollLeft = tabEnd - container.clientWidth + 12;
+      } else {
+        return;
+      }
+
+      container.scrollTo({
+        left: Math.max(0, nextScrollLeft),
+        behavior: "smooth",
+      });
+    };
+
     const applyFilter = (filter) => {
       const visibleCards = [];
       const normalized = (filter || "all").trim();
@@ -1309,6 +1333,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tab.addEventListener("click", () => {
         tabs.forEach((t) => t.classList.remove("is-active"));
         tab.classList.add("is-active");
+        revealActiveTab(tab);
         moveIndicator(tab);
         applyFilter(tab.getAttribute("data-filter") || "all");
       });
