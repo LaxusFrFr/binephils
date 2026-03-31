@@ -1278,25 +1278,15 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const revealActiveTab = (activeTab) => {
-      const isMobileTabs = window.matchMedia("(max-width: 720px)").matches;
-      if (!activeTab || !isMobileTabs) return;
+      if (!activeTab || sectionId !== "product-category") return;
       const container = tabsContainer;
-      const tabStart = activeTab.offsetLeft;
-      const tabEnd = tabStart + activeTab.offsetWidth;
-      const viewStart = container.scrollLeft;
-      const viewEnd = viewStart + container.clientWidth;
-
-      let nextScrollLeft = viewStart;
-      if (tabStart < viewStart) {
-        nextScrollLeft = tabStart - 12;
-      } else if (tabEnd > viewEnd) {
-        nextScrollLeft = tabEnd - container.clientWidth + 12;
-      } else {
-        return;
-      }
+      const tabCenter = activeTab.offsetLeft + activeTab.offsetWidth / 2;
+      const targetLeft = tabCenter - container.clientWidth / 2;
+      const maxScrollLeft = Math.max(0, container.scrollWidth - container.clientWidth);
+      const nextScrollLeft = Math.max(0, Math.min(targetLeft, maxScrollLeft));
 
       container.scrollTo({
-        left: Math.max(0, nextScrollLeft),
+        left: nextScrollLeft,
         behavior: "smooth",
       });
     };
@@ -1339,8 +1329,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    const initialActive = tabsContainer.querySelector(".projects-tab.is-active") || tabs[0];
+    let initialActive = tabsContainer.querySelector(".projects-tab.is-active") || tabs[0];
+    let requestedCategory = "";
+
+    if (sectionId === "product-category") {
+      requestedCategory = new URLSearchParams(window.location.search).get("category") || "";
+      if (requestedCategory) {
+        const requestedTab = Array.from(tabs).find(
+          (tab) => (tab.getAttribute("data-filter") || "") === requestedCategory
+        );
+        if (requestedTab) {
+          tabs.forEach((t) => t.classList.remove("is-active"));
+          requestedTab.classList.add("is-active");
+          initialActive = requestedTab;
+        }
+      }
+    }
+
     if (initialActive) {
+      if (sectionId === "product-category") {
+        tabsContainer.scrollLeft = 0;
+      }
+      revealActiveTab(initialActive);
       moveIndicator(initialActive);
       applyFilter(initialActive.getAttribute("data-filter") || "all");
     }

@@ -1803,6 +1803,10 @@ a {
   transition-delay: 0.64s;
 }
 
+.services-dropdown-box[href] {
+  text-decoration: none;
+}
+
 .services-dropdown-box:hover {
   background-color: #f0fdf4;
   box-shadow: 0 8px 24px rgba(9, 110, 51, 0.12);
@@ -1820,6 +1824,17 @@ a {
 .services-dropdown-panel .services-dropdown-box-link:hover {
   background-color: inherit;
   box-shadow: none;
+}
+
+/* Re-enable click behavior for explicitly linked traffic boxes */
+.services-dropdown-panel a.services-dropdown-box {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.services-dropdown-panel a.services-dropdown-box:hover {
+  background-color: #f0fdf4;
+  box-shadow: 0 8px 24px rgba(9, 110, 51, 0.12);
 }
 
 /* Aluminum dropdown: one box per panel (title + 3 links inside), no underlines */
@@ -5477,6 +5492,14 @@ a {
   .hero-section {
     padding: 3rem 0 4rem;
     min-height: auto;
+  }
+
+  .hero-bg {
+    background-position: 41% center;
+  }
+
+  .construction-hero {
+    background-position: 60% center;
   }
 
   .hero-title {
