@@ -1,6 +1,92 @@
 // Interactive behaviors for buttons and navigation
 
 document.addEventListener("DOMContentLoaded", () => {
+  function initAboutStorySliders() {
+    document.querySelectorAll(".about-story-slider").forEach((root) => {
+      if (root.dataset.aboutSliderReady === "1") return;
+      const slides = root.querySelectorAll(".about-story-slider-slide");
+      const track = root.querySelector(".about-story-slider-track");
+      const dotsWrap = root.querySelector(".about-story-slider-dots");
+      const prevBtn = root.querySelector(".about-story-slider-prev");
+      const nextBtn = root.querySelector(".about-story-slider-next");
+      if (!slides.length || !track || !dotsWrap) return;
+      root.dataset.aboutSliderReady = "1";
+
+      const intervalMs = Math.max(
+        2500,
+        parseInt(String(root.getAttribute("data-slider-interval-ms") || "3500"), 10) || 3500
+      );
+      let index = 0;
+      let timer = null;
+
+      const setSlide = (i) => {
+        index = (i + slides.length) % slides.length;
+        const viewportWidth = root.clientWidth || 0;
+        const x = Math.round(-index * viewportWidth);
+        track.style.transform = `translate3d(${x}px, 0, 0)`;
+        slides.forEach((slide, j) => {
+          const on = j === index;
+          slide.classList.toggle("is-active", on);
+          slide.setAttribute("aria-hidden", on ? "false" : "true");
+        });
+        dotsWrap.querySelectorAll(".about-story-slider-dot").forEach((dot, j) => {
+          dot.setAttribute("aria-selected", j === index ? "true" : "false");
+        });
+      };
+
+      const stopTimer = () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      };
+
+      const startTimer = () => {
+        if (document.hidden) return;
+        stopTimer();
+        timer = window.setInterval(() => setSlide(index + 1), intervalMs);
+      };
+
+      const restartTimer = () => {
+        stopTimer();
+        startTimer();
+      };
+
+      slides.forEach((_, j) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "about-story-slider-dot";
+        dot.setAttribute("role", "tab");
+        dot.setAttribute("aria-label", `Photo ${j + 1} of ${slides.length}`);
+        dot.addEventListener("click", () => {
+          setSlide(j);
+          restartTimer();
+        });
+        dotsWrap.appendChild(dot);
+      });
+
+      prevBtn?.addEventListener("click", () => {
+        setSlide(index - 1);
+        restartTimer();
+      });
+      nextBtn?.addEventListener("click", () => {
+        setSlide(index + 1);
+        restartTimer();
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stopTimer();
+        else startTimer();
+      });
+      window.addEventListener("resize", () => setSlide(index), { passive: true });
+
+      setSlide(0);
+      startTimer();
+    });
+  }
+
+  initAboutStorySliders();
+
   // Device hint class for platform-specific visual polish.
   const isAndroid = /Android/i.test(navigator.userAgent || "");
   const isIOS =
@@ -261,7 +347,12 @@ document.addEventListener("DOMContentLoaded", () => {
           currentHash.length > 0 &&
           href.toLowerCase() === currentHash;
       } else {
-        const url = new URL(href, window.location.href);
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch {
+          return;
+        }
         const linkPath = normalizePath(url.pathname);
         const linkHash = (url.hash || "").toLowerCase();
 
@@ -330,6 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (section.classList.contains("stagger-reveal-on-load")) {
         /* Skip contact form & hidden wizard panels – their stagger is triggered manually */
         if (section.closest("#contact-form")) return;
+        if (section.closest(".about-story-expand-section")) return;
         if (section.closest(".wizard-panel:not(.is-active)")) return;
         section.classList.add("stagger-revealed");
       }
@@ -338,18 +430,96 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4) Scroll-triggered reveal (run after first paint)
     const scrollRevealEls = document.querySelectorAll(".scroll-reveal");
     if (scrollRevealEls.length && "IntersectionObserver" in window) {
+      const staggerStep = 0.08;
+      /** About page Core Values: much larger gap between each box’s reveal start */
+      const aboutCoreStaggerStep = 0.26;
+
+      const applyScrollRevealStaggerDelay = (el) => {
+        const aboutCoreGrid = el.closest(".about-core-section .about-core-grid");
+        if (aboutCoreGrid && el.classList.contains("about-core-card")) {
+          const items = aboutCoreGrid.querySelectorAll(".about-core-card");
+          const idx = [...items].indexOf(el);
+          if (idx >= 0) {
+            const delaySec = idx * aboutCoreStaggerStep;
+            el.style.transitionDelay = `${delaySec}s`;
+            /* Stagger delay must not apply to later hovers — inline delay was slowing lift/shadow */
+            const revealMs = Math.ceil((delaySec + 0.65) * 1000);
+            window.setTimeout(() => {
+              el.style.removeProperty("transition-delay");
+            }, revealMs);
+          }
+          return;
+        }
+
+        const storyInner = el.closest(".about-story-box-inner");
+        if (storyInner) {
+          const items = storyInner.querySelectorAll(".scroll-reveal");
+          const idx = [...items].indexOf(el);
+          if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
+          return;
+        }
+
+        const staggerParent = el.closest(".about-stagger-parent");
+        if (staggerParent) {
+          const items = staggerParent.querySelectorAll(".scroll-reveal");
+          const idx = [...items].indexOf(el);
+          if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
+          return;
+        }
+
+        const missionGrid = el.closest(".about-mission-commitment-grid");
+        if (
+          missionGrid &&
+          (el.classList.contains("about-mission-column") || el.classList.contains("about-commitment-card"))
+        ) {
+          const siblings = missionGrid.querySelectorAll(".about-mission-column, .about-commitment-card");
+          const idx = [...siblings].indexOf(el);
+          if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
+          return;
+        }
+
+        const goalsGrid = el.closest(".about-goals-vision-grid");
+        if (
+          goalsGrid &&
+          (el.classList.contains("about-goals-card") || el.classList.contains("about-vision-column"))
+        ) {
+          const siblings = goalsGrid.querySelectorAll(".about-goals-card, .about-vision-column");
+          const idx = [...siblings].indexOf(el);
+          if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
+          return;
+        }
+
+        const parent =
+          el.closest(".divisions-grid") ||
+          el.closest(".advantage-grid") ||
+          el.closest(".why-grid") ||
+          el.closest(".about-grid") ||
+          el.closest(".about-core-grid") ||
+          el.closest(".construction-services-grid") ||
+          el.closest(".bcdc-advantage-grid");
+        const isStaggerCard =
+          el.classList.contains("division-card") ||
+          el.classList.contains("advantage-card") ||
+          el.classList.contains("why-card") ||
+          el.classList.contains("about-card") ||
+          el.classList.contains("about-core-card") ||
+          el.classList.contains("construction-service-card") ||
+          el.classList.contains("bcdc-advantage-card");
+        if (parent && isStaggerCard) {
+          const siblings = parent.querySelectorAll(
+            ".division-card, .advantage-card, .why-card, .about-card, .about-core-card, .construction-service-card, .bcdc-advantage-card"
+          );
+          const idx = [...siblings].indexOf(el);
+          if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
+        }
+      };
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             const el = entry.target;
-            const parent = el.closest(".divisions-grid") || el.closest(".advantage-grid") || el.closest(".why-grid") || el.closest(".about-grid") || el.closest(".about-core-grid") || el.closest(".construction-services-grid") || el.closest(".bcdc-advantage-grid");
-            const isStaggerCard = el.classList.contains("division-card") || el.classList.contains("advantage-card") || el.classList.contains("why-card") || el.classList.contains("about-card") || el.classList.contains("about-core-card") || el.classList.contains("construction-service-card") || el.classList.contains("bcdc-advantage-card");
-            if (parent && isStaggerCard) {
-              const siblings = parent.querySelectorAll(".division-card, .advantage-card, .why-card, .about-card, .about-core-card, .construction-service-card, .bcdc-advantage-card");
-              const idx = [...siblings].indexOf(el);
-              el.style.transitionDelay = `${idx * 0.08}s`;
-            }
+            applyScrollRevealStaggerDelay(el);
             el.classList.add("is-visible");
             observer.unobserve(el);
           });
@@ -362,7 +532,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Defer all page-specific UI (Services, About, Projects) so first paint is not blocked — fixes slight pause on Services/Projects
   requestAnimationFrame(() => {
-    runPageSpecificScripts();
+    try {
+      runPageSpecificScripts();
+    } catch (err) {
+      console.error("runPageSpecificScripts:", err);
+    }
   });
 
   function runPageSpecificScripts() {
@@ -1052,210 +1226,166 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(applyZoom);
   })();
 
-  // 5b) About page: timeline line and scroll move together (scroll-driven fill + glowing dot)
-  const aboutStoryflow = document.getElementById("about-storyflow");
-  const aboutTimeline = document.getElementById("about-timeline");
-  const timelineLineFill = document.getElementById("timeline-line-fill");
-  const timelineItems = document.querySelectorAll("#about-timeline .about-timeline-item");
+  // 6) Our Story expand / collapse (About page) — measured max-height so collapse animates
+  // the real content height (large fixed max-height values make most of the duration invisible).
+  const storyExpandSection = document.querySelector(".about-story-expand-section");
+  const storyReadBtn = document.querySelector(".about-story-box .story-read-more");
+  const storyExpandInner = document.querySelector(".about-story-expand-inner");
+  const STORY_DROPDOWN_MS = 500;
+  const storyReduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  if (aboutTimeline && timelineLineFill && timelineItems.length) {
-    const aboutTimelineMobileMq =
-      window.matchMedia && window.matchMedia("(max-width: 720px)");
+  if (storyExpandSection && storyReadBtn && storyExpandInner) {
+    const storyToggleText = storyReadBtn.querySelector(".story-read-more-label");
+    const storyStaggerContainers = () =>
+      storyExpandSection.querySelectorAll(".stagger-reveal-on-load");
+    let storyAnimatingClose = false;
+    let storyAnimatingOpen = false;
+    const ourStorySection = document.querySelector("#about-storyflow");
 
-    function isAboutTimelineMobile() {
-      return aboutTimelineMobileMq && aboutTimelineMobileMq.matches;
-    }
-
-    function updateTimelineLine() {
-      const timelineRect = aboutTimeline.getBoundingClientRect();
-      const sectionHeight = timelineRect.height;
-      const viewportHeight = window.innerHeight;
-      const mobileLayout = isAboutTimelineMobile();
-
-      // First dot position (line always reaches at least this when timeline is in view)
-      const firstItem = timelineItems[0];
-      const firstDot = firstItem ? firstItem.querySelector(".about-timeline-dot") : null;
-      const firstDotCenterY = firstDot
-        ? (() => {
-            const r = firstDot.getBoundingClientRect();
-            return r.top - timelineRect.top + r.height / 2;
-          })()
-        : 40;
-
-      let fillHeight;
-      let activeIndex;
-
-      // Progress starts when timeline enters viewport and ends when it is nearly passed.
-      const progressStart = viewportHeight * 0.82;
-      const progressEnd = -viewportHeight * 0.18;
-      const span = progressStart - progressEnd;
-      // Mobile: stretch the scroll distance so the green fill advances much slower (iOS/Android).
-      const progressStretch = mobileLayout ? 2.65 : 1;
-      const progress = (progressStart - timelineRect.top) / (span * progressStretch);
-      const clampedProgress = Math.max(0, Math.min(1, progress));
-
-      fillHeight = Math.min(
-        sectionHeight,
-        Math.max(firstDotCenterY, clampedProgress * sectionHeight)
-      );
-
-      if (aboutStoryflow) {
-        const fadeSpan = mobileLayout ? 0.72 * progressStretch : 0.72;
-        const fadeProgress = Math.max(0, Math.min(1, (clampedProgress - 0.01) / fadeSpan));
-        aboutStoryflow.style.setProperty("--about-photo-fade", String(fadeProgress));
-      }
-
-      // Glow locked to the green fill on mobile and desktop (same logic, consistent behavior).
-      const dotActivationOffset = 4;
-      activeIndex = 0;
-      timelineItems.forEach((item, index) => {
-        const dot = item.querySelector(".about-timeline-dot");
-        if (!dot) return;
-        const dotRect = dot.getBoundingClientRect();
-        const dotCenterY = dotRect.top - timelineRect.top + dotRect.height / 2;
-        if (dotCenterY <= fillHeight - dotActivationOffset) {
-          activeIndex = index;
-        }
-      });
-
-      timelineLineFill.style.height = fillHeight + "px";
-
-      timelineItems.forEach((item, index) => {
-        item.classList.toggle("about-timeline-item-active", index <= activeIndex);
-      });
-    }
-
-    let ticking = false;
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateTimelineLine();
-          ticking = false;
+    const scrollToOurStoryAfterCollapse = () => {
+      if (!ourStorySection) return;
+      if (bineLenis) {
+        bineLenis.scrollTo(ourStorySection, { offset: HOME_HASH_SCROLL_OFFSET });
+      } else {
+        const top =
+          ourStorySection.getBoundingClientRect().top +
+          window.scrollY +
+          HOME_HASH_SCROLL_OFFSET;
+        window.scrollTo({
+          top: Math.max(0, top),
+          behavior: storyReduceMotionMq.matches ? "auto" : "smooth",
         });
-        ticking = true;
-      }
-    }
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    window.addEventListener("load", updateTimelineLine);
-    if (aboutTimelineMobileMq) {
-      if (typeof aboutTimelineMobileMq.addEventListener === "function") {
-        aboutTimelineMobileMq.addEventListener("change", updateTimelineLine);
-      } else if (typeof aboutTimelineMobileMq.addListener === "function") {
-        aboutTimelineMobileMq.addListener(updateTimelineLine);
-      }
-    }
-    updateTimelineLine();
-    requestAnimationFrame(updateTimelineLine);
-    setTimeout(updateTimelineLine, 100);
-    setTimeout(updateTimelineLine, 400);
-  }
-
-  // 6) Our Story modal (About page)
-  const storyButton = document.querySelector(".story-read-more");
-  const storyModal = document.getElementById("story-modal");
-  const storyClose = storyModal?.querySelector(".story-modal-close");
-
-  if (storyButton && storyModal && storyClose) {
-    const isMobileStoryModal = () => {
-      return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
-    };
-
-    const storyModalInner = storyModal.querySelector(".story-modal");
-    const storyModalBody = storyModal.querySelector(".story-modal-body");
-
-    // Mobile: block background scroll without touching body scroll position
-    const preventStoryBackgroundScroll = (e) => {
-      if (!storyModal.classList.contains("is-open")) return;
-      if (!isMobileStoryModal()) return;
-      // Allow scrolling inside the modal body only.
-      if (e.target && storyModalBody && storyModalBody.contains(e.target)) return;
-      e.preventDefault();
-    };
-
-    const lockBodyScroll = () => {
-      if (bineLenis) bineLenis.stop();
-      if (isMobileStoryModal()) {
-        // Also lock overflow on root to stop scroll chaining behind the overlay.
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
-
-        document.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
-        document.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
-        // iOS Safari: prevent default on the overlay itself is the most reliable.
-        storyModal.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
-        storyModal.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
-        // Also block gesture scrolling on the card itself (prevents edge scroll chaining).
-        if (storyModalInner) {
-          storyModalInner.addEventListener("touchmove", preventStoryBackgroundScroll, { passive: false });
-          storyModalInner.addEventListener("wheel", preventStoryBackgroundScroll, { passive: false });
-        }
-      } else {
-        document.body.style.overflow = "hidden";
-      }
-    };
-
-    const unlockBodyScroll = () => {
-      if (isMobileStoryModal()) {
-        document.documentElement.style.overflow = "";
-        document.removeEventListener("touchmove", preventStoryBackgroundScroll);
-        document.removeEventListener("wheel", preventStoryBackgroundScroll);
-        storyModal.removeEventListener("touchmove", preventStoryBackgroundScroll);
-        storyModal.removeEventListener("wheel", preventStoryBackgroundScroll);
-        if (storyModalInner) {
-          storyModalInner.removeEventListener("touchmove", preventStoryBackgroundScroll);
-          storyModalInner.removeEventListener("wheel", preventStoryBackgroundScroll);
-        }
-        document.body.style.overflow = "";
-      } else {
-        document.body.style.overflow = "";
       }
       if (bineLenis) {
-        bineLenis.start();
-        refreshLenisAfterScrollLock();
+        requestAnimationFrame(() => {
+          bineLenis.resize();
+        });
       }
     };
 
-    const openModal = () => {
-      storyModal.classList.add("is-open");
-      storyModal.setAttribute("aria-hidden", "false");
-      lockBodyScroll();
+    const runStoryStaggerReveal = () => {
+      storyExpandInner.classList.remove("about-story-content-pending");
+      storyStaggerContainers().forEach((el) => {
+        el.classList.remove("stagger-revealed");
+        void el.offsetHeight;
+        el.classList.add("stagger-revealed");
+      });
     };
 
-    const closeModal = () => {
-      storyModal.classList.remove("is-open");
-      storyModal.setAttribute("aria-hidden", "true");
-      unlockBodyScroll();
+    const openStoryPanel = () => {
+      if (storyReduceMotionMq.matches) {
+        storyExpandInner.classList.add("about-story-content-pending");
+        storyExpandSection.classList.remove("about-story-collapsed");
+        storyExpandSection.style.maxHeight = "";
+        storyReadBtn.setAttribute("aria-expanded", "true");
+        storyExpandSection.setAttribute("aria-hidden", "false");
+        if (storyToggleText) storyToggleText.textContent = "Show less";
+        requestAnimationFrame(() => {
+          runStoryStaggerReveal();
+        });
+        if (bineLenis) {
+          bineLenis.scrollTo(storyExpandSection, { offset: HOME_HASH_SCROLL_OFFSET });
+        } else {
+          storyExpandSection.scrollIntoView({ behavior: "auto", block: "start" });
+        }
+        return;
+      }
+
+      storyAnimatingClose = false;
+      storyAnimatingOpen = true;
+      storyExpandInner.classList.add("about-story-content-pending");
+      storyExpandSection.classList.remove("about-story-collapsed");
+      storyExpandSection.style.maxHeight = "0px";
+      void storyExpandSection.offsetHeight;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const h = storyExpandSection.scrollHeight;
+          storyExpandSection.style.maxHeight = `${h}px`;
+        });
+      });
+      storyReadBtn.setAttribute("aria-expanded", "true");
+      storyExpandSection.setAttribute("aria-hidden", "false");
+      if (storyToggleText) storyToggleText.textContent = "Show less";
+      if (bineLenis) {
+        bineLenis.scrollTo(storyExpandSection, { offset: HOME_HASH_SCROLL_OFFSET });
+      } else {
+        storyExpandSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      setTimeout(() => {
+        runStoryStaggerReveal();
+      }, STORY_DROPDOWN_MS);
     };
 
-    storyButton.addEventListener("click", openModal);
-    storyClose.addEventListener("click", closeModal);
+    const closeStoryPanel = () => {
+      if (storyReduceMotionMq.matches) {
+        storyStaggerContainers().forEach((el) => el.classList.remove("stagger-revealed"));
+        storyExpandSection.classList.add("about-story-collapsed");
+        storyExpandSection.style.maxHeight = "";
+        storyExpandInner.classList.add("about-story-content-pending");
+        storyReadBtn.setAttribute("aria-expanded", "false");
+        storyExpandSection.setAttribute("aria-hidden", "true");
+        if (storyToggleText) storyToggleText.textContent = "Read more";
+        requestAnimationFrame(() => {
+          scrollToOurStoryAfterCollapse();
+        });
+        return;
+      }
 
-    storyModal.addEventListener("click", (event) => {
-      if (event.target === storyModal) {
-        closeModal();
+      storyAnimatingOpen = false;
+      storyAnimatingClose = true;
+      storyStaggerContainers().forEach((el) => el.classList.remove("stagger-revealed"));
+      const h = storyExpandSection.scrollHeight;
+      storyExpandSection.style.maxHeight = `${h}px`;
+      void storyExpandSection.offsetHeight;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          storyExpandSection.style.maxHeight = "0px";
+          scrollToOurStoryAfterCollapse();
+        });
+      });
+      storyReadBtn.setAttribute("aria-expanded", "false");
+      storyExpandSection.setAttribute("aria-hidden", "true");
+      if (storyToggleText) storyToggleText.textContent = "Read more";
+    };
+
+    storyExpandSection.addEventListener("transitionend", (e) => {
+      if (e.target !== storyExpandSection || e.propertyName !== "max-height") return;
+
+      if (storyAnimatingClose) {
+        storyAnimatingClose = false;
+        storyExpandSection.classList.add("about-story-collapsed");
+        storyExpandSection.style.maxHeight = "";
+        storyExpandInner.classList.add("about-story-content-pending");
+        if (bineLenis) {
+          requestAnimationFrame(() => {
+            bineLenis.resize();
+          });
+        }
+        return;
+      }
+
+      if (storyAnimatingOpen && !storyExpandSection.classList.contains("about-story-collapsed")) {
+        storyAnimatingOpen = false;
+        storyExpandSection.style.maxHeight = "";
       }
     });
 
-    /* Prevent wheel from scrolling the page when scrolling inside the modal */
-    if (storyModalInner) {
-      storyModalInner.addEventListener(
-        "wheel",
-        (e) => e.stopPropagation(),
-        { passive: false }
-      );
-      storyModalInner.addEventListener(
-        "touchmove",
-        (e) => e.stopPropagation(),
-        { passive: false }
-      );
-    }
+    storyReadBtn.addEventListener("click", () => {
+      const isExpanding = storyExpandSection.classList.contains("about-story-collapsed");
+
+      if (isExpanding) {
+        openStoryPanel();
+      } else {
+        closeStoryPanel();
+      }
+    });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && storyModal.classList.contains("is-open")) {
-        closeModal();
-      }
+      if (event.key !== "Escape") return;
+      if (storyExpandSection.classList.contains("about-story-collapsed")) return;
+      closeStoryPanel();
+      storyReadBtn.focus();
     });
   }
 

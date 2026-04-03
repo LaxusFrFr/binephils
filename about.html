@@ -76,9 +76,9 @@
     </div>
     <div class="header-spacer"></div>
 
-    <main>
+    <main class="about-page">
       <!-- About Hero -->
-      <section class="about-hero reveal-on-load">
+      <section class="about-hero">
         <div class="container about-hero-inner">
           <div class="stagger-reveal-on-load">
             <div class="about-label-pill stagger-reveal-item">Our Story</div>
@@ -93,191 +93,434 @@
         </div>
       </section>
 
-      <section class="about-storyflow-section" id="about-storyflow" aria-label="About timeline story flow">
-      <section class="about-photo-section" aria-label="BCDC Building">
-        <div class="container about-photo-container">
-          <img
-            src="images/BCDC Building.png"
-            alt="BCDC Building"
-            class="about-photo-image"
-            decoding="async"
-          />
+      <section class="about-page-boxes" id="about-storyflow" aria-label="Our story and company">
+        <div class="container">
+          <article class="about-story-box" aria-labelledby="about-story-heading">
+            <div class="about-story-box-inner about-story-box-inner--wrap">
+              <figure class="about-story-media scroll-reveal">
+                <div
+                  class="about-story-media-frame about-story-slider"
+                  data-slider-interval-ms="3500"
+                  role="region"
+                  aria-roledescription="carousel"
+                  aria-label="Photos of Golden Mile Business Park, Carmona"
+                >
+                  <div class="about-story-slider-slides" aria-live="polite">
+                    <div class="about-story-slider-track">
+                      <div class="about-story-slider-slide is-active" aria-hidden="false">
+                        <img
+                          src="images/BCDC Building.png"
+                          alt="Bine Construction and Development Corporation office building exterior"
+                          loading="eager"
+                          decoding="async"
+                          fetchpriority="high"
+                        />
+                      </div>
+                      <div class="about-story-slider-slide" aria-hidden="true">
+                        <img
+                          src="images/BCDC 3.png"
+                          alt="Bine office and grounds, Golden Mile Business Park"
+                          loading="eager"
+                          decoding="async"
+                          fetchpriority="high"
+                        />
+                      </div>
+                      <div class="about-story-slider-slide" aria-hidden="true">
+                        <img
+                          src="images/BCDC 4.png"
+                          alt="Building and landscaping at Golden Mile Business Park, Carmona"
+                          loading="eager"
+                          decoding="async"
+                          fetchpriority="high"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="about-story-slider-btn about-story-slider-prev"
+                    aria-label="Previous photo"
+                  >
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="about-story-slider-btn about-story-slider-next"
+                    aria-label="Next photo"
+                  >
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                  </button>
+                  <div
+                    class="about-story-slider-dots"
+                    role="tablist"
+                    aria-label="Choose slide"
+                  ></div>
+                </div>
+              </figure>
+              <div class="about-story-box-main">
+                <header class="about-story-box-header scroll-reveal">
+                  <span class="about-story-box-icon" aria-hidden="true">
+                    <i class="fas fa-book-open"></i>
+                  </span>
+                  <div class="about-story-box-heading-text">
+                    <p class="about-story-box-eyebrow">Since 2001</p>
+                    <h2 id="about-story-heading" class="about-story-box-title">Our Story</h2>
+                  </div>
+                </header>
+                <div class="about-story-box-body scroll-reveal">
+                  <p>
+                    Founded on March 8, 2001, Bine Construction and Development Corporation was
+                    established with a clear vision: to help build safer and more efficient
+                    infrastructure across the Philippines. The company was founded by Flor
+                    Bañaga, a registered civil engineer, and her business partner Kyung Mo Kim,
+                    with the goal of practicing engineering through meaningful construction and
+                    traffic safety solutions.
+                  </p>
+                </div>
+
+                <div
+                  class="about-story-expand-section about-story-collapsed"
+                  id="about-story-expand"
+                  aria-hidden="true"
+                >
+                  <div class="about-story-expand-inner about-story-content-pending">
+                    <div
+                      id="about-story-expanded"
+                      class="about-story-stagger stagger-reveal-on-load"
+                      role="region"
+                      aria-labelledby="about-story-heading"
+                    >
+                      <p class="stagger-reveal-item">
+                        The company traces its roots to its mother company, Bine Phils Inc.,
+                        which was originally engaged in jewelry manufacturing. Over time,
+                        Bine Phils Inc. evolved its operations and is now focused on
+                        industrial electroplating services for the electronics industry,
+                        providing specialized surface-finishing solutions for various
+                        electronic components. This strong industrial background laid the
+                        foundation for the establishment of Bine Construction and
+                        Development Corporation.
+                      </p>
+                      <p class="stagger-reveal-item">
+                        From the beginning, the company has focused on construction
+                        development with a specialization in traffic engineering. What sets
+                        the company apart is its commitment to introducing innovative and
+                        distinctive products designed to improve road safety and
+                        infrastructure performance.
+                      </p>
+                      <p class="stagger-reveal-item">
+                        Over the years, the company has primarily worked with government
+                        agencies, infrastructure operators, and industrial clients,
+                        providing solutions for traffic safety systems and solar-powered
+                        infrastructure. Among its key accomplishments are projects involving
+                        solar street lighting systems, solar-powered bus sheds, and various
+                        traffic safety installations.
+                      </p>
+                      <p class="stagger-reveal-item">
+                        Through dedication, integrity, and strong partnerships, the company
+                        has successfully completed more than 100 projects nationwide,
+                        including its largest project&mdash;the Improvement and
+                        Rehabilitation of Roads in Kalinga–Apayao. The trust of clients such
+                        as the Metropolitan Manila Development Authority (MMDA), North Luzon
+                        Expressway (NLEX), South Luzon Expressway (SLEX), the Department of
+                        Public Works and Highways (DPWH), and various municipalities reflects
+                        the company&rsquo;s commitment to quality and reliability.
+                      </p>
+                      <p class="stagger-reveal-item">
+                        Today, the company operates from Golden Mile Business Park in
+                        Carmona, Cavite, serving clients nationwide. With a team of
+                        engineers, managers, and skilled personnel totaling around 50
+                        employees, the company continues to deliver services in general
+                        construction, project management, and specialized traffic
+                        engineering solutions. The company is also a PCAB-licensed
+                        contractor (Small B category) with relevant certifications and
+                        accreditations.
+                      </p>
+                      <p class="stagger-reveal-item">
+                        As the company continues to grow, it remains guided by its founding
+                        purpose: to apply engineering expertise to real-world infrastructure
+                        challenges. Looking ahead, the company aims to develop new
+                        technologies and products, expand its client base, and continue
+                        supporting the country&rsquo;s infrastructure development through
+                        innovative and reliable solutions.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <footer class="about-story-box-footer scroll-reveal">
+                  <button
+                    type="button"
+                    class="btn btn-outline story-read-more"
+                    aria-expanded="false"
+                    aria-controls="about-story-expanded"
+                  >
+                    <span class="story-read-more-label">Read more</span>
+                    <span class="story-read-more-chevron" aria-hidden="true">
+                      <i class="fas fa-chevron-down"></i>
+                    </span>
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
-      <!-- About Timeline (Framer-style, Bine theme) -->
-      <section class="about-timeline-section">
-        <div class="container about-timeline-container">
-          <div class="about-timeline" id="about-timeline">
-            <div class="about-timeline-line" aria-hidden="true">
-              <div class="about-timeline-line-fill" id="timeline-line-fill"></div>
+      <section
+        class="about-mission-commitment-section"
+        id="mission-commitment"
+        aria-label="Mission and commitment"
+      >
+        <div class="container">
+          <div class="about-mission-commitment-grid">
+            <div class="about-mission-column about-stagger-parent">
+              <div class="about-mission-heading scroll-reveal">
+                <span class="about-mission-icon-wrap" aria-hidden="true">
+                  <img
+                    src="images/Mission.png"
+                    alt=""
+                    class="about-mission-heading-icon"
+                    width="24"
+                    height="24"
+                    decoding="async"
+                  />
+                </span>
+                <h2 class="about-mission-heading-title">Mission</h2>
+              </div>
+              <p class="about-mission-intro scroll-reveal">Bine Phils. Inc. is committed to:</p>
+              <ul class="about-mission-bullet-list">
+                <li class="scroll-reveal">
+                  Driving excellence in the industrial industry, particularly in electronics and plating technologies.
+                </li>
+                <li class="scroll-reveal">
+                  Delivering reliable construction and infrastructure solutions, including traffic safety systems and public development projects.
+                </li>
+                <li class="scroll-reveal">
+                  Promoting sustainable and technology-driven innovations such as solar-powered infrastructure.
+                </li>
+                <li class="scroll-reveal">
+                  Building strong partnerships with government, industries, and communities to create long-term value.
+                </li>
+              </ul>
             </div>
 
-            <article class="about-timeline-item about-timeline-item-active scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Our Story</h2>
-                <p class="about-timeline-desc">
-                  Founded on March 8, 2001, Bine Construction and Development
-                  Corporation was established with a clear vision: to help build safer
-                  and more efficient infrastructure across the Philippines. The
-                  company was founded by Flor Bañaga, a registered civil engineer, and
-                  her business partner Kyung Mo Kim, with the goal of practicing
-                  engineering through meaningful construction and traffic safety
-                  solutions.
-                </p>
-                <button type="button" class="btn btn-timeline-outline story-read-more">
-                  Read more
-                </button>
-              </div>
-            </article>
+            <aside class="about-commitment-card about-stagger-parent" aria-labelledby="about-commitment-heading">
+              <h2 id="about-commitment-heading" class="about-commitment-card-title scroll-reveal">
+                Our Commitment
+              </h2>
+              <ul class="about-commitment-checklist">
+                <li class="scroll-reveal">
+                  <span class="about-commitment-check" aria-hidden="true">
+                    <img
+                      src="images/Check.png"
+                      alt=""
+                      class="about-commitment-check-icon"
+                      width="20"
+                      height="20"
+                      decoding="async"
+                    />
+                  </span>
+                  <span class="about-commitment-item-text">Quality electroplating for electronics and industrial applications</span>
+                </li>
+                <li class="scroll-reveal">
+                  <span class="about-commitment-check" aria-hidden="true">
+                    <img
+                      src="images/Check.png"
+                      alt=""
+                      class="about-commitment-check-icon"
+                      width="20"
+                      height="20"
+                      decoding="async"
+                    />
+                  </span>
+                  <span class="about-commitment-item-text">Excellence in construction and development</span>
+                </li>
+                <li class="scroll-reveal">
+                  <span class="about-commitment-check" aria-hidden="true">
+                    <img
+                      src="images/Check.png"
+                      alt=""
+                      class="about-commitment-check-icon"
+                      width="20"
+                      height="20"
+                      decoding="async"
+                    />
+                  </span>
+                  <span class="about-commitment-item-text">Sustainable and eco-friendly practices</span>
+                </li>
+                <li class="scroll-reveal">
+                  <span class="about-commitment-check" aria-hidden="true">
+                    <img
+                      src="images/Check.png"
+                      alt=""
+                      class="about-commitment-check-icon"
+                      width="20"
+                      height="20"
+                      decoding="async"
+                    />
+                  </span>
+                  <span class="about-commitment-item-text">Customer satisfaction and safety first</span>
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
 
-            <article class="about-timeline-item scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Mission</h2>
-                <p class="about-timeline-desc">
-                  Bine Phils. Inc. is committed to building lasting client relationships
-                  through honesty, integrity, and consistent delivery of quality solutions;
-                  retaining and strengthening client loyalty through service excellence;
-                  driving innovation in industrial manufacturing and electroplating;
-                  providing reliable construction and traffic safety solutions;
-                  improving lives through competitive safety and infrastructure products;
-                  developing our people and expanding capabilities for long-term growth;
-                  and creating sustainable business value through innovation and
-                  responsible operations.
-                </p>
-              </div>
-            </article>
+      <section class="about-goals-vision-section" aria-label="Our goals and vision">
+        <div class="container">
+          <div class="about-goals-vision-grid">
+            <aside class="about-goals-card about-stagger-parent" aria-labelledby="about-goals-heading">
+              <h2 id="about-goals-heading" class="about-goals-card-title scroll-reveal">Our Goals</h2>
+              <ul class="about-goals-list">
+                <li class="scroll-reveal">
+                  <img
+                    src="images/Arrow.png"
+                    alt=""
+                    class="about-goals-arrow-icon"
+                    width="22"
+                    height="22"
+                    decoding="async"
+                  />
+                  <span class="about-goals-item-text"
+                    >Expand our market presence nationally and internationally</span>
+                </li>
+                <li class="scroll-reveal">
+                  <img
+                    src="images/Arrow.png"
+                    alt=""
+                    class="about-goals-arrow-icon"
+                    width="22"
+                    height="22"
+                    decoding="async"
+                  />
+                  <span class="about-goals-item-text">Continuously innovate our products and services</span>
+                </li>
+                <li class="scroll-reveal">
+                  <img
+                    src="images/Arrow.png"
+                    alt=""
+                    class="about-goals-arrow-icon"
+                    width="22"
+                    height="22"
+                    decoding="async"
+                  />
+                  <span class="about-goals-item-text">Foster a culture of excellence and integrity</span>
+                </li>
+                <li class="scroll-reveal">
+                  <img
+                    src="images/Arrow.png"
+                    alt=""
+                    class="about-goals-arrow-icon"
+                    width="22"
+                    height="22"
+                    decoding="async"
+                  />
+                  <span class="about-goals-item-text">Contribute to sustainable community development</span>
+                </li>
+              </ul>
+            </aside>
 
-            <article class="about-timeline-item scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Vision</h2>
-                <p class="about-timeline-desc">
-                  To become a leading Philippine industrial and infrastructure company
-                  recognized for innovation, integrity, and long-term partnerships,
-                  and to grow into a Triple-A contractor that contributes to safer
-                  communities and national development.
-                </p>
+            <div class="about-vision-column about-stagger-parent">
+              <div class="about-vision-heading scroll-reveal">
+                <span class="about-vision-icon-wrap" aria-hidden="true">
+                  <img
+                    src="images/Eye.png"
+                    alt=""
+                    class="about-vision-heading-icon"
+                    width="24"
+                    height="24"
+                    decoding="async"
+                  />
+                </span>
+                <h2 class="about-vision-heading-title">Vision</h2>
               </div>
-            </article>
+              <p class="about-vision-text scroll-reveal">
+                To be a leading Philippine industrial company that advances electroplating and infrastructure
+                development, delivering innovative solutions that support national progress and safer, smarter
+                communities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <article class="about-timeline-item scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Our Goals</h2>
-                <p class="about-timeline-desc">
-                  Expand our market presence nationally and internationally;
-                  continuously innovate our products and services;
-                  foster a culture of excellence and integrity;
-                  and contribute to sustainable community development.
-                </p>
+      <section class="about-core-section" aria-labelledby="core-values-heading">
+        <div class="container">
+          <header class="section-header core-values-header about-stagger-parent">
+            <div class="core-values-title-row scroll-reveal">
+              <div class="core-values-icon-badge" aria-hidden="true">
+                <svg
+                  class="core-values-heart"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    vector-effect="non-scaling-stroke"
+                  />
+                </svg>
               </div>
-            </article>
+              <h2 id="core-values-heading">Core Values</h2>
+            </div>
+            <p class="scroll-reveal">The principles that guide everything we do</p>
+          </header>
 
-            <article class="about-timeline-item scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Our Commitment</h2>
-                <p class="about-timeline-desc">
-                  Quality electroplating for electronics and industrial applications;
-                  excellence in construction and development;
-                  sustainable and eco-friendly practices;
-                  and customer satisfaction and safety first.
-                </p>
-              </div>
+          <div class="about-core-grid">
+            <article class="about-core-card scroll-reveal">
+              <h3>Respect for People</h3>
+              <p>
+                We value our employees, clients, and partners, fostering a culture of mutual respect and
+                collaboration.
+              </p>
             </article>
-
-            <article class="about-timeline-item scroll-reveal">
-              <span class="about-timeline-dot" aria-hidden="true"></span>
-              <div class="about-timeline-content">
-                <h2 class="about-timeline-title">Core Values</h2>
-                <p class="about-timeline-desc">
-                  The principles that guide everything we do: respect for people;
-                  integrity in business; accountability; commitment to quality;
-                  productivity and efficiency; continuous innovation;
-                  and exceeding expectations in everything we do.
-                </p>
-              </div>
+            <article class="about-core-card scroll-reveal">
+              <h3>Integrity in Business</h3>
+              <p>We conduct our operations with honesty, transparency, and ethical responsibility.</p>
+            </article>
+            <article class="about-core-card scroll-reveal">
+              <h3>Accountability</h3>
+              <p>
+                We take full responsibility for our actions and decisions, continuously striving for
+                improvement.
+              </p>
+            </article>
+            <article class="about-core-card scroll-reveal">
+              <h3>Commitment to Quality</h3>
+              <p>
+                We are dedicated to delivering products and services that meet the highest standards.
+              </p>
+            </article>
+            <article class="about-core-card scroll-reveal">
+              <h3>Productivity &amp; Efficiency</h3>
+              <p>We optimize processes to maximize performance at every level of our business.</p>
+            </article>
+            <article class="about-core-card scroll-reveal">
+              <h3>Continuous Innovation</h3>
+              <p>We embrace change and encourage creative solutions to stay ahead in our industry.</p>
+            </article>
+            <article class="about-core-card about-core-card-span scroll-reveal">
+              <h3>Exceeding Expectations</h3>
+              <p>
+                We believe that &ldquo;great&rdquo; is not enough &ndash; we aim for excellence in everything we
+                do.
+              </p>
             </article>
           </div>
         </div>
       </section>
-      </section>
 
-      <!-- Our Story modal -->
-      <div class="story-modal-overlay" id="story-modal" aria-hidden="true">
-        <div class="story-modal">
-          <div class="story-modal-logo" aria-hidden="true">
-            <img src="images/Logo.png" alt="" />
-          </div>
-          <button class="story-modal-close" type="button" aria-label="Close story">
-            &times;
-          </button>
-          <h2 class="story-modal-title">Bine Philippines Inc.</h2>
-          <div class="story-modal-body">
-            <p>
-              The company traces its roots to its mother company, Bine Phils Inc.,
-              which was originally engaged in jewelry manufacturing. Over time,
-              Bine Phils Inc. evolved its operations and is now focused on
-              industrial electroplating services for the electronics industry,
-              providing specialized surface-finishing solutions for various
-              electronic components. This strong industrial background laid the
-              foundation for the establishment of Bine Construction and
-              Development Corporation.
-            </p>
-            <p>
-              From the beginning, the company has focused on construction
-              development with a specialization in traffic engineering. What sets
-              the company apart is its commitment to introducing innovative and
-              distinctive products designed to improve road safety and
-              infrastructure performance.
-            </p>
-            <p>
-              Over the years, the company has primarily worked with government
-              agencies, infrastructure operators, and industrial clients,
-              providing solutions for traffic safety systems and solar-powered
-              infrastructure. Among its key accomplishments are projects involving
-              solar street lighting systems, solar-powered bus sheds, and various
-              traffic safety installations.
-            </p>
-            <p>
-              Through dedication, integrity, and strong partnerships, the company
-              has successfully completed more than 100 projects nationwide,
-              including its largest project&mdash;the Improvement and
-              Rehabilitation of Roads in Kalinga–Apayao. The trust of clients such
-              as the Metropolitan Manila Development Authority (MMDA), North Luzon
-              Expressway (NLEX), South Luzon Expressway (SLEX), the Department of
-              Public Works and Highways (DPWH), and various municipalities reflects
-              the company’s commitment to quality and reliability.
-            </p>
-            <p>
-              Today, the company operates from Golden Mile Business Park in
-              Carmona, Cavite, serving clients nationwide. With a team of
-              engineers, managers, and skilled personnel totaling around 50
-              employees, the company continues to deliver services in general
-              construction, project management, and specialized traffic
-              engineering solutions. The company is also a PCAB-licensed
-              contractor (Small B category) with relevant certifications and
-              accreditations.
-            </p>
-            <p>
-              As the company continues to grow, it remains guided by its founding
-              purpose: to apply engineering expertise to real-world infrastructure
-              challenges. Looking ahead, the company aims to develop new
-              technologies and products, expand its client base, and continue
-              supporting the country’s infrastructure development through
-              innovative and reliable solutions.
-            </p>
-          </div>
-        </div>
-      </div>
     </main>
 
     <footer class="site-footer home-footer">
-      <div class="container footer-inner scroll-reveal">
-        <div class="footer-column footer-brand">
+      <div class="container footer-inner about-stagger-parent">
+        <div class="footer-column footer-brand scroll-reveal">
           <h3>Bine Philippines Inc.</h3>
           <p>
             Bine Philippines Inc. delivers reliable industrial electroplating and construction
@@ -288,7 +531,7 @@
           </p>
         </div>
 
-        <div class="footer-column footer-contact-col">
+        <div class="footer-column footer-contact-col scroll-reveal">
           <h4>Head Office</h4>
           <p class="footer-address">
             Lot 11 blk 13 Golden Mile Avenue,<br />
@@ -314,7 +557,7 @@
           </div>
         </div>
 
-        <div class="footer-column footer-links-col">
+        <div class="footer-column footer-links-col scroll-reveal">
           <div class="footer-links-grid">
             <div class="footer-links-group">
               <h4>Company</h4>
