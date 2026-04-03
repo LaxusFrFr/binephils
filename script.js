@@ -1577,6 +1577,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(Boolean);
     };
 
+    const galleryCounterLabel = () =>
+      gallery.length > 1 ? `${galleryIndex + 1}/${gallery.length}` : "";
+
     const renderGallery = () => {
       const hasImages = gallery.length > 0;
       productModalEmpty.hidden = hasImages;
@@ -1620,7 +1623,7 @@ document.addEventListener("DOMContentLoaded", () => {
               const w = c.clientWidth || 1;
               const idx = Math.round(c.scrollLeft / w);
               galleryIndex = Math.max(0, Math.min(gallery.length - 1, idx));
-              productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
+              productModalCounter.textContent = galleryCounterLabel();
             },
             { passive: true }
           );
@@ -1632,7 +1635,7 @@ document.addEventListener("DOMContentLoaded", () => {
           c.scrollLeft = w * galleryIndex;
         });
 
-        productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
+        productModalCounter.textContent = galleryCounterLabel();
         return;
       }
 
@@ -1641,7 +1644,7 @@ document.addEventListener("DOMContentLoaded", () => {
       productModalImg.style.display = "block";
       productModalImg.src = src;
       productModalImg.alt = productModalTitle.textContent || "Product photo";
-      productModalCounter.textContent = `${galleryIndex + 1}/${gallery.length}`;
+      productModalCounter.textContent = galleryCounterLabel();
     };
 
     const openProductModal = (tile) => {
@@ -1659,7 +1662,11 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         productModalTitle.textContent = title;
       }
-      productModalSubtitle.textContent = gallery.length ? "Photos" : "Photos coming soon";
+      productModalSubtitle.textContent = gallery.length
+        ? gallery.length > 1
+          ? "Photos"
+          : "Photo"
+        : "Photos coming soon";
 
       productModal.classList.add("is-open");
       productModal.setAttribute("aria-hidden", "false");
