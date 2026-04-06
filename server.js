@@ -21,6 +21,33 @@ const COMPANY_ADDRESS =
   "Lot 11 Blk 13 Golden Mile Avenue, Golden Mile Business Park, Carmona, Philippines 4116";
 const COMPANY_PHONE = process.env.COMPANY_PHONE || "+63 2 8584 4474";
 
+/**
+ * Origins allowed to call POST /api/contact and POST /api/quote (browser sends Origin).
+ * Includes localhost, COMPANY_WEBSITE, optional ALLOWED_ORIGINS (comma-separated),
+ * and RENDER_EXTERNAL_URL when running on Render (e.g. https://your-app.onrender.com).
+ */
+function normalizeOriginUrl(raw) {
+  if (!raw || typeof raw !== "string") return null;
+  const trimmed = raw.trim().replace(/\/+$/, "");
+  return trimmed.startsWith("http") ? trimmed : null;
+}
+
+function buildAllowedOrigins() {
+  const set = new Set(["http://localhost:3000", "http://127.0.0.1:3000"]);
+  const add = (raw) => {
+    const n = normalizeOriginUrl(raw);
+    if (n) set.add(n);
+  };
+  add(COMPANY_WEBSITE);
+  String(process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .forEach((part) => add(part));
+  add(process.env.RENDER_EXTERNAL_URL);
+  return set;
+}
+
+const ALLOWED_ORIGINS_SET = buildAllowedOrigins();
+
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
@@ -44,15 +71,6 @@ const ALLOWED_QUOTE_SERVICES = new Set([
   "industrial",
   "other",
 ]);
-
-const LOCAL_ALLOWED_ORIGINS = new Set([
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-]);
-
-if (COMPANY_WEBSITE.startsWith("http")) {
-  LOCAL_ALLOWED_ORIGINS.add(COMPANY_WEBSITE.replace(/\/+$/, ""));
-}
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
@@ -119,7 +137,7 @@ function getClientIp(req) {
 function isAllowedOrigin(origin) {
   if (!origin) return true;
   const normalized = origin.replace(/\/+$/, "");
-  return LOCAL_ALLOWED_ORIGINS.has(normalized);
+  return ALLOWED_ORIGINS_SET.has(normalized);
 }
 
 function assertAllowedOrigin(req) {

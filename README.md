@@ -34,6 +34,8 @@ Create `.env` from `.env.example` and set:
 - `FROM_EMAIL` (must be a verified sender/domain in your provider)
 - `CONTACT_TO_EMAIL`
 - `QUOTE_TO_EMAIL`
+- `COMPANY_WEBSITE` — public site URL with **no trailing slash** (e.g. `https://binephils.com`). Used in emails and for **CORS** on form APIs.
+- `ALLOWED_ORIGINS` (optional) — comma-separated extra origins if visitors use a hostname other than `COMPANY_WEBSITE` (e.g. a Render URL before DNS). On **Render Web Services**, `RENDER_EXTERNAL_URL` is added automatically.
 
 ### 3) Start the app
 
