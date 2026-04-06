@@ -1637,6 +1637,49 @@ a {
   box-shadow: 0 24px 55px rgba(15, 23, 42, 0.16);
 }
 
+a.construction-service-card {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+a.construction-service-card:focus-visible {
+  outline: 2px solid var(--construction-green);
+  outline-offset: 3px;
+}
+
+/* Products page: Traffic Safety Product cards — “View” + chevron (matches homepage division-link) */
+.products-services-grid a.construction-service-card > p {
+  margin-bottom: 0;
+}
+
+.product-traffic-card-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  margin-top: 1.1rem;
+  font-size: 0.93rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--construction-green);
+}
+
+.product-traffic-card-view .arrow-chevron {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 0.68em;
+  margin-left: 0.1rem;
+  line-height: 1;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.products-services-grid a.construction-service-card:hover .product-traffic-card-view .arrow-chevron,
+.products-services-grid a.construction-service-card:focus-visible .product-traffic-card-view .arrow-chevron {
+  transform: translateX(3px);
+}
+
 .construction-service-header {
   display: flex;
   align-items: center;
