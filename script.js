@@ -1654,8 +1654,8 @@ document.addEventListener("DOMContentLoaded", () => {
       galleryIndex = 0;
       productModalDialog.classList.remove("product-modal-bus-sheds");
 
-      if (title === "1 Solar-powered Bus Shed") {
-        productModalTitle.innerHTML = "<span>1 Solar-powered</span> <span>Bus Shed</span>";
+      if (title === "Solar-powered Bus Shed") {
+        productModalTitle.innerHTML = "<span>Solar-powered</span> <span>Bus Shed</span>";
         productModalDialog.classList.add("product-modal-bus-sheds");
       } else if (title === "Thermoplastic Road Marking" || title === "Thermoplasctic Road Marking") {
         productModalTitle.innerHTML = "Thermoplastic<br>Road Marking";
