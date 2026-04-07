@@ -2409,7 +2409,7 @@ a.construction-service-card:focus-visible {
     z-index: 1;
   }
 
-  /* Desktop only: keep Bus Sheds title in one line */
+  /* Desktop only: keep Bus Shed title in one line */
   .product-modal-dialog.product-modal-bus-sheds .product-modal-title {
     white-space: nowrap;
   }
