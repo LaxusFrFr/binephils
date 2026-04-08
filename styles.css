@@ -2927,6 +2927,28 @@ a.construction-service-card:focus-visible {
   margin-bottom: 0;
 }
 
+.about-story-stagger ul.about-story-list {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+  font-size: 0.96rem;
+  line-height: 1.68;
+  color: var(--text-main);
+  list-style-type: disc;
+}
+
+.about-story-stagger ul.about-story-list li {
+  margin-bottom: 0.35rem;
+}
+
+.about-story-stagger ul.about-story-list li:last-child {
+  margin-bottom: 0;
+}
+
+.about-story-stagger ul.about-story-list--value li strong {
+  font-weight: 600;
+  color: #111827;
+}
+
 /* No clear:both — that forced the button below the full image height; keep it with the intro column */
 .about-story-box-footer {
   margin-top: 0.65rem;
