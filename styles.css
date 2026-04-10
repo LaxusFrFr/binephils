@@ -3705,6 +3705,184 @@ a.construction-service-card:focus-visible {
   color: inherit;
 }
 
+/* Services */
+
+.services-section {
+  background-color: #ffffff;
+  padding: 3.9rem 0;
+}
+
+.services-header {
+  text-align: left;
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  padding: 1.15rem 1.25rem 1.2rem;
+  border-left: 4px solid var(--green-main);
+  border-radius: 12px;
+  background: linear-gradient(90deg, rgba(14, 116, 52, 0.12) 0%, rgba(14, 116, 52, 0.02) 78%);
+}
+
+.services-header-kicker {
+  display: inline-block;
+  margin: 0 0 0.45rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #166534;
+}
+
+.services-header h2 {
+  margin: 0 0 0.3rem;
+  font-size: 2.25rem;
+  line-height: 1.15;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.services-header p {
+  margin: 0;
+  color: #334155;
+  font-size: 0.96rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.7rem;
+}
+
+.service-panel {
+  position: relative;
+  min-height: 370px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.service-panel:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 62px rgba(15, 23, 42, 0.22);
+}
+
+.service-panel-media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1);
+  transition: transform 0.4s ease;
+}
+
+.service-panel-industrial .service-panel-media {
+  background-image: url("images/Industrial Main.png");
+}
+
+.service-panel-construction .service-panel-media {
+  background-image: url("images/Construction Main.png");
+}
+
+.service-panel-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(9, 18, 28, 0.84) 0%,
+    rgba(11, 25, 19, 0.72) 50%,
+    rgba(13, 52, 30, 0.66) 100%
+  );
+}
+
+.service-panel:hover .service-panel-media {
+  transform: scale(1.06);
+}
+
+.service-panel-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.55rem 1.55rem 1.6rem;
+  color: #ffffff;
+}
+
+.service-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 30px;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.service-panel h3 {
+  margin: 1rem 0 0.55rem;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.service-panel p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.94rem;
+  max-width: 45ch;
+}
+
+.service-panel-points {
+  margin: 0.95rem 0 0;
+  padding-left: 1.1rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.89rem;
+}
+
+.service-panel-points li + li {
+  margin-top: 0.38rem;
+}
+
+.service-panel-link {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.2rem 0;
+  color: #ffffff;
+  font-size: 0.93rem;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.36);
+  transition: border-color 0.18s ease;
+}
+
+.service-panel-link:hover {
+  border-bottom-color: #ffffff;
+}
+
+.service-panel-link .arrow-chevron {
+  display: inline-block;
+  vertical-align: middle;
+  width: auto;
+  height: auto;
+  border: none !important;
+  transform: none;
+  margin-left: 0.15rem;
+  font-size: 0.75em;
+  color: inherit;
+}
+
 /* Advantage */
 
 .advantage-section {
@@ -5691,6 +5869,23 @@ a.construction-service-card:focus-visible {
 
   .divisions-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .services-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .services-header {
+    max-width: 100%;
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .services-header h2 {
+    font-size: 1.95rem;
+  }
+
+  .service-panel {
+    min-height: 340px;
   }
 
   .advantage-grid {
