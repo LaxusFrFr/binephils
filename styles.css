@@ -723,6 +723,8 @@ a {
 
 .industrial-hero {
   background-image: url("images/Industrial Main.png");
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .industrial-hero::before {
@@ -750,14 +752,18 @@ a {
 }
 
 .industrial-hero .construction-hero-actions .btn-outline {
-  border-color: var(--construction-green);
-  color: var(--construction-green);
-  background-color: transparent;
+  border-color: rgba(240, 253, 244, 0.85);
+  color: #f8fffb;
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 .industrial-hero .construction-hero-actions .btn-outline:hover {
-  background-color: rgba(255, 255, 255, 0.86);
-  color: var(--construction-green);
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #f8fffb;
+}
+
+.industrial-hero .construction-hero-actions {
+  margin-bottom: 0;
 }
 
 .industrial-hero .construction-stat-value {
@@ -6532,22 +6538,21 @@ a.construction-service-card:focus-visible {
   background: transparent;
   box-shadow:
     0 4px 6px rgba(15, 23, 42, 0.06),
-    0 16px 36px rgba(9, 110, 51, 0.42),
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    0 16px 36px rgba(9, 110, 51, 0.42);
   /* Match .division-card hover motion on the homepage */
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+  will-change: transform;
 }
 
 .brochure-fab:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px) scale(1.01);
   box-shadow:
     0 24px 55px rgba(15, 23, 42, 0.16),
-    0 18px 44px rgba(9, 110, 51, 0.38),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+    0 18px 44px rgba(9, 110, 51, 0.38);
 }
 
 .brochure-fab:active {
-  transform: translateY(-3px);
+  transform: translateY(-2px) scale(1);
 }
 
 .brochure-fab:focus {
@@ -6568,6 +6573,8 @@ a.construction-service-card:focus-visible {
   border-radius: inherit;
   background: var(--brochure-fab-bg);
   overflow: hidden;
+  transition: none;
+  will-change: auto;
 }
 
 .brochure-fab-inner::before {
@@ -6654,6 +6661,7 @@ a.construction-service-card:focus-visible {
   opacity: 0;
   will-change: opacity;
   transition: opacity var(--brochure-fab-fade) ease-in-out;
+  transform: translateX(-0.70rem);
 }
 
 .brochure-fab-logo {
