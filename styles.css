@@ -6399,6 +6399,44 @@ a.construction-service-card:focus-visible {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* Industrial pages: force true mobile stack (overrides desktop-specific selectors) */
+  .industrial-services-section .construction-services-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .industrial-services-section .construction-service-card {
+    padding: 1.3rem 1.15rem 1.2rem;
+  }
+
+  .industrial-services-section .construction-service-header {
+    align-items: flex-start;
+  }
+
+  .industrial-services-section .construction-service-icon-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .industrial-services-section .construction-services-cta-btn-inline {
+    width: 100%;
+    margin-top: 0.9rem;
+  }
+
+  .industrial-services-section .services-dropdown-panel-inline {
+    width: 100%;
+  }
+
+  #industrial-dropdown-electroplating-inline .services-dropdown-boxes,
+  #industrialservices-dropdown-electric-inline .services-dropdown-boxes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #industrial-dropdown-casting-inline .services-dropdown-boxes,
+  #industrialservices-dropdown-electroless-inline .services-dropdown-boxes {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
   .construction-services-grid.products-services-grid {
     grid-template-columns: minmax(0, 1fr);
   }
