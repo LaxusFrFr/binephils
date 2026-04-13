@@ -490,6 +490,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const parent =
+          el.closest(".services-grid") ||
           el.closest(".divisions-grid") ||
           el.closest(".advantage-grid") ||
           el.closest(".why-grid") ||
@@ -498,6 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
           el.closest(".construction-services-grid") ||
           el.closest(".bcdc-advantage-grid");
         const isStaggerCard =
+          el.classList.contains("service-panel") ||
           el.classList.contains("division-card") ||
           el.classList.contains("advantage-card") ||
           el.classList.contains("why-card") ||
@@ -507,7 +509,7 @@ document.addEventListener("DOMContentLoaded", () => {
           el.classList.contains("bcdc-advantage-card");
         if (parent && isStaggerCard) {
           const siblings = parent.querySelectorAll(
-            ".division-card, .advantage-card, .why-card, .about-card, .about-core-card, .construction-service-card, .bcdc-advantage-card"
+            ".service-panel, .division-card, .advantage-card, .why-card, .about-card, .about-core-card, .construction-service-card, .bcdc-advantage-card"
           );
           const idx = [...siblings].indexOf(el);
           if (idx >= 0) el.style.transitionDelay = `${idx * staggerStep}s`;
