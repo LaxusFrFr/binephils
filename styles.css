@@ -721,6 +721,115 @@ a {
   );
 }
 
+.industrial-hero {
+  background-image: url("images/Industrial Main.png");
+}
+
+.industrial-hero::before {
+  background: linear-gradient(
+    92deg,
+    rgba(6, 20, 14, 0.82) 0%,
+    rgba(8, 28, 19, 0.72) 34%,
+    rgba(9, 32, 22, 0.46) 54%,
+    rgba(9, 32, 22, 0.18) 68%,
+    rgba(9, 32, 22, 0) 78%
+  );
+}
+
+.industrial-hero .construction-label-pill {
+  background-color: #fff7cf;
+  color: var(--construction-green);
+}
+
+.industrial-hero .construction-hero-title {
+  color: var(--construction-green);
+}
+
+.industrial-hero .construction-hero-subtitle {
+  color: rgba(240, 253, 244, 0.9);
+}
+
+.industrial-hero .construction-hero-actions .btn-outline {
+  border-color: var(--construction-green);
+  color: var(--construction-green);
+  background-color: transparent;
+}
+
+.industrial-hero .construction-hero-actions .btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.86);
+  color: var(--construction-green);
+}
+
+.industrial-hero .construction-stat-value {
+  color: #bbf7d0;
+}
+
+.industrial-hero .construction-stat-label {
+  color: rgba(240, 253, 244, 0.82);
+}
+
+/* Industrial page: center 2-card services layout */
+.industrial-services-section .construction-services-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.industrial-services-section .construction-services-cta-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-items: stretch;
+}
+
+.industrial-services-section .construction-services-cta-row .construction-services-cta-btn {
+  justify-self: stretch;
+  width: 100%;
+}
+
+.industrial-services-section .services-dropdowns-wrap {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-items: center;
+}
+
+.industrial-services-section .services-dropdown-panel {
+  width: 100%;
+  max-width: none;
+}
+
+#industrial-dropdown-electroplating-inline .services-dropdown-boxes,
+#industrial-dropdown-electroplating .services-dropdown-boxes,
+#industrialservices-dropdown-electric-inline .services-dropdown-boxes,
+#industrialservices-dropdown-electric .services-dropdown-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.industrial-electroless-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.75rem !important;
+  align-items: stretch;
+}
+
+.industrial-electroless-list .services-dropdown-box {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.25;
+  font-size: 0.9rem;
+  padding: 0.8rem 0.75rem;
+}
+
 .construction-hero-inner {
   position: relative;
   z-index: 2;
