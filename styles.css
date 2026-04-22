@@ -774,6 +774,192 @@ a {
   color: rgba(240, 253, 244, 0.82);
 }
 
+/* Industrial page: About section */
+.industrial-about-section {
+  padding: 2.2rem 0 1.2rem;
+}
+
+
+.industrial-about-intro .construction-services-title,
+.industrial-about-intro .construction-services-subtitle {
+  text-align: left;
+}
+
+.industrial-about-intro .construction-services-subtitle {
+  max-width: 68rem;
+}
+
+.industrial-about-subtitle-secondary {
+  margin-top: 0.55rem;
+}
+
+.industrial-about-content {
+  margin-top: 0.95rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.industrial-about-card {
+  background: #ffffff;
+  border: 1px solid rgba(11, 122, 59, 0.2);
+  border-radius: 22px;
+  padding: 1.25rem 1.2rem 1.15rem;
+  box-shadow: 0 8px 18px rgba(5, 40, 22, 0.045);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.industrial-about-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.14);
+}
+
+.industrial-about-card-title {
+  margin: 0 0 1rem;
+  color: #111827;
+}
+
+.industrial-icon-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.industrial-icon-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.industrial-icon-list .product-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  font-size: 1.02rem;
+  margin-right: 0;
+  flex: 0 0 40px;
+}
+
+.industrial-icon-list li strong {
+  display: block;
+  font-size: 0.98rem;
+  color: var(--heading-color);
+  line-height: 1.32;
+}
+
+.industrial-icon-list li p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.industrial-icon-list-compact {
+  gap: 0.7rem;
+}
+
+.industrial-icon-list-compact li {
+  align-items: center;
+}
+
+.industrial-about-advantage {
+  position: relative;
+  margin-top: 1.65rem;
+  padding: 2.7rem 0 2rem;
+  width: 100%;
+}
+
+.industrial-about-advantage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  background: var(--green-light);
+  z-index: -1;
+}
+
+.industrial-about-advantage .industrial-about-card-title {
+  text-align: center;
+  color: #111827;
+  margin-bottom: 1.45rem;
+}
+
+
+.industrial-advantage-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.05rem;
+  width: 100%;
+}
+
+.industrial-advantage-grid li {
+  grid-column: span 2;
+  border: 1px solid #dce7dc;
+  border-radius: 18px;
+  background: #f8fbf8;
+  padding: 1.15rem 1.1rem 1.05rem;
+  min-height: 138px;
+  box-shadow: 0 4px 12px rgba(20, 44, 28, 0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.industrial-advantage-grid li:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.18);
+}
+
+.industrial-advantage-grid li:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.industrial-advantage-grid li:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
+.industrial-advantage-grid .product-icon-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  margin-right: 0;
+  margin-bottom: 0.65rem;
+  font-size: 1.05rem;
+}
+
+.industrial-advantage-grid li strong {
+  display: block;
+  color: #2d7f58;
+  font-size: 1rem;
+  line-height: 1.32;
+}
+
+.industrial-advantage-grid li p {
+  margin: 0.22rem 0 0;
+  color: #5f6f63;
+  font-size: 0.92rem;
+  line-height: 1.34;
+}
+
+@media (max-width: 640px) {
+  .industrial-advantage-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .industrial-advantage-grid li:nth-child(4),
+  .industrial-advantage-grid li:nth-child(5) {
+    grid-column: auto;
+  }
+
+}
+
 /* Industrial page: center 2-card services layout */
 .industrial-services-section .construction-services-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6407,6 +6593,37 @@ a.construction-service-card:focus-visible {
 
   .industrial-services-section .construction-service-card {
     padding: 1.3rem 1.15rem 1.2rem;
+  }
+
+  .industrial-about-content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.95rem;
+  }
+
+  .industrial-about-card {
+    padding: 1.1rem 1rem 1rem;
+    border-radius: 18px;
+  }
+
+  .industrial-icon-list .product-icon-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    flex-basis: 38px;
+  }
+
+  .industrial-advantage-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .industrial-advantage-grid li:nth-child(4),
+  .industrial-advantage-grid li:nth-child(5) {
+    grid-column: auto;
+  }
+
+  .industrial-advantage-grid li {
+    padding: 0.9rem 0.85rem 0.8rem;
   }
 
   .industrial-services-section .construction-service-header {
