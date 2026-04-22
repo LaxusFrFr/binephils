@@ -87,6 +87,130 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initAboutStorySliders();
 
+  function initIndustrialMarquee() {
+    document.querySelectorAll(".industrial-marquee").forEach((root) => {
+      if (root.dataset.industrialMarqueeReady === "1") return;
+      const track = root.querySelector(".industrial-marquee-track");
+      if (!track) return;
+      root.dataset.industrialMarqueeReady = "1";
+
+      track.style.animation = "none";
+
+      if (track.children.length > 0 && track.children.length < 18) {
+        const items = Array.from(track.children);
+        items.forEach((node) => track.appendChild(node.cloneNode(true)));
+      }
+
+      let setWidth = 0;
+      let offset = 0;
+      let rafId = 0;
+      let lastTs = 0;
+      let speedMultiplier = 1;
+      let speedResetTimer = 0;
+      const basePxPerSec = 60;
+
+      const measure = () => {
+        const children = Array.from(track.children);
+        const declaredSetCount = parseInt(String(root.dataset.marqueeSetCount || ""), 10);
+        const setCount =
+          Number.isFinite(declaredSetCount) && declaredSetCount > 0
+            ? declaredSetCount
+            : children.length > 1
+              ? Math.floor(children.length / 2)
+              : 0;
+
+        const first = children[0];
+        const after = setCount > 0 ? children[setCount] : null;
+        const fallbackWidth = track.scrollWidth ? track.scrollWidth / 2 : 0;
+        const measured =
+          first && after && after instanceof HTMLElement && first instanceof HTMLElement
+            ? after.offsetLeft - first.offsetLeft
+            : 0;
+
+        setWidth = measured > 0 ? measured : fallbackWidth;
+        offset = setWidth > 0 ? -setWidth : 0;
+        track.style.transform = `translate3d(${offset}px, 0, 0)`;
+      };
+
+      const step = (ts) => {
+        if (!lastTs) lastTs = ts;
+        const dt = ts - lastTs;
+        lastTs = ts;
+
+        if (setWidth <= 0) {
+          measure();
+        }
+
+        if (setWidth > 0) {
+          offset += ((basePxPerSec * speedMultiplier) * dt) / 1000;
+          if (offset >= 0) offset -= setWidth;
+          track.style.transform = `translate3d(${offset}px, 0, 0)`;
+        }
+
+        rafId = window.requestAnimationFrame(step);
+      };
+
+      const start = () => {
+        if (rafId) return;
+        lastTs = 0;
+        rafId = window.requestAnimationFrame(step);
+      };
+
+      const stop = () => {
+        if (!rafId) return;
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      };
+
+      const onResize = () => {
+        measure();
+      };
+
+      window.addEventListener("resize", onResize, { passive: true });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) stop();
+        else start();
+      });
+
+      const jumpByOneCard = (dir) => {
+        const first = track.querySelector("img");
+        const cardWidth = first ? first.getBoundingClientRect().width : 0;
+        const computed = window.getComputedStyle(track);
+        const gap = parseFloat(computed.columnGap || computed.gap || "0") || 0;
+        const stepPx = Math.max(80, cardWidth + gap);
+        offset += dir * stepPx;
+        if (setWidth > 0) {
+          while (offset >= 0) offset -= setWidth;
+          while (offset < -setWidth) offset += setWidth;
+        }
+        track.style.transform = `translate3d(${offset}px, 0, 0)`;
+
+        speedMultiplier = 3.2;
+        if (speedResetTimer) window.clearTimeout(speedResetTimer);
+        speedResetTimer = window.setTimeout(() => {
+          speedMultiplier = 1;
+          speedResetTimer = 0;
+        }, 650);
+      };
+
+      const leftBtn = root.querySelector(".industrial-marquee-arrow-left");
+      const rightBtn = root.querySelector(".industrial-marquee-arrow-right");
+      leftBtn?.addEventListener("click", () => jumpByOneCard(-1));
+      rightBtn?.addEventListener("click", () => jumpByOneCard(1));
+
+      const imgs = Array.from(track.querySelectorAll("img"));
+      imgs.forEach((img) => {
+        img.addEventListener("load", measure, { once: true });
+        img.addEventListener("error", measure, { once: true });
+      });
+
+      measure();
+      start();
+    });
+  }
+
+  initIndustrialMarquee();
+
   // Device hint class for platform-specific visual polish.
   const isAndroid = /Android/i.test(navigator.userAgent || "");
   const isIOS =
@@ -401,6 +525,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Defer reveal/stagger so the page paints first (faster perceived load, especially on Services/Projects)
   requestAnimationFrame(() => {
+    // 0) Construction hero slideshow (deterministic; avoids white flashes/double exposure)
+    const heroSlideshow = document.querySelector(".construction-hero-slideshow");
+    if (heroSlideshow) {
+      const slides = Array.from(heroSlideshow.querySelectorAll(".construction-hero-slide"));
+      if (slides.length) {
+        const prefersReduced =
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const intervalMs = prefersReduced ? 4500 : 3500;
+
+        let idx = 0;
+        slides.forEach((s) => s.classList.remove("is-active"));
+        slides[0].classList.add("is-active");
+
+        window.setInterval(() => {
+          slides[idx].classList.remove("is-active");
+          idx = (idx + 1) % slides.length;
+          slides[idx].classList.add("is-active");
+        }, intervalMs);
+      }
+    }
+
     // 3) Reveal-on-load animations (header, etc. – not scroll-reveal)
     const revealEls = document.querySelectorAll(".reveal-on-load");
     revealEls.forEach((el, index) => {
@@ -508,7 +653,8 @@ document.addEventListener("DOMContentLoaded", () => {
           el.classList.contains("about-core-card") ||
           el.classList.contains("construction-service-card") ||
           el.classList.contains("bcdc-advantage-card") ||
-          el.classList.contains("industrial-advantage-card");
+          el.classList.contains("industrial-advantage-card") ||
+          false;
         if (parent && isStaggerCard) {
           const siblings = parent.querySelectorAll(
             ".service-panel, .division-card, .advantage-card, .why-card, .about-card, .about-core-card, .construction-service-card, .bcdc-advantage-card, .industrial-advantage-card"

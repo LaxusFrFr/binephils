@@ -45,6 +45,7 @@ body {
 
 body {
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 img {
@@ -410,7 +411,7 @@ a {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url("images/Homepage Background.png");
+  background-image: url("images/Landing Page Photo.png");
   background-position: center right;
   background-repeat: no-repeat;
   background-size: cover;
@@ -422,13 +423,13 @@ a {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 46%, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0) 56%),
+    radial-gradient(circle at 18% 46%, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 56%),
     linear-gradient(
       95deg,
-      rgba(7, 22, 13, 0.78) 0%,
-      rgba(8, 26, 15, 0.6) 38%,
-      rgba(10, 30, 18, 0.3) 62%,
-      rgba(10, 30, 18, 0.1) 100%
+      rgba(7, 22, 13, 0.62) 0%,
+      rgba(8, 26, 15, 0.46) 38%,
+      rgba(10, 30, 18, 0.22) 62%,
+      rgba(10, 30, 18, 0.08) 100%
     );
   pointer-events: none;
 }
@@ -568,7 +569,7 @@ a {
 }
 
 .hero-title-accent {
-  color: var(--hero-accent);
+  color: var(--construction-green);
   display: inline;
 }
 
@@ -699,11 +700,15 @@ a {
   position: relative;
   isolation: isolate;
   background-color: var(--green-light);
-  background-image: url("images/Lights.png");
-  background-position: center right;
-  background-repeat: no-repeat;
-  background-size: cover;
   padding: 4.5rem 0 4rem;
+}
+
+.construction-hero {
+  min-height: 560px;
+}
+
+.industrial-hero {
+  min-height: 560px;
 }
 
 .construction-hero::before {
@@ -721,10 +726,84 @@ a {
   );
 }
 
+/* Construction hero: background slideshow (pro crossfade) */
+.construction-hero-slideshow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.construction-hero-slide {
+  position: absolute;
+  inset: 0;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateZ(0);
+  will-change: opacity, filter;
+  transition: opacity 0.85s ease, filter 0.85s ease;
+}
+
+.construction-hero-slide.is-active {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.construction-hero-slide--1 {
+  background-image: url("images/Lights.png");
+}
+
+.construction-hero-slide--2 {
+  background-image: url("images/Construction 2.png");
+}
+
+.construction-hero-slide--3 {
+  background-image: url("images/Construction 3.png");
+}
+
+.construction-hero-slide--4 {
+  background-image: url("images/Construction 4.png");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .construction-hero-slide {
+    transition-duration: 1.2s;
+  }
+}
+
+/* Extra left "light" bloom to keep text/buttons readable on darker slides */
+.construction-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      60% 90% at 18% 38%,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.52) 34%,
+      rgba(255, 255, 255, 0) 70%
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+}
+
 .industrial-hero {
   background-image: url("images/Industrial Main.png");
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 4.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.industrial-hero > .container {
+  width: 100%;
 }
 
 .industrial-hero::before {
@@ -763,7 +842,7 @@ a {
 }
 
 .industrial-hero .construction-hero-actions {
-  margin-bottom: 0;
+  margin-bottom: 2.1rem;
 }
 
 .industrial-hero .construction-stat-value {
@@ -776,7 +855,15 @@ a {
 
 /* Industrial page: About section */
 .industrial-about-section {
-  padding: 2.2rem 0 1.2rem;
+  padding: 3.25rem 0 1.5rem;
+}
+
+.industrial-about-section .construction-services-title {
+  font-size: 2.8rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #000000;
+  text-shadow: none;
 }
 
 
@@ -796,9 +883,15 @@ a {
 .industrial-about-content {
   margin-top: 0.95rem;
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-  gap: 1.2rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  gap: 1rem;
   align-items: start;
+  position: relative;
+}
+
+.industrial-about-intro {
+  position: relative;
+  z-index: 2;
 }
 
 .industrial-about-card {
@@ -807,7 +900,27 @@ a {
   border-radius: 22px;
   padding: 1.25rem 1.2rem 1.15rem;
   box-shadow: 0 8px 18px rgba(5, 40, 22, 0.045);
+  position: relative;
+  z-index: 1;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* Industrial: slide-in reveal for "Industries We Serve" (override generic scroll-reveal float-up) */
+.industrial-about-card.scroll-reveal {
+  opacity: 0;
+  transform: translateX(-140px);
+  filter: blur(14px);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.9s cubic-bezier(0.12, 0.75, 0.18, 1),
+    filter 0.9s cubic-bezier(0.12, 0.75, 0.18, 1);
+  will-change: transform, filter, opacity;
+}
+
+.industrial-about-card.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0);
 }
 
 .industrial-about-card:hover {
@@ -817,7 +930,7 @@ a {
 
 .industrial-about-card-title {
   margin: 0 0 1rem;
-  color: #111827;
+  color: var(--heading-color);
 }
 
 .industrial-icon-list {
@@ -867,27 +980,32 @@ a {
 
 .industrial-about-advantage {
   position: relative;
-  margin-top: 1.65rem;
-  padding: 2.7rem 0 2rem;
+  margin-top: 1rem;
+  padding: 4rem 0 5rem;
   width: 100%;
+  overflow-x: visible;
+  background: var(--green-light);
+  box-shadow: 0 0 0 100vmax var(--green-light);
+  clip-path: inset(0 -100vmax);
+}
+
+.industrial-about-advantage .construction-services-title {
+  font-size: 2.8rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #000000;
+  text-shadow: none;
 }
 
 .industrial-about-advantage::before {
   content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  background: var(--green-light);
-  z-index: -1;
+  display: none;
 }
 
 .industrial-about-advantage .industrial-about-card-title {
   text-align: center;
   color: #111827;
-  margin-bottom: 1.45rem;
+  margin-bottom: 2.15rem;
 }
 
 
@@ -903,18 +1021,23 @@ a {
 
 .industrial-advantage-grid li {
   grid-column: span 2;
-  border: 1px solid #dce7dc;
-  border-radius: 18px;
-  background: #f8fbf8;
-  padding: 1.15rem 1.1rem 1.05rem;
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-soft);
+  padding: 1.8rem 1.5rem 1.9rem;
   min-height: 138px;
-  box-shadow: 0 4px 12px rgba(20, 44, 28, 0.04);
+  text-align: center;
+  box-shadow: none;
   transition: transform 0.18s ease, box-shadow 0.18s ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .industrial-advantage-grid li:hover {
   transform: translateY(-6px);
-  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.18);
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.14),
+    0 8px 18px rgba(15, 23, 42, 0.08);
 }
 
 .industrial-advantage-grid li:nth-child(4) {
@@ -936,15 +1059,17 @@ a {
 
 .industrial-advantage-grid li strong {
   display: block;
-  color: #2d7f58;
-  font-size: 1rem;
+  margin: 0.1rem 0 0.7rem;
+  color: var(--green-main);
+  font-size: 1.1rem;
+  font-weight: 500;
   line-height: 1.32;
 }
 
 .industrial-advantage-grid li p {
-  margin: 0.22rem 0 0;
-  color: #5f6f63;
-  font-size: 0.92rem;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
   line-height: 1.34;
 }
 
@@ -992,6 +1117,177 @@ a {
 .industrial-services-section .services-dropdown-panel {
   width: 100%;
   max-width: none;
+}
+
+/* Industrial page: infinite marquee carousel (full-width, seamless) */
+.industrial-marquee {
+  margin-top: 5rem;
+  margin-bottom: 1.15rem;
+  width: 100%;
+  background: transparent;
+}
+
+.industrial-marquee-header {
+  max-width: 980px;
+  margin: 0 auto 1.6rem;
+  text-align: center;
+}
+
+.industrial-marquee-title {
+  margin: 0 0 0.45rem;
+  font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--construction-green);
+  letter-spacing: -0.01em;
+}
+
+.industrial-marquee-subtitle {
+  margin: 0;
+  max-width: 62rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.industrial-marquee-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  height: clamp(280px, 56dvh, 480px);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.industrial-marquee-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(31, 162, 74, 0.75);
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(31, 162, 74, 0.95);
+  cursor: pointer;
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.industrial-marquee-arrow span {
+  font-size: 32px;
+  line-height: 1;
+  transform: translateY(-1px);
+  user-select: none;
+}
+
+.industrial-marquee-arrow-left {
+  left: 14px;
+}
+
+.industrial-marquee-arrow-right {
+  right: 14px;
+}
+
+.industrial-marquee-arrow:hover {
+  background: rgba(255, 255, 255, 0.26);
+  transform: translateY(-50%) scale(1.04);
+  box-shadow:
+    0 16px 35px rgba(15, 23, 42, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.industrial-marquee-arrow:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+@media (max-width: 640px) {
+  .industrial-marquee-arrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  .industrial-marquee-arrow span {
+    font-size: 28px;
+  }
+}
+
+.industrial-marquee-viewport::before,
+.industrial-marquee-viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: min(120px, 14vw);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.industrial-marquee-viewport::before {
+  left: 0;
+  background: none;
+}
+
+.industrial-marquee-viewport::after {
+  right: 0;
+  background: none;
+}
+
+.industrial-marquee-track {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: max-content;
+  height: 100%;
+  padding: 0 1rem;
+  will-change: transform;
+  animation: industrial-marquee-right 48s linear infinite;
+  transform: translate3d(0%, 0, 0);
+}
+
+.industrial-marquee-track img {
+  height: 100%;
+  width: min(720px, 68vw);
+  flex: 0 0 auto;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  user-select: none;
+  -webkit-user-drag: none;
+  border: 4px solid var(--construction-green);
+  box-shadow: none;
+  background-color: transparent;
+  filter: saturate(1.02) contrast(1.02);
+}
+
+@keyframes industrial-marquee-right {
+  from {
+    transform: translate3d(0%, 0, 0);
+  }
+  to {
+    transform: translate3d(50%, 0, 0);
+  }
+}
+
+@media (max-width: 640px) {
+  .industrial-marquee-viewport {
+    border-radius: 22px;
+    height: 200px;
+  }
 }
 
 #industrial-dropdown-electroplating-inline .services-dropdown-boxes,
@@ -2946,7 +3242,7 @@ a.construction-service-card:focus-visible {
   min-width: 0;
   /* Stays below the floated figure so a full-width block box does not sit on top of the image/slider (desktop hit-testing). */
   position: relative;
-  z-index: 0;
+  z-index: 2;
 }
 
 .about-story-box-inner--wrap .about-story-media {
@@ -2960,9 +3256,47 @@ a.construction-service-card:focus-visible {
   z-index: 1;
 }
 
+/* About page: premium slide-in reveal for the "Our Story" media (match Industrial Industries animation) */
+.about-story-media.scroll-reveal {
+  opacity: 0.35;
+  transform: translateX(-140px);
+  filter: blur(10px) saturate(1.15);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.9s cubic-bezier(0.12, 0.75, 0.18, 1),
+    filter 0.9s cubic-bezier(0.12, 0.75, 0.18, 1);
+  will-change: transform, filter, opacity;
+  z-index: 0;
+  background-color: transparent;
+}
+
+.about-story-media.scroll-reveal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  opacity: 1;
+  transition: opacity 0.55s ease-out;
+  pointer-events: none;
+}
+
+.about-story-media.scroll-reveal.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0) saturate(1);
+  z-index: 1;
+}
+
+.about-story-media.scroll-reveal.is-visible::before {
+  opacity: 0;
+}
+
 .about-story-media {
   margin: 0;
   min-width: 0;
+  position: relative;
   border-radius: 16px;
   overflow: hidden;
   background-color: #f1f5f9;
