@@ -116,7 +116,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(__dirname));
+// Serve static files only when running locally (Vercel handles static serving itself)
+if (!process.env.VERCEL) {
+  app.use(express.static(__dirname));
+}
 
 setInterval(() => {
   const now = Date.now();
