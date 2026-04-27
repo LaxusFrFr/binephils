@@ -127,13 +127,14 @@
 
       <section class="construction-solar-showcase reveal-on-load" aria-label="Solar lighting">
         <picture>
-          <source srcset="images/Solar Street Lights.webp" type="image/webp" />
+          <source srcset="images/Solar Street Lights.optimized.webp" type="image/webp" />
           <img
             class="construction-solar-showcase-image"
             src="images/Solar Street Lights.png"
             alt="Solar lighting solutions"
-            loading="lazy"
+            loading="eager"
             decoding="async"
+            fetchpriority="high"
           />
         </picture>
       </section>

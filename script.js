@@ -230,6 +230,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initIndustrialMarquee();
 
+  function initEpsonSolutionsHoverReveal() {
+    const sections = document.querySelectorAll(".epson-solutions-section");
+    if (!sections.length) return;
+
+    sections.forEach((section) => {
+      if (section.dataset.epsonHoverReady === "1") return;
+      section.dataset.epsonHoverReady = "1";
+
+      const bgLayer = section.querySelector(".epson-solutions-bg");
+      const cards = section.querySelectorAll(".epson-solution-card[data-bg]");
+      if (!bgLayer || !cards.length) return;
+
+      let currentBg = "";
+      let switchTimer = 0;
+
+      const swapBackground = (nextBg) => {
+        if (!nextBg || nextBg === currentBg) return;
+        currentBg = nextBg;
+
+        section.classList.add("bg-switching");
+        if (switchTimer) window.clearTimeout(switchTimer);
+
+        switchTimer = window.setTimeout(() => {
+          bgLayer.style.backgroundImage = `url("${nextBg}")`;
+          section.classList.remove("bg-switching");
+          section.classList.add("bg-active");
+          switchTimer = 0;
+        }, 130);
+      };
+
+      const clearBackground = () => {
+        if (switchTimer) {
+          window.clearTimeout(switchTimer);
+          switchTimer = 0;
+        }
+        section.classList.remove("bg-switching");
+        section.classList.remove("bg-active");
+      };
+
+      cards.forEach((card) => {
+        const bgPath = (card.getAttribute("data-bg") || "").trim();
+        if (!bgPath) return;
+
+        if (!card.hasAttribute("tabindex")) {
+          card.setAttribute("tabindex", "0");
+        }
+
+        const preload = new Image();
+        preload.src = bgPath;
+
+        const reveal = () => swapBackground(bgPath);
+        card.addEventListener("mouseenter", reveal);
+        card.addEventListener("focus", reveal);
+        card.addEventListener("touchstart", reveal, { passive: true });
+      });
+
+      section.addEventListener("mouseleave", clearBackground);
+      section.addEventListener("focusout", (event) => {
+        const nextFocused = event.relatedTarget;
+        if (!(nextFocused instanceof Element) || !section.contains(nextFocused)) {
+          clearBackground();
+        }
+      });
+    });
+  }
+
+  initEpsonSolutionsHoverReveal();
+
   // Device hint class for platform-specific visual polish.
   const isAndroid = /Android/i.test(navigator.userAgent || "");
   const isIOS =
@@ -1297,6 +1365,20 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!e.target.closest("#province-dropdown")) closeDropdown(provinceDropdown);
       if (!e.target.closest("#city-dropdown")) closeDropdown(cityDropdown);
     });
+
+    // Desktop only: trap wheel scroll inside open dropdown lists so the page doesn't scroll
+    if (window.matchMedia("(pointer: fine)").matches) {
+      [provinceList, cityList].forEach(function (list) {
+        if (!list) return;
+        list.addEventListener("wheel", function (e) {
+          var atTop = list.scrollTop <= 0;
+          var atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight;
+          if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+      });
+    }
 
     loadLocationData();
   })();

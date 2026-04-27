@@ -2235,6 +2235,12 @@ a {
   max-width: calc((100% - 1.5rem) / 2);
 }
 
+/* Center the 2 cards in Aluminum Insulation Panel section */
+.construction-services-grid.products-panels-grid {
+  grid-template-columns: repeat(2, minmax(0, calc((100% - 3rem) / 3)));
+  justify-content: center;
+}
+
 .construction-service-card {
   border-radius: 20px;
   border: 1.5px solid var(--construction-green);
@@ -5268,6 +5274,7 @@ a.construction-service-card:focus-visible {
   z-index: 999;
   max-height: 200px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   margin: 0 0 0.25rem;
   padding: 0.35rem 0;
   list-style: none;
@@ -7351,5 +7358,147 @@ a.construction-service-card:focus-visible {
 
   .brochure-fab-label {
     font-size: 0.85rem;
+  }
+}
+
+/* ── Epson-style Solutions Grid (industrialservices.html) ── */
+
+.epson-solutions-section {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0;
+  background: #ffffff;
+}
+
+.epson-solutions-section + .epson-solutions-section {
+  border-top: 1px solid rgba(11, 122, 59, 0.1);
+}
+
+.epson-solutions-bg {
+  position: absolute;
+  inset: 0;
+  background-size: 100% auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  filter: blur(0.4px) brightness(1);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+  transform: translateZ(0);
+  will-change: opacity;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.epson-solutions-section.bg-active .epson-solutions-bg {
+  opacity: 0.5;
+  filter: blur(1px) brightness(1);
+}
+
+.epson-solutions-section.bg-switching .epson-solutions-bg {
+  opacity: 0;
+}
+
+.epson-solutions-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--green-main);
+  margin: 0 0 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.epson-solutions-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 0 0 2.2rem;
+  max-width: 640px;
+  position: relative;
+  z-index: 1;
+}
+
+.epson-solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.epson-solution-card {
+  position: relative;
+  padding: 2rem 1.8rem;
+  border: 1px solid rgba(11, 122, 59, 0.22);
+  background: rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition: background 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+  cursor: default;
+}
+
+.epson-solution-card + .epson-solution-card {
+  margin-left: -1px;
+}
+
+.epson-solution-card:nth-child(n+4) {
+  margin-top: -1px;
+}
+
+.epson-solution-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.epson-solution-card p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.epson-solution-card:hover {
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 12px 40px rgba(11, 122, 59, 0.12);
+  transform: translateY(-2px);
+  z-index: 2;
+}
+
+.epson-solution-card:hover h3 {
+  color: var(--green-main);
+}
+
+/* 3-column variant for electroless (3 items, single row) */
+.epson-solutions-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .epson-solutions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .epson-solutions-grid--3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .epson-solutions-title {
+    font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .epson-solutions-section {
+    padding: 2.5rem 0;
+  }
+  .epson-solutions-grid,
+  .epson-solutions-grid--3 {
+    grid-template-columns: 1fr;
+  }
+  .epson-solution-card {
+    padding: 1.5rem 1.2rem;
+  }
+  .epson-solutions-title {
+    font-size: 1.6rem;
   }
 }
