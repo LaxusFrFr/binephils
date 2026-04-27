@@ -43,6 +43,10 @@ function buildAllowedOrigins() {
     .split(",")
     .forEach((part) => add(part));
   add(process.env.RENDER_EXTERNAL_URL);
+  // Vercel sets VERCEL_URL (without protocol), e.g. "my-app.vercel.app"
+  if (process.env.VERCEL_URL) {
+    set.add(`https://${process.env.VERCEL_URL}`);
+  }
   return set;
 }
 
@@ -689,9 +693,15 @@ app.use((error, req, res, _next) => {
   });
 });
 
-app.listen(PORT, () => {
-  log("info", "Bine site server started", {
-    port: PORT,
-    resendConfigured: Boolean(RESEND_API_KEY),
+// Export for Vercel serverless
+module.exports = app;
+
+// Only listen when running locally (not in Vercel serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    log("info", "Bine site server started", {
+      port: PORT,
+      resendConfigured: Boolean(RESEND_API_KEY),
+    });
   });
-});
+}
