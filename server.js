@@ -43,9 +43,12 @@ function buildAllowedOrigins() {
     .split(",")
     .forEach((part) => add(part));
   add(process.env.RENDER_EXTERNAL_URL);
-  // Vercel sets VERCEL_URL (without protocol), e.g. "my-app.vercel.app"
+  // Vercel sets VERCEL_URL (per-deployment) and VERCEL_PROJECT_PRODUCTION_URL (stable production)
   if (process.env.VERCEL_URL) {
     set.add(`https://${process.env.VERCEL_URL}`);
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    set.add(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`);
   }
   return set;
 }
@@ -146,11 +149,14 @@ function isAllowedOrigin(origin) {
 
 function assertAllowedOrigin(req) {
   const origin = req.get("origin");
-  if (!isAllowedOrigin(origin)) {
-    const err = new Error("origin is not allowed");
-    err.statusCode = 403;
-    throw err;
-  }
+  if (!origin) return; // same-origin or non-browser request
+  if (isAllowedOrigin(origin)) return;
+  // Allow same-origin: origin host matches the request Host header
+  const host = req.get("host");
+  if (host && origin.replace(/^https?:\/\//, "") === host) return;
+  const err = new Error("origin is not allowed");
+  err.statusCode = 403;
+  throw err;
 }
 
 function escapeHtml(value) {
