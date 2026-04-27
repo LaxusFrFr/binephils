@@ -1,4 +1,4 @@
-// Interactive behaviors for buttons and navigation
+ // Interactive behaviors for buttons and navigation
 
 document.addEventListener("DOMContentLoaded", () => {
   function initAboutStorySliders() {
@@ -109,6 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let speedResetTimer = 0;
       const basePxPerSec = 60;
 
+      track.style.opacity = "0";
+
       const measure = () => {
         const children = Array.from(track.children);
         const declaredSetCount = parseInt(String(root.dataset.marqueeSetCount || ""), 10);
@@ -127,14 +129,31 @@ document.addEventListener("DOMContentLoaded", () => {
             ? after.offsetLeft - first.offsetLeft
             : 0;
 
-        setWidth = measured > 0 ? measured : fallbackWidth;
-        offset = setWidth > 0 ? -setWidth : 0;
+        const newWidth = measured > 0 ? measured : fallbackWidth;
+        if (newWidth <= 0) return;
+
+        if (setWidth > 0) {
+          const ratio = offset / setWidth;
+          setWidth = newWidth;
+          offset = ratio * setWidth;
+        } else {
+          setWidth = newWidth;
+          offset = -setWidth;
+        }
+
+        while (offset >= 0) offset -= setWidth;
+        while (offset < -setWidth) offset += setWidth;
         track.style.transform = `translate3d(${offset}px, 0, 0)`;
+
+        if (track.style.opacity === "0") {
+          track.style.transition = "opacity 0.4s ease";
+          track.style.opacity = "1";
+        }
       };
 
       const step = (ts) => {
         if (!lastTs) lastTs = ts;
-        const dt = ts - lastTs;
+        const dt = Math.min(ts - lastTs, 50);
         lastTs = ts;
 
         if (setWidth <= 0) {
@@ -442,11 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Footer: highlight the current Company page link (About/Services/Products/etc.)
   const footerCompanyLinks = Array.from(
     document.querySelectorAll(".footer-links-group ul a")
-  ).filter((link) => {
-    const group = link.closest(".footer-links-group");
-    const heading = group?.querySelector("h4");
-    return heading && (heading.textContent || "").trim().toLowerCase() === "company";
-  });
+  );
   if (footerCompanyLinks.length) {
     const normalizePath = (value) => {
       const path = (value || "").toLowerCase().replace(/\\/g, "/");
@@ -525,24 +540,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Defer reveal/stagger so the page paints first (faster perceived load, especially on Services/Projects)
   requestAnimationFrame(() => {
-    // 0) Construction hero slideshow (deterministic; avoids white flashes/double exposure)
+    // 0) Construction hero slideshow — GSAP-powered crossfade (GPU-composited, 60 fps)
     const heroSlideshow = document.querySelector(".construction-hero-slideshow");
-    if (heroSlideshow) {
-      const slides = Array.from(heroSlideshow.querySelectorAll(".construction-hero-slide"));
+    if (heroSlideshow && typeof gsap !== "undefined") {
+      const slides = gsap.utils.toArray(".construction-hero-slide");
       if (slides.length) {
         const prefersReduced =
           window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const intervalMs = prefersReduced ? 4500 : 3500;
+        const holdSec = prefersReduced ? 4.5 : 3.5;
+        const fadeSec = prefersReduced ? 1.4 : 1;
 
-        let idx = 0;
-        slides.forEach((s) => s.classList.remove("is-active"));
-        slides[0].classList.add("is-active");
+        gsap.set(slides, { opacity: 0 });
+        gsap.set(slides[0], { opacity: 1 });
 
-        window.setInterval(() => {
-          slides[idx].classList.remove("is-active");
-          idx = (idx + 1) % slides.length;
-          slides[idx].classList.add("is-active");
-        }, intervalMs);
+        let current = 0;
+        let heroPaused = false;
+
+        function crossfadeNext() {
+          const prev = current;
+          current = (current + 1) % slides.length;
+          gsap.to(slides[prev], { opacity: 0, duration: fadeSec, ease: "power2.inOut" });
+          gsap.to(slides[current], { opacity: 1, duration: fadeSec, ease: "power2.inOut" });
+        }
+
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(
+            function (entries) { heroPaused = !entries[0].isIntersecting; },
+            { threshold: 0 }
+          ).observe(heroSlideshow);
+        }
+
+        gsap.delayedCall(holdSec, function loop() {
+          if (!heroPaused) crossfadeNext();
+          gsap.delayedCall(holdSec, loop);
+        });
       }
     }
 

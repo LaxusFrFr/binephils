@@ -126,13 +126,16 @@
       </section>
 
       <section class="construction-solar-showcase reveal-on-load" aria-label="Solar lighting">
-        <img
-          class="construction-solar-showcase-image"
-          src="images/Solar Street Lights.png"
-          alt="Solar lighting solutions"
-          loading="lazy"
-          decoding="async"
-        />
+        <picture>
+          <source srcset="images/Solar Street Lights.webp" type="image/webp" />
+          <img
+            class="construction-solar-showcase-image"
+            src="images/Solar Street Lights.png"
+            alt="Solar lighting solutions"
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
       </section>
 
       <!-- The BCDC Advantage -->
@@ -469,8 +472,6 @@
               <ul>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="services.html">Services</a></li>
-                <li><a href="products.html">Products</a></li>
-                <li><a href="projects.html">Projects</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
                 <li><a href="privacy-policy.html">Privacy Policy</a></li>
                 <li><a href="cookie-policy.html">Cookie Policy</a></li>
@@ -480,14 +481,13 @@
               <h4>Divisions</h4>
               <ul>
                 <li><strong>Industrial</strong></li>
-                <li><a href="index.html#manufacturing">Casting</a></li>
-                <li><a href="index.html#manufacturing">Electroplating</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="products.html">Products</a></li>
               </ul>
               <ul>
                 <li><strong>Construction</strong></li>
-                <li><a href="index.html#construction">Construction Services</a></li>
-                <li><a href="index.html#construction">Aluminum Panel</a></li>
-                <li><a href="index.html#construction">Traffic Safety</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="products.html">Products</a></li>
               </ul>
             </div>
           </div>
@@ -522,6 +522,7 @@
     </footer>
 
     <script src="js/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="script.js" defer></script>
   </body>
 </html>
