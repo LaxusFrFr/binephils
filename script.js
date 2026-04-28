@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sections.forEach((section) => {
       if (section.dataset.epsonHoverReady === "1") return;
       section.dataset.epsonHoverReady = "1";
+      if (section.id === "electroless") return;
 
       const bgLayer = section.querySelector(".epson-solutions-bg");
       const cards = section.querySelectorAll(".epson-solution-card[data-bg]");
@@ -265,26 +266,48 @@ document.addEventListener("DOMContentLoaded", () => {
           window.clearTimeout(switchTimer);
           switchTimer = 0;
         }
+        currentBg = "";
         section.classList.remove("bg-switching");
         section.classList.remove("bg-active");
       };
 
       cards.forEach((card) => {
-        const bgPath = (card.getAttribute("data-bg") || "").trim();
-        if (!bgPath) return;
+        const bgRaw = (card.getAttribute("data-bg") || "").trim();
+        if (!bgRaw) return;
+
+        const bgPaths = bgRaw.split("|").map((s) => s.trim()).filter(Boolean);
+        if (!bgPaths.length) return;
 
         if (!card.hasAttribute("tabindex")) {
           card.setAttribute("tabindex", "0");
         }
 
-        const preload = new Image();
-        preload.src = bgPath;
+        bgPaths.forEach((src) => { const p = new Image(); p.src = src; });
 
-        const reveal = () => swapBackground(bgPath);
+        let variantIdx = 0;
+        const reveal = () => {
+          const chosen = bgPaths[variantIdx % bgPaths.length];
+          variantIdx++;
+          swapBackground(chosen);
+        };
         card.addEventListener("mouseenter", reveal);
         card.addEventListener("focus", reveal);
         card.addEventListener("touchstart", reveal, { passive: true });
       });
+
+      const variantBoxes = section.querySelectorAll(".nickel-variant-box[data-bg]");
+      variantBoxes.forEach((box) => {
+        const src = (box.getAttribute("data-bg") || "").trim();
+        if (!src) return;
+        box.addEventListener("mouseenter", () => swapBackground(src));
+      });
+
+      const nickelCard = section.querySelector(".nickel-has-variants");
+      if (nickelCard) {
+        nickelCard.addEventListener("touchstart", (e) => {
+          nickelCard.classList.toggle("variants-open");
+        }, { passive: true });
+      }
 
       section.addEventListener("mouseleave", clearBackground);
       section.addEventListener("focusout", (event) => {
@@ -297,6 +320,86 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   initEpsonSolutionsHoverReveal();
+
+  function initElectrolessNickelPreview() {
+    const nickelCard = document.querySelector("#electroless .electroless-card--nickel");
+    if (!nickelCard) return;
+    const mainImg = nickelCard.querySelector(".electroless-media img");
+    const variantStrip = nickelCard.querySelector(".electroless-variant-strip");
+    const variantCards = nickelCard.querySelectorAll(".electroless-variant-card");
+    if (!mainImg || !variantStrip || !variantCards.length) return;
+
+    const defaultSrc = mainImg.getAttribute("src") || "";
+    const applyPreview = (src) => {
+      if (!src) return;
+      mainImg.setAttribute("src", src);
+    };
+    const restoreDefault = () => {
+      if (!defaultSrc) return;
+      mainImg.setAttribute("src", defaultSrc);
+    };
+
+    variantCards.forEach((card) => {
+      const previewSrc = (card.getAttribute("data-preview") || "").trim();
+      if (!previewSrc) return;
+      card.addEventListener("mouseenter", () => applyPreview(previewSrc));
+      card.addEventListener("focusin", () => applyPreview(previewSrc));
+    });
+
+    variantStrip.addEventListener("mouseleave", restoreDefault);
+    variantStrip.addEventListener("focusout", (event) => {
+      const nextFocused = event.relatedTarget;
+      if (!(nextFocused instanceof Element) || !variantStrip.contains(nextFocused)) {
+        restoreDefault();
+      }
+    });
+  }
+
+  initElectrolessNickelPreview();
+
+  // Simple and effective parallax for hero section
+  (function initHomeHeroParallax() {
+    const hero = document.querySelector(".hero-section--parallax");
+    const bg = hero?.querySelector(".hero-bg");
+    if (!hero || !bg) return;
+
+    // Disable on mobile for performance
+    const isMobile = window.innerWidth <= 720;
+    if (isMobile) return;
+
+    let ticking = false;
+
+    const applyParallax = () => {
+      ticking = false;
+      
+      // Get scroll position
+      const scrolled = window.pageYOffset;
+      const heroTop = hero.offsetTop;
+      const heroHeight = hero.offsetHeight;
+      
+      // Calculate how much the user has scrolled past the hero
+      const scrollProgress = scrolled / (heroTop + heroHeight);
+      
+      // Apply parallax: move background up slower than scroll (creates parallax effect)
+      // When user scrolls down, background moves up at 50% speed
+      const translateY = scrolled * 0.5;
+      
+      // Apply the transform
+      bg.style.transform = `translate3d(0, ${translateY}px, 0)`;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(applyParallax);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    
+    // Initial call
+    applyParallax();
+  })();
 
   // Device hint class for platform-specific visual polish.
   const isAndroid = /Android/i.test(navigator.userAgent || "");
