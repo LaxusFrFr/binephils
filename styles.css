@@ -4662,6 +4662,13 @@ a.construction-service-card:focus-visible {
   clip-path: inset(0 -100vmax);
 }
 
+/* Make Services and Contact footer links green only on index.html */
+body#top .footer-links a[href="index.html#services"],
+body#top .footer-links a[href="index.html#contact"] {
+  color: var(--green-main);
+  font-weight: 600;
+}
+
 .services-section.services-no-bg .services-header-kicker {
   display: inline-flex;
   align-items: center;
