@@ -7529,10 +7529,10 @@ a.construction-service-card:focus-visible {
 }
 
 #electroless .electroless-card {
-  border-radius: 16px;
+  border-radius: 0;
   border: 1px solid rgba(11, 122, 59, 0.18);
   background: #ffffff;
-  box-shadow: 0 8px 24px rgba(11, 122, 59, 0.08);
+  box-shadow: 0 8px 22px rgba(11, 122, 59, 0.07);
   padding: 1rem;
 }
 
