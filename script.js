@@ -237,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sections.forEach((section) => {
       if (section.dataset.epsonHoverReady === "1") return;
       section.dataset.epsonHoverReady = "1";
-      if (section.id === "electroless") return;
 
       const bgLayer = section.querySelector(".epson-solutions-bg");
       const cards = section.querySelectorAll(".epson-solution-card[data-bg]");
