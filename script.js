@@ -234,6 +234,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll(".epson-solutions-section");
     if (!sections.length) return;
 
+    // Skip hover effects on mobile - images are already displayed inside cards
+    const isMobile = window.matchMedia("(max-width: 720px)").matches;
+    if (isMobile) return;
+
     sections.forEach((section) => {
       if (section.dataset.epsonHoverReady === "1") return;
       section.dataset.epsonHoverReady = "1";
@@ -356,33 +360,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initElectrolessNickelPreview();
 
-  // Simple and effective parallax for hero section
+  // Simple and effective parallax for hero section (index.html only)
   (function initHomeHeroParallax() {
     const hero = document.querySelector(".hero-section--parallax");
     const bg = hero?.querySelector(".hero-bg");
     if (!hero || !bg) return;
 
-    // Disable on mobile for performance
-    const isMobile = window.innerWidth <= 720;
-    if (isMobile) return;
-
     let ticking = false;
 
     const applyParallax = () => {
       ticking = false;
-      
+
       // Get scroll position
       const scrolled = window.pageYOffset;
       const heroTop = hero.offsetTop;
       const heroHeight = hero.offsetHeight;
-      
+
       // Calculate how much the user has scrolled past the hero
       const scrollProgress = scrolled / (heroTop + heroHeight);
-      
+
       // Apply parallax: move background up slower than scroll (creates parallax effect)
       // When user scrolls down, background moves up at 50% speed
       const translateY = scrolled * 0.5;
-      
+
       // Apply the transform
       bg.style.transform = `translate3d(0, ${translateY}px, 0)`;
     };
@@ -395,8 +395,51 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    
+
     // Initial call
+    applyParallax();
+  })();
+
+  // Parallax for construction and industrial hero sections (slideshow layer)
+  (function initConstructionIndustrialHeroParallax() {
+    const constructionHero = document.querySelector(".construction-hero:not(.industrial-hero)");
+    const industrialHero = document.querySelector(".industrial-hero");
+
+    if (!constructionHero && !industrialHero) return;
+
+    let ticking = false;
+
+    const applyParallax = () => {
+      ticking = false;
+      const scrolled = window.pageYOffset;
+
+      // Apply to construction hero
+      if (constructionHero) {
+        const translateY = Math.max(0, scrolled * 0.3);
+        const slideshow = constructionHero.querySelector(".construction-hero-slideshow");
+        if (slideshow) {
+          slideshow.style.transform = `translate3d(0, ${translateY}px, 0)`;
+        }
+      }
+
+      // Apply to industrial hero
+      if (industrialHero) {
+        const translateY = Math.max(0, scrolled * 0.3);
+        const slideshow = industrialHero.querySelector(".construction-hero-slideshow");
+        if (slideshow) {
+          slideshow.style.transform = `translate3d(0, ${translateY}px, 0)`;
+        }
+      }
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(applyParallax);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     applyParallax();
   })();
 
@@ -1538,33 +1581,70 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // 5a) road-banner-page — mobile: banner bg layer with slight zoom on scroll
-  (function initConstructionBannerMobileScrollZoom() {
+  (function initBannerMobileScrollZoom() {
     if (!document.body.classList.contains("road-banner-page")) return;
-    const banner = document.querySelector(".construction-road-banner--parallax");
-    const layer = document.querySelector(".construction-road-banner-scroll-bg");
-    if (!banner || !layer) return;
+
+    // Construction banner
+    const constructionBanner = document.querySelector(".construction-road-banner--parallax");
+    const constructionLayer = document.querySelector(".construction-road-banner-scroll-bg");
+
+    // Industrial banner
+    const industrialBanner = document.querySelector(".industrial-road-banner--parallax");
+    const industrialLayer = document.querySelector(".industrial-road-banner-scroll-bg");
+
+    if ((!constructionBanner || !constructionLayer) && (!industrialBanner || !industrialLayer)) return;
 
     const mobileMq = window.matchMedia("(max-width: 720px)");
     const reduceMotionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
     let ticking = false;
-    const zoomExtra = 0.072;
+    const zoomExtra = 0; // Disabled: no zoom effect
+
+    // Mobile: completely disable any scroll effects - background is static via CSS
+    if (mobileMq.matches) {
+      return; // Exit early - no JS effects on mobile
+    }
 
     function applyZoom() {
       ticking = false;
-      if (!mobileMq.matches) {
-        layer.style.transform = "";
+
+      // Extra safeguard: never apply zoom on mobile
+      if (mobileMq.matches) {
         return;
       }
+
+      // Respect reduced motion preference
       if (reduceMotionMq.matches) {
-        layer.style.transform = "scale(1)";
+        if (constructionLayer) constructionLayer.style.transform = "";
+        if (industrialLayer) industrialLayer.style.transform = "";
         return;
       }
-      const rect = banner.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-      const span = Math.max(vh + rect.height * 0.75, 1);
-      const progress = Math.max(0, Math.min(1, (vh - rect.top) / span));
-      const scale = 1 + progress * zoomExtra;
-      layer.style.transform = `scale(${scale})`;
+
+      // Desktop only: apply subtle zoom (disabled since zoomExtra = 0)
+      if (constructionBanner && constructionLayer) {
+        const rect = constructionBanner.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const span = Math.max(vh + rect.height * 0.75, 1);
+        const progress = Math.max(0, Math.min(1, (vh - rect.top) / span));
+        const scale = 1 + progress * zoomExtra;
+        if (scale !== 1) {
+          constructionLayer.style.transform = `scale(${scale})`;
+        } else {
+          constructionLayer.style.transform = "";
+        }
+      }
+
+      if (industrialBanner && industrialLayer) {
+        const rect = industrialBanner.getBoundingClientRect();
+        const vh = window.innerHeight || 1;
+        const span = Math.max(vh + rect.height * 0.75, 1);
+        const progress = Math.max(0, Math.min(1, (vh - rect.top) / span));
+        const scale = 1 + progress * zoomExtra;
+        if (scale !== 1) {
+          industrialLayer.style.transform = `scale(${scale})`;
+        } else {
+          industrialLayer.style.transform = "";
+        }
+      }
     }
 
     function onScrollOrResize() {

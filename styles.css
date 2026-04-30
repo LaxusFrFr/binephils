@@ -721,19 +721,9 @@ a {
   min-height: 560px;
 }
 
-.construction-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(
-    92deg,
-    rgba(255, 255, 255, 0.78) 0%,
-    rgba(255, 255, 255, 0.62) 32%,
-    rgba(255, 255, 255, 0.28) 50%,
-    rgba(255, 255, 255, 0.08) 62%,
-    rgba(255, 255, 255, 0) 72%
-  );
+.construction-hero::before,
+.construction-hero::after {
+  display: none;
 }
 
 /* Construction hero: background slideshow (pro crossfade) */
@@ -741,6 +731,30 @@ a {
   position: absolute;
   inset: 0;
   z-index: 0;
+  pointer-events: none;
+}
+
+/* Overlay gradient - moved to child div for parallax */
+.construction-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(
+      60% 90% at 18% 38%,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 255, 255, 0.52) 34%,
+      rgba(255, 255, 255, 0) 70%
+    ),
+    linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.78) 0%,
+      rgba(255, 255, 255, 0.62) 32%,
+      rgba(255, 255, 255, 0.28) 50%,
+      rgba(255, 255, 255, 0.08) 62%,
+      rgba(255, 255, 255, 0) 72%
+    );
+  background-blend-mode: soft-light, normal;
   pointer-events: none;
 }
 
@@ -818,27 +832,23 @@ a {
   width: 100%;
 }
 
-.industrial-hero::before {
-  background: linear-gradient(
-    92deg,
-    rgba(255, 255, 255, 0.48) 0%,
-    rgba(255, 255, 255, 0.30) 30%,
-    rgba(255, 255, 255, 0.12) 52%,
-    rgba(255, 255, 255, 0.03) 68%,
-    rgba(255, 255, 255, 0) 80%
-  );
-}
-
-.industrial-hero::after {
+.industrial-hero .construction-hero-overlay {
   background:
     radial-gradient(
       60% 90% at 18% 38%,
       rgba(255, 255, 255, 0.50) 0%,
       rgba(255, 255, 255, 0.28) 34%,
       rgba(255, 255, 255, 0) 70%
+    ),
+    linear-gradient(
+      92deg,
+      rgba(255, 255, 255, 0.48) 0%,
+      rgba(255, 255, 255, 0.30) 30%,
+      rgba(255, 255, 255, 0.12) 52%,
+      rgba(255, 255, 255, 0.03) 68%,
+      rgba(255, 255, 255, 0) 80%
     );
-  mix-blend-mode: soft-light;
-  opacity: 0.9;
+  background-blend-mode: soft-light, normal;
 }
 
 .industrial-hero .construction-label-pill {
@@ -880,6 +890,9 @@ a {
 /* Industrial page: About section */
 .industrial-about-section {
   padding: 3.25rem 0 0;
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
 }
 
 .industrial-about-section .construction-services-title {
@@ -1239,8 +1252,26 @@ a {
 }
 
 @media (max-width: 640px) {
-  .industrial-marquee-arrow span {
-    font-size: 32px;
+  .industrial-marquee-arrow {
+    display: none;
+  }
+
+  .industrial-marquee-viewport {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .industrial-marquee-viewport::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
+  .industrial-marquee-track {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -1300,7 +1331,6 @@ a {
 
 @media (max-width: 640px) {
   .industrial-marquee-viewport {
-    border-radius: 22px;
     height: 200px;
   }
 }
@@ -1883,8 +1913,28 @@ a {
   .construction-road-banner--parallax {
     min-height: 24dvh;
     height: 200px;
+    background-image: url("images/Drone View.webp");
     background-position: center;
     background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: none;
+  }
+
+  .industrial-road-banner {
+    min-height: 24dvh;
+    height: 200px;
+    overflow-x: hidden;
+  }
+
+  .industrial-road-banner--parallax {
+    min-height: 24dvh;
+    height: 200px;
+    background-image: url("images/Industrial Banner.webp");
+    background-position: center;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
     transition: none;
   }
 
@@ -1953,21 +2003,41 @@ a {
     letter-spacing: 0.01em;
   }
 
-  /* construction.html only: ~desktop-scale band (not full screen) + zoomable image layer */
+  /* construction.html only: ~desktop-scale band (not full screen) + static image */
   .road-banner-page .construction-road-banner,
   .road-banner-page .construction-road-banner--parallax {
-    height: clamp(300px, 56dvh, 480px);
-    min-height: clamp(300px, 56dvh, 480px);
-    max-height: clamp(300px, 56dvh, 480px);
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
     overflow: hidden;
-    background-image: none;
-    background-color: #0c0c0c;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
     margin: 0;
     width: 100%;
+    background-image: url("images/Drone View.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .road-banner-page .industrial-road-banner,
+  .road-banner-page .industrial-road-banner--parallax {
+    height: 320px;
+    min-height: 320px;
+    max-height: 320px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    margin: 0;
+    width: 100%;
+    background-image: url("images/Industrial Banner.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .road-banner-page .construction-road-banner-scroll-bg {
@@ -1984,9 +2054,6 @@ a {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transform-origin: center center;
-    transform: scale(1);
-    will-change: transform;
     pointer-events: none;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -2006,9 +2073,6 @@ a {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transform-origin: center center;
-    transform: scale(1);
-    will-change: transform;
     pointer-events: none;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
@@ -2040,6 +2104,12 @@ a {
   body.road-banner-page .construction-road-banner-intro-btn {
     margin-top: 0;
   }
+
+  /* Hide scroll-bg layer on mobile - banner uses static background-image instead */
+  .road-banner-page .construction-road-banner-scroll-bg,
+  .road-banner-page .industrial-road-banner-scroll-bg {
+    display: none !important;
+  }
 }
 
 @media (max-width: 400px) {
@@ -2051,8 +2121,11 @@ a {
   .construction-road-banner--parallax {
     min-height: 22dvh;
     height: 180px;
+    background-image: url("images/Drone View.webp");
     background-position: center;
     background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   .construction-road-banner-content {
@@ -2073,15 +2146,32 @@ a {
   }
 
   .road-banner-page .construction-road-banner,
-  .road-banner-page .construction-road-banner--parallax {
-    height: clamp(280px, 52dvh, 440px);
-    min-height: clamp(280px, 52dvh, 440px);
-    max-height: clamp(280px, 52dvh, 440px);
+  .road-banner-page .construction-road-banner--parallax,
+  .road-banner-page .industrial-road-banner,
+  .road-banner-page .industrial-road-banner--parallax {
+    height: 280px;
+    min-height: 280px;
+    max-height: 280px;
+  }
+
+  /* Industrial banner at 400px - static photo only */
+  .industrial-road-banner--parallax {
+    background-image: url("images/Industrial Banner.webp");
+    background-position: center;
+    background-attachment: scroll;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   body.road-banner-page .construction-road-banner-content {
     gap: 0.95rem;
     padding-inline: max(1.15rem, env(safe-area-inset-left, 0px)) max(1.15rem, env(safe-area-inset-right, 0px));
+  }
+
+  /* Hide scroll-bg layer on mobile */
+  .road-banner-page .construction-road-banner-scroll-bg,
+  .road-banner-page .industrial-road-banner-scroll-bg {
+    display: none !important;
   }
 }
 
@@ -6955,6 +7045,11 @@ body#top .footer-links a[href="index.html#contact"] {
     margin-right: 0.5rem;
   }
 
+  /* Remove gray shadow above banner on mobile */
+  .header-shadow {
+    box-shadow: none;
+  }
+
   .main-nav ul {
     font-size: 1.05rem;
     font-weight: 600;
@@ -7808,31 +7903,161 @@ body#top .footer-links a[href="index.html#contact"] {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .epson-solutions-section {
     padding: 2.5rem 0;
   }
-  .epson-solutions-grid,
+
+  .epson-solutions-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0;
+  }
+
   .epson-solutions-grid--3 {
     grid-template-columns: 1fr;
+    gap: 0;
+    max-width: none;
   }
+
   .epson-solution-card {
-    padding: 1.5rem 1.2rem;
+    padding: 1.4rem 1.2rem;
+    border-radius: 0;
+    border: 1px solid rgba(11, 122, 59, 0.22);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: none;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
   }
+
+  .epson-solution-card + .epson-solution-card {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .epson-solution-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .epson-solution-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
   .epson-solutions-title {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
+    text-align: center;
+  }
+
+  .epson-solutions-subtitle {
+    text-align: center;
+    font-size: 0.95rem;
   }
 
   .nickel-variant-box h3 {
     font-size: 0.7rem;
   }
 
+  /* Electroless section mobile layout */
+  #electroless .epson-solutions-grid--6 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
   #electroless .epson-solutions-grid--3 {
     grid-template-columns: 1fr;
+    gap: 0;
+    max-width: none;
   }
 
   #electroless .electroless-card {
-    padding: 0.9rem;
+    padding: 1.2rem;
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid rgba(11, 122, 59, 0.22);
+    background: rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
   }
 
+  #electroless .electroless-media {
+    aspect-ratio: 16 / 10;
+    border-radius: 0;
+  }
+
+  /* Mobile: Display images inside epson-solution-card boxes */
+  .epson-solution-card {
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* Re-enable pointer events for card content */
+  .epson-solution-card h3,
+  .epson-solution-card p {
+    pointer-events: auto;
+  }
+
+  /* Disable hover background layer on mobile */
+  .epson-solutions-bg {
+    display: none !important;
+  }
+
+  .epson-solutions-section.bg-active .epson-solutions-bg,
+  .epson-solutions-section.bg-switching .epson-solutions-bg {
+    opacity: 0 !important;
+  }
+
+  .epson-solution-card::before {
+    content: "";
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 0;
+    margin-bottom: 1rem;
+    background-image: attr(data-bg url);
+  }
+
+  /* Individual card background images using data-bg attribute */
+  .epson-solution-card[data-bg="images/1 Copper Plating.webp"]::before {
+    background-image: url("images/1 Copper Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/2 Nickel Plating.webp"]::before {
+    background-image: url("images/2 Nickel Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/3 Tin Plating.webp"]::before {
+    background-image: url("images/3 Tin Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/4 Palladium Plating.webp"]::before {
+    background-image: url("images/4 Palladium Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/5 Rhodium Plating.webp"]::before {
+    background-image: url("images/5 Rhodium Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/6 Gold Plating.webp"]::before {
+    background-image: url("images/6 Gold Plating.webp");
+  }
+  .epson-solution-card[data-bg="images/Nickel Plating (Matte) High Phosphorus.png"]::before {
+    background-image: url("images/Nickel Plating (Matte) High Phosphorus.png");
+  }
+  .epson-solution-card[data-bg="images/TIn Plating (Matte Finish).png"]::before {
+    background-image: url("images/TIn Plating (Matte Finish).png");
+  }
+  .epson-solution-card[data-bg="images/Gold Plating (Matte).png"]::before {
+    background-image: url("images/Gold Plating (Matte).png");
+  }
+  .epson-solution-card[data-bg="images/Nickel Plating White Base (Matte).png"]::before {
+    background-image: url("images/Nickel Plating White Base (Matte).png");
+  }
+  .epson-solution-card[data-bg="images/White Nickel Plating (Matte).png"]::before {
+    background-image: url("images/White Nickel Plating (Matte).png");
+  }
+  .epson-solution-card[data-bg="images/White Nickel Plating (Matte) (2).png"]::before {
+    background-image: url("images/White Nickel Plating (Matte) (2).png");
+  }
 }
