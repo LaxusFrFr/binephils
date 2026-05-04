@@ -7947,60 +7947,10 @@ body#top .footer-links a[href="index.html#contact"] {
 
   .epson-solution-card + .epson-solution-card {
     margin-left: 0;
-    margin-top: 0;
   }
+}
 
-  .epson-solution-card h3 {
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .epson-solution-card p {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .epson-solutions-title {
-    font-size: 1.7rem;
-    text-align: center;
-  }
-
-  .epson-solutions-subtitle {
-    text-align: center;
-    font-size: 0.95rem;
-  }
-
-  .nickel-variant-box h3 {
-    font-size: 0.7rem;
-  }
-
-  /* Electroless section mobile layout */
-  #electroless .epson-solutions-grid--6 {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  #electroless .epson-solutions-grid--3 {
-    grid-template-columns: 1fr;
-    gap: 0;
-    max-width: none;
-  }
-
-  #electroless .electroless-card {
-    padding: 1.2rem;
-    border-radius: 0;
-    box-shadow: none;
-    border: 1px solid rgba(11, 122, 59, 0.22);
-    background: rgba(255, 255, 255, 0.28);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-  }
-
-  #electroless .electroless-media {
-    aspect-ratio: 16 / 10;
-    border-radius: 0;
-  }
-
+@media (max-width: 720px) {
   /* Mobile: Display images inside epson-solution-card boxes */
   .epson-solution-card {
     display: flex;
