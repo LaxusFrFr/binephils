@@ -7135,6 +7135,16 @@ body#top .footer-links a[href="index.html#contact"] {
     background-position: 60% center;
   }
 
+  /* Mobile: Fix zoomed hero images on construction/industrial pages */
+  .construction-hero-slide {
+    background-position: center center;
+  }
+
+  /* Mobile: Adjust first slide to show solar street light */
+  .construction-hero-slide--1 {
+    background-position: 83% center;
+  }
+
   .hero-title {
     font-size: 2rem;
   }
