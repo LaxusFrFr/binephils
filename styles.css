@@ -7253,6 +7253,11 @@ body#top .footer-links a[href="index.html#contact"] {
     max-width: none;
   }
 
+  /* Mobile: Stack Aluminum Insulation Panel cards vertically */
+  .construction-services-grid.products-panels-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .construction-services-cta-row {
     grid-template-columns: minmax(0, 1fr);
   }
