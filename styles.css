@@ -1083,10 +1083,12 @@ a {
 
 .industrial-advantage-grid li:nth-child(4) {
   grid-column: 2 / span 2;
+  grid-row: 2;
 }
 
 .industrial-advantage-grid li:nth-child(5) {
-  grid-column: 4 / span 2;
+  grid-column: 2 / span 2;
+  grid-row: 3;
 }
 
 .industrial-advantage-grid .product-icon-circle {
@@ -1119,9 +1121,15 @@ a {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .industrial-advantage-grid li:nth-child(4),
-  .industrial-advantage-grid li:nth-child(5) {
+  .industrial-advantage-grid li {
     grid-column: auto;
+    grid-row: auto;
+    min-height: auto;
+    height: auto;
+  }
+
+  .industrial-about-advantage {
+    padding: 4rem 0 4rem;
   }
 
 }
@@ -7211,13 +7219,14 @@ body#top .footer-links a[href="index.html#contact"] {
   }
 
   .industrial-advantage-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.75rem;
   }
 
   .industrial-advantage-grid li:nth-child(4),
   .industrial-advantage-grid li:nth-child(5) {
     grid-column: auto;
+    grid-row: auto;
   }
 
   .industrial-advantage-grid li {
